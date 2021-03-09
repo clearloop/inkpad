@@ -1,5 +1,6 @@
 [workspace]
 members = [
-  "proxy",
+  "bin",
   "host",
+  "proxy",
 ]

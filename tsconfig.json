@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "./app/",
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node"
+  },
+  "include": ["ui/**/*", "native/**/*", "scripts/**/*"]
+}
