@@ -3,4 +3,5 @@ members = [
   "bin",
   "host",
   "proxy",
+  "runtime",
 ]
