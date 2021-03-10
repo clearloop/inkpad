@@ -1,5 +1,5 @@
 import { common, electronCommon } from "./webpack.common";
-import * as webpack from "webpack";
+import webpack from "webpack";
 import { merge } from "webpack-merge";
 
 const prod: webpack.Configuration = merge(common, {
