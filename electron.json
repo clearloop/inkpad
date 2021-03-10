@@ -1,0 +1,11 @@
+{
+  "name": "Ceres",
+  "license": "MIT",
+  "main": "native/main.bundle.js",
+  "build": {
+    "files": ["native/**/*", "public/**/*"],
+    "directories": {
+      "buildResources": "public"
+    }
+  }
+}

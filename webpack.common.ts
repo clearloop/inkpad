@@ -1,8 +1,24 @@
 import * as path from "path";
+import * as CopyWebpackPlugin from "copy-webpack-plugin";
 import * as HtmlWebpackPlugin from "html-webpack-plugin";
 import * as webpack from "webpack";
 
-const config: webpack.Configuration = {
+export const electronCommon: webpack.Configuration = {
+  target: "electron-main",
+  entry: {
+    main: path.resolve(__dirname, "./native/main.ts"),
+  },
+  output: {
+    filename: "[name].bundle.js",
+    path: path.resolve(__dirname, "app/native"),
+    clean: {
+      dry: true,
+    },
+  },
+};
+
+export const common: webpack.Configuration = {
+  target: "web",
   entry: {
     app: path.resolve(__dirname, "./ui/index.ts"),
   },
@@ -18,15 +34,22 @@ const config: webpack.Configuration = {
   plugins: [
     new HtmlWebpackPlugin({
       title: "Ceres",
-      chunks: ["app.bundle.js"],
-      template: "./public/index.html",
+      chunks: ["app"],
+      // ptemplate: "./public/index.html",
+      favicon: "./public/favicon.ico",
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: "electron.json", to: "package.json" },
+        { from: "public", to: "public" },
+      ],
     }),
   ],
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "app"),
-    clean: true,
+    clean: {
+      dry: true,
+    },
   },
 };
-
-export default config;
