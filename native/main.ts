@@ -1,8 +1,11 @@
 import { app, BrowserWindow } from "electron";
+import reloader from "electron-reloader";
 
 try {
-  require("electron-reloader")(module);
-} catch {}
+  reloader(module);
+} catch (err) {
+  console.log(err);
+}
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -10,7 +13,7 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      preload: "preload.bundle.js",
+      preload: "preload.js",
     },
   });
 

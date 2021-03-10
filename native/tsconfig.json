@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["dom"],
-    "outDir": "./app/",
+    "outDir": "../app",
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es5",
@@ -11,13 +10,5 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true
-  },
-  "exclude": [
-    "app/**/*",
-    "builder/**/*",
-    "native/**/*.ts",
-    "webpack.prod.ts",
-    "webpack.dev.ts",
-    "webpack.common.ts"
-  ]
+  }
 }

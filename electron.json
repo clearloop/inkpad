@@ -1,7 +1,7 @@
 {
   "name": "Ceres",
   "license": "MIT",
-  "main": "main.bundle.js",
+  "main": "main.js",
   "build": {
     "files": ["native/**/*", "public/**/*"],
     "directories": {
