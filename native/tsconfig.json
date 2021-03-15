@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "../app",
+    "outDir": "../public",
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es5",

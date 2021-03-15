@@ -3,36 +3,47 @@
   "private": true,
   "scripts": {
     "_": "tsc -p native",
-    "dev": "yarn _ && yarn watch & electron app",
+    "dev": "yarn _ && yarn watch",
     "dev:ui": "webpack serve --mode development",
+    "dev:native": "electron public",
     "build": "yarn _ && yarn build:ui",
     "build:ui": "webpack --mode production",
-    "watch": "webpack watch --config webpack.dev.ts"
-  },
-  "dependencies": {
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "watch": "webpack watch --mode development"
   },
   "devDependencies": {
+    "@tsconfig/svelte": "^1.0.10",
     "@types/copy-webpack-plugin": "^6.4.0",
+    "@types/mini-css-extract-plugin": "^1.2.2",
     "@types/node": "^14.14.33",
-    "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.2",
+    "@types/styled-components": "^5.1.8",
     "@types/webpack": "^4.41.26",
     "@types/webpack-dev-server": "^3.11.2",
     "copy-webpack-plugin": "^8.0.0",
+    "css-loader": "^5.1.2",
     "electron": "^12.0.0",
     "electron-notarize": "^1.0.0",
     "electron-reloader": "^1.2.0",
     "html-webpack-plugin": "^5.3.0",
+    "mini-css-extract-plugin": "^1.3.9",
     "node-loader": "^1.0.2",
+    "node-sass": "^5.0.0",
     "nodeman": "^1.1.2",
+    "pug": "^3.0.2",
+    "scss": "^0.2.4",
+    "svelte": "^3.35.0",
+    "svelte-loader": "^3.0.0",
+    "svelte-preprocess": "^4.6.9",
+    "svelte-spa-router": "^3.1.0",
     "ts-loader": "^8.0.17",
     "ts-node": "^9.1.1",
+    "twemoji": "^13.0.1",
     "typescript": "^4.2.3",
     "webpack": "^5.24.4",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3"
+  },
+  "dependencies": {
+    "@types/twemoji": "^12.1.1"
   }
 }

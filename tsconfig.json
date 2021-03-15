@@ -3,8 +3,7 @@
     "lib": ["dom"],
     "outDir": "./app/",
     "noImplicitAny": true,
-    "module": "commonjs",
-    "target": "es5",
+    "target": "es2017",
     "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
@@ -12,12 +11,6 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "exclude": [
-    "app/**/*",
-    "builder/**/*",
-    "native/**/*.ts",
-    "webpack.prod.ts",
-    "webpack.dev.ts",
-    "webpack.common.ts"
-  ]
+  "exclude": ["app/**/*", "builder/**/*", "native/**/*.ts"],
+  "extends": "@tsconfig/svelte/tsconfig.json"
 }
