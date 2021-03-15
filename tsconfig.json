@@ -4,13 +4,12 @@
     "outDir": "./app/",
     "noImplicitAny": true,
     "target": "es2017",
-    "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "exclude": ["app/**/*", "builder/**/*", "native/**/*.ts"],
+  "exclude": ["app/**/*", "builder/**/*"],
   "extends": "@tsconfig/svelte/tsconfig.json"
 }

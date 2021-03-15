@@ -1,17 +1,24 @@
 <script>
  import "@design/theme"
+ import InputDirectory from "@design/Primitive/Input/Directory.svelte";
  import Theme from "./Theme.svelte";
 </script>
 
 <style>
- div {
+ /*.orphan-frame {
      display: flex;
-     align-items: center;
-     justify-content: center;
+ }*/
+
+ main {
+     display: flex;
      width: 100vw;
-     font-size: 5rem;
+     justify-content: center;
+     align-items: center;
+     font-size: 2rem;
  }
 </style>
 
 <Theme />
-<div>Hello, world</div>
+<main>
+    <InputDirectory />
+</main>

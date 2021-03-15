@@ -1,5 +1,4 @@
-import type webpack from "webpack";
-
+import webpack from "webpack";
 import * as path from "path";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
@@ -37,11 +36,27 @@ const common: webpack.Configuration = {
   },
   plugins: [
     new CopyWebpackPlugin({
-      patterns: [{ from: "electron.json", to: "package.json" }],
+      patterns: [
+        "native/preload.js",
+        { from: "electron.json", to: "package.json" },
+      ],
     }),
     new MiniCssExtractPlugin({
       filename: "bundle.css",
     }),
+    new webpack.ExternalsPlugin("commonjs", [
+      "desktop-capturer",
+      "electron",
+      "ipc",
+      "ipc-renderer",
+      "native-image",
+      "remote",
+      "web-frame",
+      "clipboard",
+      "crash-reporter",
+      "screen",
+      "shell",
+    ]),
   ],
   output: {
     filename: "bundle.js",
@@ -55,6 +70,7 @@ const common: webpack.Configuration = {
     alias: {
       "@ceres": path.resolve(__dirname, "src/"),
       "@design": path.resolve(__dirname, "design/"),
+      "@native": path.resolve(__dirname, "native/"),
     },
   },
 };
