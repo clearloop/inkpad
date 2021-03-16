@@ -1,10 +1,10 @@
 <script lang="typescript">
   import Icon from "../Icon";
-  import Spinner from "../../Component/Spinner.svelte";
-  import KeyHint from "../../Component/KeyHint.svelte";
+  import Spinner from "@design/Component/Spinner.svelte";
+  import KeyHint from "@design/Component/KeyHint.svelte";
 
-  import type { ValidationState } from "../../../ui/src/validation";
-  import { ValidationStatus as Status } from "../../../ui/src/validation";
+  import type { ValidationState } from "@ceres/validation";
+  import { ValidationStatus as Status } from "@ceres/validation";
 
   export let style = "";
   export let inputStyle = "";

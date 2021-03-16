@@ -1,28 +1,34 @@
 ## Ceres
 
-The minimal testing environment for ink! contract
+Ceres is a cross-platform desktop client for ink! contract.
+
 
 ## Design
 
 ``` text
 
-- - - - - - - - - - - -      - - - - -      - - - -
-| ink! contract wasm  | ---> | ceres | ---> | app |
-- - - - - - - - - - - -      - - - - -      - - - -
+- - - - - - - - -      - - - - -      - - - -
+| ink! contract | ---> | ceres | ---> | app |
+- - - - - - - - -      - - - - -      - - - -
 
 ```
 
-Here we use `wasmtime` as the unique choice for the wasm runtime since it is 
-the most popular and the most stable choice for running wasm code in rust.
 
-### Calcuating Gas
+## Attribution
 
-We use [wasm-utils][0] injecting gas memters for calcuating gas.
+Ceres uses:
+
+  - [DesignSystem of Radicle Upstream][rd]
+  - [Twemoji by Twitter][tw]
+  - [The Inter typeface family by Rasmus Andersson][ra]
+  - [Source Code Pro font family by Adobe][so]
+
+[rd]: https://github.com/radicle-dev/radicle-upstream
+[ra]: https://rsms.me/inter
+[so]: https://adobe-fonts.github.io/source-code-pro
+[tw]: https://twemoji.twitter.com
 
 
 ## LICENSE
 
 MIT
-
-
-[0]: https://github.com/paritytech/wasm-utils

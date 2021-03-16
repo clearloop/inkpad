@@ -86,11 +86,9 @@ var WindowManager = /** @class */ (function () {
         if (this.window) {
             return;
         }
-        console.log(this.window);
-        console.log("open window");
         var window = new electron_1.BrowserWindow({
-            width: 1200,
-            height: 680,
+            width: 800,
+            height: 600,
             show: false,
             webPreferences: {
                 contextIsolation: false,

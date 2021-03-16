@@ -1,9 +1,9 @@
 <script lang="ts">
  import { createEventDispatcher } from "svelte";
- import { getDirectoryPath } from "../../../ui/src//ipc";
+ import { getDirectoryPath } from "@ceres/ipc";
 
- import type { ButtonVariant } from "../../../ui/src/style";
- import type { ValidationState } from "../../../ui/src/validation";
+ import type { ButtonVariant } from "@ceres/style";
+ import type { ValidationState } from "@ceres/validation";
 
  import Button from "../Button.svelte";
  import TextInput from "./Text.svelte";

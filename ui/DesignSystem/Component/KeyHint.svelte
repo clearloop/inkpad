@@ -1,5 +1,5 @@
 <script lang="ts">
- import { osModifierKey } from "../../ui/src/hotkeys";
+ import { osModifierKey } from "@ceres/hotkeys";
 
  export let hint = "";
  export let noModifier: boolean = false;

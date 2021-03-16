@@ -55,8 +55,8 @@ class WindowManager {
     }
 
     const window = new BrowserWindow({
-      width: 1200,
-      height: 680,
+      width: 800,
+      height: 600,
       show: false,
       webPreferences: {
         contextIsolation: false,

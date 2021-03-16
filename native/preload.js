@@ -1,7 +1,5 @@
 const ipcRenderer = require("electron").ipcRenderer;
 
-window.a = "123";
-
 window.electron = {
   ipcRenderer: {
     invoke: ipcRenderer.invoke.bind(ipcRenderer),

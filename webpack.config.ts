@@ -55,8 +55,11 @@ const common: webpack.Configuration = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     alias: {
-      "@ceres": path.resolve(__dirname, "src/"),
-      "@design": path.resolve(__dirname, "design/"),
+      "@ceres": [
+        path.resolve(__dirname, "ui/"),
+        path.resolve(__dirname, "ui/src"),
+      ],
+      "@design": path.resolve(__dirname, "ui/DesignSystem/"),
       "@native": path.resolve(__dirname, "native/"),
     },
   },
