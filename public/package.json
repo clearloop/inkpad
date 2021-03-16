@@ -6,6 +6,14 @@
     "files": ["native/**/*", "public/**/*"],
     "directories": {
       "buildResources": "public"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "builder/entitlements.mac.plist",
+      "entitlementsInherit": "builder/entitlements.mac.plist",
+      "minimumSystemVersion": "10.14"
     }
   }
 }

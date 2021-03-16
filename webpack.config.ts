@@ -1,11 +1,11 @@
-import webpack from "webpack";
+import type webpack from "webpack";
 import * as path from "path";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import AutoPreprocess from "svelte-preprocess";
 
 const common: webpack.Configuration = {
-  target: "web",
+  target: "electron-renderer",
   entry: path.resolve(__dirname, "./ui/main.ts"),
   devtool: "cheap-module-source-map",
   module: {
@@ -44,19 +44,6 @@ const common: webpack.Configuration = {
     new MiniCssExtractPlugin({
       filename: "bundle.css",
     }),
-    new webpack.ExternalsPlugin("commonjs", [
-      "desktop-capturer",
-      "electron",
-      "ipc",
-      "ipc-renderer",
-      "native-image",
-      "remote",
-      "web-frame",
-      "clipboard",
-      "crash-reporter",
-      "screen",
-      "shell",
-    ]),
   ],
   output: {
     filename: "bundle.js",

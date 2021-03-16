@@ -1,6 +1,6 @@
 const ipcRenderer = require("electron").ipcRenderer;
 
-console.log("hello");
+window.a = "123";
 
 window.electron = {
   ipcRenderer: {
@@ -8,5 +8,4 @@ window.electron = {
     on: ipcRenderer.on.bind(ipcRenderer),
   },
   isDev: process.env.NODE_ENV === "development",
-  isExperimental: process.env.RADICLE_UPSTREAM_EXPERIMENTAL === "true",
 };

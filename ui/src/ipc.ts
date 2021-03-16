@@ -20,10 +20,12 @@ const isCypressTestEnv = Boolean((globalThis as any).cy);
 //
 // The workaround is to use the electron native open dialog. As a bonus we
 // can configure it to allow users to create new directories.
-export const getDirectoryPath = (): Promise<string> =>
-  window.electron.ipcRenderer.invoke(
+export const getDirectoryPath = (): Promise<string> => {
+  console.log("get directory path");
+  return window.electron.ipcRenderer.invoke(
     ipcTypes.RendererMessage.DIALOG_SHOWOPENDIALOG
   );
+};
 
 export const getVersion = (): Promise<string> =>
   window.electron.ipcRenderer.invoke(ipcTypes.RendererMessage.GET_VERSION);
