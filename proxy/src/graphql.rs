@@ -9,7 +9,7 @@ pub struct Query;
 
 #[graphql_object(context = Share)]
 impl Query {
-    fn apiVersion() -> String {
+    fn version() -> String {
         "1.0".to_string()
     }
 }

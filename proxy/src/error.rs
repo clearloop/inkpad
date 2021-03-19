@@ -9,6 +9,8 @@ pub enum E {
     Sled(#[from] sled::Error),
     #[error(transparent)]
     ActicWeb(#[from] actix_web::Error),
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
 }
 
 /// Ceres Result
