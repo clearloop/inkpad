@@ -2,13 +2,13 @@
 // use contract_metadata::ContractMetadata;
 // use std::{fs, path::Path};
 
-/// Convert string to snake case for storage key
-pub fn sc(src: String) -> String {
-    src.split_whitespace()
-        .collect::<Vec<&str>>()
-        .join("_")
-        .to_ascii_lowercase()
-}
+// /// Convert string to snake case for storage key
+// pub fn sc(src: String) -> String {
+//     src.split_whitespace()
+//         .collect::<Vec<&str>>()
+//         .join("_")
+//         .to_ascii_lowercase()
+// }
 
 // /// Metadada from `.contract` file
 // pub fn mc<P>(p: P) -> Result<ContractMetadata>

@@ -1,3 +1,4 @@
+pub mod contracts;
 mod error;
 mod graphql;
 mod http;

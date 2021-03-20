@@ -11,6 +11,10 @@ pub enum E {
     ActicWeb(#[from] actix_web::Error),
     #[error(transparent)]
     Io(#[from] std::io::Error),
+    #[error(transparent)]
+    Subxt(#[from] substrate_subxt::Error),
+    #[error(transparent)]
+    Error(#[from] Box<dyn std::error::Error>),
 }
 
 /// Ceres Result

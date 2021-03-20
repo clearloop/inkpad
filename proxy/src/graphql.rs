@@ -42,7 +42,7 @@ pub async fn graphql_route(
     payload: actix_web::web::Payload,
     schema: web::Data<Schema>,
 ) -> Result<HttpResponse, Error> {
-    let context = Share::new().map_err(|_| {
+    let context = Share::new("ws://192.168.2.142:4242").await.map_err(|_| {
         Error::from(InternalError::new(
             "".to_string(),
             StatusCode::INTERNAL_SERVER_ERROR,

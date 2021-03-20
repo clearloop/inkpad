@@ -15,6 +15,8 @@ juniper = "0.15.3"
 juniper_actix = "0.2.3"
 log = "0.4.14"
 codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive", "full"] }
+hex = "0.4.3"
+rand = "0.8.3"
 serde = "1.0.124"
 serde_json = "1.0.64"
 semver = "0.9.0"
@@ -22,5 +24,7 @@ sled = "0.34.6"
 sp-core = "3.0.0"
 sp-runtime = "3.0.0"
 sp-keyring = "3.0.0"
-substrate-subxt = { git = "https://github.com/paritytech/substrate-subxt.git" }
 thiserror = "1.0.24"
+
+[dependencies.substrate-subxt]
+git = "https://github.com/paritytech/substrate-subxt.git"

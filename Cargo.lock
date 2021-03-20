@@ -863,10 +863,12 @@ dependencies = [
  "contract-metadata",
  "dirs",
  "env_logger 0.8.3",
+ "hex",
  "juniper",
  "juniper_actix",
  "log",
  "parity-scale-codec",
+ "rand 0.8.3",
  "semver 0.9.0",
  "serde",
  "serde_json",
@@ -3258,7 +3260,7 @@ dependencies = [
  "libc",
  "rand_chacha 0.2.2",
  "rand_core 0.5.1",
- "rand_hc",
+ "rand_hc 0.2.0",
  "rand_pcg",
 ]
 
@@ -3271,6 +3273,7 @@ dependencies = [
  "libc",
  "rand_chacha 0.3.0",
  "rand_core 0.6.2",
+ "rand_hc 0.3.0",
 ]
 
 [[package]]
@@ -3327,6 +3330,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ca3129af7b92a17112d59ad498c6f81eaf463253766b90396d39ea7a39d6613c"
 dependencies = [
  "rand_core 0.5.1",
+]
+
+[[package]]
+name = "rand_hc"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3190ef7066a446f2e7f42e239d161e905420ccab01eb967c9eb27d21b2322a73"
+dependencies = [
+ "rand_core 0.6.2",
 ]
 
 [[package]]
@@ -4442,7 +4454,6 @@ dependencies = [
 [[package]]
 name = "substrate-subxt"
 version = "0.14.0"
-source = "git+https://github.com/paritytech/substrate-subxt.git#3b362fb072ec45a870e9aa7cb9f6a2949b59c3ef"
 dependencies = [
  "dyn-clone",
  "frame-metadata",
@@ -4474,7 +4485,6 @@ dependencies = [
 [[package]]
 name = "substrate-subxt-proc-macro"
 version = "0.14.0"
-source = "git+https://github.com/paritytech/substrate-subxt.git#3b362fb072ec45a870e9aa7cb9f6a2949b59c3ef"
 dependencies = [
  "heck",
  "proc-macro-crate",
