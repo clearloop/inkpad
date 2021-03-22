@@ -1,4 +1,4 @@
-name: Ceres Proxy
+name: Ceres
 
 on:
   push:
@@ -29,4 +29,8 @@ jobs:
           path: ./target
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*/Cargo.lock') }}
       - name: Build
-        run: cargo build --all -vv
+        run: |
+          git submodule update --init
+          cargo build --all -vv
+      - name: Test
+        run: cargo test --all -vv

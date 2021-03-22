@@ -1,3 +1,0 @@
-# Ceres Host Functions
-
-WIP

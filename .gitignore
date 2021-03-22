@@ -1,6 +1,6 @@
 .log
 app
-target
+**/*target
 node_modules
 yarn-error.log
 public/bundle.*

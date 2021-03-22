@@ -25,6 +25,4 @@ sp-core = "3.0.0"
 sp-runtime = "3.0.0"
 sp-keyring = "3.0.0"
 thiserror = "1.0.24"
-
-[dependencies.substrate-subxt]
-git = "https://github.com/paritytech/substrate-subxt.git"
+substrate-subxt = { git = "https://github.com/paritytech/substrate-subxt.git" }

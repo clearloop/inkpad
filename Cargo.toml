@@ -1,7 +1,5 @@
 [workspace]
 members = [
-  "bin",
-  "host",
   "proxy",
   "runtime",
 ]
