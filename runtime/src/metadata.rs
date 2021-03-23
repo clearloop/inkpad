@@ -1,3 +1,5 @@
+//! Decoder of *.contract
+use alloc::{string::String, vec::Vec};
 use serde::Deserialize;
 
 /// A struct for operating *.contract
@@ -24,6 +26,13 @@ pub struct Contract {
     pub name: String,
 }
 
+/// ABI of methods
+#[derive(Debug, Deserialize)]
+pub struct Spec {
+    pub constructors: Vec<Constructor>,
+    pub messages: Vec<Message>,
+}
+
 /// Constructor
 #[derive(Debug, Deserialize)]
 pub struct Constructor {
@@ -33,10 +42,17 @@ pub struct Constructor {
     pub selector: String,
 }
 
-/// ABI of methods
-#[derive(Deserialize)]
-pub struct Spec {
-    pub constructors: Vec<Constructor>,
+/// Message
+#[derive(Debug, Deserialize)]
+pub struct Message {
+    pub args: Vec<Arg>,
+    pub docs: Vec<String>,
+    pub mutates: bool,
+    pub name: Vec<String>,
+    pub payable: bool,
+    #[serde(rename(deserialize = "camelCase"))]
+    pub return_type: Type,
+    pub selector: String,
 }
 
 /// Type defination
