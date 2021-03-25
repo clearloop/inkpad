@@ -14,6 +14,20 @@ pub struct Sandbox {
 }
 
 impl Sandbox {
+    /// New sandbox
+    pub fn new(memory: MemoryRef) -> Sandbox {
+        Sandbox {
+            input_data: None,
+            store: HashMap::new(),
+            memory,
+        }
+    }
+
+    /// Get memory ref
+    pub fn mem(&self) -> MemoryRef {
+        self.memory.clone()
+    }
+
     /// Get storage
     pub fn get_storage(&self, key: &StorageKey) -> Result<Option<Vec<u8>>> {
         Ok(self.store.get(key).map(|v| v.clone()))
