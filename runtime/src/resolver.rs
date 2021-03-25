@@ -13,10 +13,8 @@ pub struct Resolver {
 
 impl Resolver {
     /// New externals
-    pub fn new(mem: MemoryRef) -> Self {
-        Resolver {
-            sandbox: Rc::new(RefCell::new(Sandbox::new(mem))),
-        }
+    pub fn new(sandbox: Rc<RefCell<Sandbox>>) -> Self {
+        Resolver { sandbox }
     }
 }
 
@@ -48,10 +46,10 @@ impl ImportResolver for Resolver {
         match module_name {
             "seal0" => match field_name {
                 "seal_get_storage" => Ok(FuncInstance::alloc_host(signature.clone(), 0)),
-                "seal_set_storage" => Ok(FuncInstance::alloc_host(signature.clone(), 0)),
-                "seal_input" => Ok(FuncInstance::alloc_host(signature.clone(), 0)),
-                "seal_value_transferred" => Ok(FuncInstance::alloc_host(signature.clone(), 0)),
-                "seal_return" => Ok(FuncInstance::alloc_host(signature.clone(), 0)),
+                "seal_set_storage" => Ok(FuncInstance::alloc_host(signature.clone(), 1)),
+                "seal_input" => Ok(FuncInstance::alloc_host(signature.clone(), 2)),
+                "seal_value_transferred" => Ok(FuncInstance::alloc_host(signature.clone(), 3)),
+                "seal_return" => Ok(FuncInstance::alloc_host(signature.clone(), 4)),
                 _ => {
                     return Err(Error::Instantiation(format!(
                         "Export {} not found",

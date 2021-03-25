@@ -862,7 +862,7 @@ dependencies = [
  "hashbrown 0.11.1",
  "hex",
  "parity-scale-codec",
- "parity-wasm 0.42.2",
+ "parity-wasm",
  "serde",
  "serde_json",
  "snafu",
@@ -2743,14 +2743,7 @@ dependencies = [
 [[package]]
 name = "parity-wasm"
 version = "0.41.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ddfc878dac00da22f8f61e7af3157988424567ab01d9920b962ef7dcbd7cd865"
-
-[[package]]
-name = "parity-wasm"
-version = "0.42.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be5e13c266502aadf83426d87d81a0f5d1ef45b8027f5a471c360abfe4bfae92"
+source = "git+https://github.com/patractlabs/parity-wasm?branch=v0.41.0#a5739f6193309957d469a1df96cd0f3504b23728"
 
 [[package]]
 name = "parking"
@@ -4852,7 +4845,7 @@ dependencies = [
  "memory_units",
  "num-rational",
  "num-traits",
- "parity-wasm 0.41.0",
+ "parity-wasm",
  "wasmi-validation 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -4866,7 +4859,7 @@ dependencies = [
  "memory_units",
  "num-rational",
  "num-traits",
- "parity-wasm 0.41.0",
+ "parity-wasm",
  "rustc-demangle",
  "wasmi-validation 0.3.0 (git+https://github.com/patractlabs/wasmi.git?branch=v0.7.0)",
 ]
@@ -4877,7 +4870,7 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea78c597064ba73596099281e2f4cfc019075122a65cdda3205af94f0b264d93"
 dependencies = [
- "parity-wasm 0.41.0",
+ "parity-wasm",
 ]
 
 [[package]]
@@ -4885,7 +4878,7 @@ name = "wasmi-validation"
 version = "0.3.0"
 source = "git+https://github.com/patractlabs/wasmi.git?branch=v0.7.0#7378e371da8304d4388df7e937031f53f4211983"
 dependencies = [
- "parity-wasm 0.41.0",
+ "parity-wasm",
 ]
 
 [[package]]

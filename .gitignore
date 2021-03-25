@@ -6,3 +6,4 @@ yarn-error.log
 public/bundle.*
 public/*.otf
 public/*.js
+**/*.wasm

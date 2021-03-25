@@ -8,7 +8,7 @@ use wasmi::MemoryRef;
 /// The runtime of ink! machine
 pub struct Sandbox {
     /// input data
-    pub input_data: Option<Vec<u8>>,
+    pub input: Option<Vec<u8>>,
     store: HashMap<StorageKey, Vec<u8>>,
     memory: MemoryRef,
 }
@@ -17,7 +17,7 @@ impl Sandbox {
     /// New sandbox
     pub fn new(memory: MemoryRef) -> Sandbox {
         Sandbox {
-            input_data: None,
+            input: None,
             store: HashMap::new(),
             memory,
         }
@@ -57,7 +57,7 @@ impl Sandbox {
     /// Read designated chunk from the sandbox memory and attempt to decode into the specified type.
     pub fn read_sandbox_memory_as<D: Decode>(&mut self, ptr: u32, len: u32) -> Result<D> {
         let buf = self.read_sandbox_memory(ptr, len)?;
-        let decoded = D::decode_all(&mut &buf[..]).map_err(|_| Error::DecodingFailed)?;
+        let decoded = D::decode_all(&mut &buf[..]).map_err(|_| Error::DecodeRuntimeValueFailed)?;
         Ok(decoded)
     }
 

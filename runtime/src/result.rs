@@ -8,8 +8,8 @@ use wasmi::HostError;
 pub enum Error {
     /// Memory out of bounds
     OutOfBounds,
-    /// Decoding failed in sandbox
-    DecodingFailed,
+    /// Decoding data failed in sandbox
+    DecodeRuntimeValueFailed,
     /// Output buffer too small
     OutputBufferTooSmall,
     #[snafu(display("flags: {}, data: {:?}", flags, data))]
@@ -17,6 +17,24 @@ pub enum Error {
     /// Wasmi trap
     #[snafu(context(false))]
     Trap { source: wasmi::Trap },
+    /// Failed to parse wasm module
+    ParseWasmModuleFailed,
+    /// Failed to parse name section
+    ParseWasmNameSectionFailed,
+    /// Failed to calcuate memory limit
+    CalcuateMemoryLimitFailed,
+    /// Failed to alloc memory
+    AllocMemoryFailed,
+    /// Init ModuleInstance failed
+    InitModuleFailed,
+    /// Deploy contract failed
+    DeployContractFailed,
+    /// Call contract failed
+    CallContractFailed,
+    /// Decode selector failed
+    DecodeSelectorFailed,
+    /// Decode contract failed
+    DecodeContractFailed,
 }
 
 impl HostError for Error {}

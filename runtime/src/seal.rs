@@ -7,6 +7,7 @@ use core::cell::RefCell;
 use parity_scale_codec::Encode;
 use wasmi::{RuntimeArgs, RuntimeValue};
 
+/// Custom return code for wasm functions
 #[repr(u32)]
 pub enum ReturnCode {
     /// API call successful.
@@ -43,13 +44,13 @@ pub fn seal_get_storage(
     let [key_ptr, out_ptr, out_len_ptr] = [
         args.nth_value_checked(0)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
         args.nth_value_checked(1)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
         args.nth_value_checked(2)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
     ];
 
     let mut key: StorageKey = [0; 32];
@@ -74,13 +75,13 @@ pub fn seal_set_storage(
     let [key_ptr, value_ptr, value_len] = [
         args.nth_value_checked(0)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
         args.nth_value_checked(1)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
         args.nth_value_checked(2)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
     ];
 
     let mut key: StorageKey = [0; 32];
@@ -101,16 +102,15 @@ pub fn seal_input(
     let [out_ptr, out_len_ptr] = [
         args.nth_value_checked(0)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
         args.nth_value_checked(1)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
     ];
 
-    if let Some(input) = sandbox.borrow_mut().input_data.take() {
-        sandbox
-            .borrow_mut()
-            .write_sandbox_output(out_ptr, out_len_ptr, &input)?;
+    let mut b = sandbox.borrow_mut();
+    if let Some(input) = b.input.take() {
+        b.write_sandbox_output(out_ptr, out_len_ptr, &input)?;
         Ok(None)
     } else {
         Err(Error::OutOfBounds)
@@ -127,10 +127,10 @@ pub fn seal_value_transferred(
     let [out_ptr, out_len_ptr] = [
         args.nth_value_checked(0)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
         args.nth_value_checked(1)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
     ];
 
     sandbox
@@ -149,13 +149,13 @@ pub fn seal_return(
     let [flags, data_ptr, data_len] = [
         args.nth_value_checked(0)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
         args.nth_value_checked(1)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
         args.nth_value_checked(2)?
             .try_into()
-            .ok_or(Error::DecodingFailed)?,
+            .ok_or(Error::DecodeRuntimeValueFailed)?,
     ];
 
     Err(Error::ReturnData {

@@ -3,19 +3,20 @@
 #[macro_use]
 extern crate alloc;
 
-mod mem;
 mod metadata;
 mod resolver;
 mod result;
+mod runtime;
 mod sandbox;
 mod seal;
+mod util;
 
 type StorageKey = [u8; 32];
 
 pub use self::{
-    mem::scan_imports,
     metadata::Metadata,
     resolver::Resolver,
     result::{Error, Result},
+    runtime::Runtime,
     sandbox::Sandbox,
 };
