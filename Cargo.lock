@@ -861,9 +861,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "ceres-derive"
+version = "0.1.0"
+dependencies = [
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "ceres-runtime"
 version = "0.1.0"
 dependencies = [
+ "ceres-derive",
  "hashbrown 0.11.1",
  "hex",
  "parity-scale-codec",

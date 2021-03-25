@@ -1,73 +1,118 @@
 //! Seal functions
+//!
+//! Update the argument implementation with proc-mc
 use crate::{Error, Result, Sandbox, StorageKey};
+use alloc::rc::Rc;
+use core::cell::RefCell;
 use parity_scale_codec::Encode;
+use wasmi::{RuntimeArgs, RuntimeValue};
 
+#[repr(u32)]
 pub enum ReturnCode {
     /// API call successful.
-    Success,
+    Success = 0,
     /// The called function trapped and has its state changes reverted.
     /// In this case no output buffer is returned.
-    CalleeTrapped,
+    CalleeTrapped = 1,
     /// The called function ran to completion but decided to revert its state.
     /// An output buffer is returned when one was supplied.
-    CalleeReverted,
+    CalleeReverted = 2,
     /// The passed key does not exist in storage.
-    KeyNotFound,
+    KeyNotFound = 3,
     /// Transfer failed because it would have brought the sender's total balance below the
     /// subsistence threshold.
-    BelowSubsistenceThreshold,
+    BelowSubsistenceThreshold = 4,
     /// Transfer failed for other reasons. Most probably reserved or locked balance of the
     /// sender prevents the transfer.
-    TransferFailed,
+    TransferFailed = 5,
     /// The newly created contract is below the subsistence threshold after executing
     /// its constructor.
-    NewContractNotFunded,
+    NewContractNotFunded = 6,
     /// No code could be found at the supplied code hash.
-    CodeNotFound,
+    CodeNotFound = 7,
     /// The contract that was called is either no contract at all (a plain account)
     /// or is a tombstone.
-    NotCallable,
+    NotCallable = 8,
 }
 
 /// seal_get_storage
 pub fn seal_get_storage(
-    sandbox: &mut Sandbox,
-    key_ptr: u32,
-    out_ptr: u32,
-    out_len_ptr: u32,
-) -> Result<ReturnCode> {
+    sandbox: Rc<RefCell<Sandbox>>,
+    args: RuntimeArgs,
+) -> Result<Option<RuntimeValue>> {
+    let [key_ptr, out_ptr, out_len_ptr] = [
+        args.nth_value_checked(0)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+        args.nth_value_checked(1)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+        args.nth_value_checked(2)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+    ];
+
     let mut key: StorageKey = [0; 32];
-    sandbox.read_sandbox_memory_into_buf(key_ptr, &mut key)?;
-    if let Some(value) = sandbox.get_storage(&key)? {
-        sandbox.write_sandbox_output(out_ptr, out_len_ptr, &value)?;
-        Ok(ReturnCode::Success)
+    sandbox
+        .borrow_mut()
+        .read_sandbox_memory_into_buf(key_ptr, &mut key)?;
+    if let Some(value) = sandbox.borrow().get_storage(&key)? {
+        sandbox
+            .borrow_mut()
+            .write_sandbox_output(out_ptr, out_len_ptr, &value)?;
+        Ok(Some(RuntimeValue::I32(ReturnCode::Success as i32)))
     } else {
-        Ok(ReturnCode::KeyNotFound)
+        Ok(Some(RuntimeValue::I32(ReturnCode::KeyNotFound as i32)))
     }
 }
 
 /// seal_set_storage
 pub fn seal_set_storage(
-    sandbox: &mut Sandbox,
-    key_ptr: u32,
-    value_ptr: u32,
-    value_len: u32,
-) -> Result<()> {
-    let mut key: StorageKey = [0; 32];
-    sandbox.read_sandbox_memory_into_buf(key_ptr, &mut key)?;
-    let value = sandbox.read_sandbox_memory(value_ptr, value_len)?;
-    sandbox.set_storage(&key, value)?;
+    sandbox: Rc<RefCell<Sandbox>>,
+    args: RuntimeArgs,
+) -> Result<Option<RuntimeValue>> {
+    let [key_ptr, value_ptr, value_len] = [
+        args.nth_value_checked(0)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+        args.nth_value_checked(1)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+        args.nth_value_checked(2)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+    ];
 
-    Ok(())
+    let mut key: StorageKey = [0; 32];
+    sandbox
+        .borrow()
+        .read_sandbox_memory_into_buf(key_ptr, &mut key)?;
+    let value = sandbox.borrow().read_sandbox_memory(value_ptr, value_len)?;
+    sandbox.borrow_mut().set_storage(&key, value)?;
+
+    Ok(None)
 }
 
 /// seal_input
-pub fn seal_input(sandbox: &mut Sandbox, out_ptr: u32, out_len_ptr: u32) -> Result<()> {
-    if let Some(input) = sandbox.input_data.take() {
-        sandbox.write_sandbox_output(out_ptr, out_len_ptr, &input)?;
-        Ok(())
+pub fn seal_input(
+    sandbox: Rc<RefCell<Sandbox>>,
+    args: RuntimeArgs,
+) -> Result<Option<RuntimeValue>> {
+    let [out_ptr, out_len_ptr] = [
+        args.nth_value_checked(0)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+        args.nth_value_checked(1)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+    ];
+
+    if let Some(input) = sandbox.borrow_mut().input_data.take() {
+        sandbox
+            .borrow_mut()
+            .write_sandbox_output(out_ptr, out_len_ptr, &input)?;
+        Ok(None)
     } else {
-        // Modify me
         Err(Error::OutOfBounds)
     }
 }
@@ -75,13 +120,46 @@ pub fn seal_input(sandbox: &mut Sandbox, out_ptr: u32, out_len_ptr: u32) -> Resu
 /// *TODO*: replace `1337` with a dynamic value
 ///
 /// seal_value_transferred
-pub fn seal_value_transferred(sandbox: &mut Sandbox, out_ptr: u32, out_len_ptr: u32) -> Result<()> {
-    Ok(sandbox.write_sandbox_output(out_ptr, out_len_ptr, &1337.encode())?)
+pub fn seal_value_transferred(
+    sandbox: Rc<RefCell<Sandbox>>,
+    args: RuntimeArgs,
+) -> Result<Option<RuntimeValue>> {
+    let [out_ptr, out_len_ptr] = [
+        args.nth_value_checked(0)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+        args.nth_value_checked(1)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+    ];
+
+    sandbox
+        .borrow_mut()
+        .write_sandbox_output(out_ptr, out_len_ptr, &1337.encode())?;
+    Ok(None)
 }
 
 /// *FIX_ME*
 ///
 /// seal_return
-pub fn seal_return(sandbox: &Sandbox, flags: u32, data_ptr: u32, data_len: u32) -> Result<()> {
-    Ok(())
+pub fn seal_return(
+    sandbox: Rc<RefCell<Sandbox>>,
+    args: RuntimeArgs,
+) -> Result<Option<RuntimeValue>> {
+    let [flags, data_ptr, data_len] = [
+        args.nth_value_checked(0)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+        args.nth_value_checked(1)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+        args.nth_value_checked(2)?
+            .try_into()
+            .ok_or(Error::DecodingFailed)?,
+    ];
+
+    Err(Error::ReturnData {
+        flags,
+        data: sandbox.borrow().read_sandbox_memory(data_ptr, data_len)?,
+    })
 }

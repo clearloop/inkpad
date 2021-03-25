@@ -1,8 +1,9 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![allow(dead_code)]
-#[cfg(not(feature = "std"))]
+#[macro_use]
 extern crate alloc;
 
+mod external;
 mod metadata;
 mod result;
 mod sandbox;
