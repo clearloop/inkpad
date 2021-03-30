@@ -7,9 +7,9 @@ Ceres is a cross-platform desktop client for ink! contract.
 
 ``` text
 
-- - - - - - - - -      - - - - -      - - - -
-| ink! contract | ---> | ceres | ---> | app |
-- - - - - - - - -      - - - - -      - - - -
+- - - - - - - - -      - - - - -      - - - - - - -
+| ink! contract | ---> | ceres | ---> |  anywhere |
+- - - - - - - - -      - - - - -      - - - - - - -
 
 ```
 

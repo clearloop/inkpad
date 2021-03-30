@@ -5,5 +5,10 @@ parity-wasm = { git = "https://github.com/patractlabs/parity-wasm", branch = "v0
 members = [
   "derive",
   "proxy",
-  "runtime"
+  "runtime",
+]
+
+# For the testing contracts
+exclude = [
+  "contracts"
 ]

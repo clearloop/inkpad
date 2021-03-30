@@ -7,6 +7,45 @@ use serde::Deserialize;
 pub struct Metadata {
     pub source: Source,
     pub contract: Contract,
+    pub spec: Spec,
+}
+
+impl Metadata {
+    /// Get all messages
+    pub fn messages(&self) -> Vec<(String, String)> {
+        self.spec
+            .messages
+            .iter()
+            .map(|c| {
+                (
+                    if c.name.len() > 0 {
+                        c.name[0].clone()
+                    } else {
+                        "".into()
+                    },
+                    c.selector.clone(),
+                )
+            })
+            .collect()
+    }
+
+    /// Get all constructors
+    pub fn constructors(&self) -> Vec<(String, String)> {
+        self.spec
+            .constructors
+            .iter()
+            .map(|c| {
+                (
+                    if c.name.len() > 0 {
+                        c.name[0].clone()
+                    } else {
+                        "".into()
+                    },
+                    c.selector.clone(),
+                )
+            })
+            .collect()
+    }
 }
 
 /// Source section in *.contract
@@ -44,23 +83,19 @@ pub struct Constructor {
 
 /// Message
 #[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Message {
     pub args: Vec<Arg>,
     pub docs: Vec<String>,
     pub mutates: bool,
     pub name: Vec<String>,
     pub payable: bool,
-    #[serde(rename(deserialize = "camelCase"))]
-    pub return_type: Type,
+    // # NOTE
+    //
+    // For deserializing this field, implement `Deserialize` trait for this.
+    //
+    // pub return_type: Type,
     pub selector: String,
-}
-
-/// Type defination
-#[derive(Debug, Deserialize)]
-pub struct Type {
-    #[serde(rename(deserialize = "camelCase"))]
-    pub display_name: Vec<String>,
-    pub r#type: u8,
 }
 
 /// Custom arg interface
@@ -68,4 +103,12 @@ pub struct Type {
 pub struct Arg {
     pub name: String,
     pub r#type: Type,
+}
+
+/// Type defination
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Type {
+    pub display_name: Vec<String>,
+    pub r#type: u8,
 }

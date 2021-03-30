@@ -67,6 +67,8 @@ impl Sandbox {
     }
 
     /// Write the given buffer and its length to the designated locations in sandbox memory
+    ///
+    /// buf -> memory
     pub fn write_sandbox_output(
         &mut self,
         out_ptr: u32,
