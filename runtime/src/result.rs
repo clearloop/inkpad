@@ -35,6 +35,12 @@ pub enum Error {
     DecodeSelectorFailed,
     /// Decode contract failed
     DecodeContractFailed,
+    /// The length of arguments is not correct
+    InvalidArgumentLength,
+    /// Parse args failed
+    ParseArgumentFailed,
+    #[snafu(display("Could not find method {}", name))]
+    GetMethodFailed { name: String },
 }
 
 impl HostError for Error {}

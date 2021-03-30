@@ -10,25 +10,24 @@ pub struct Runtime {
     instance: ModuleRef,
     resolver: Resolver,
     sandbox: Rc<RefCell<Sandbox>>,
+    metadata: Metadata,
 }
 
 impl Runtime {
     /// Create runtime from contract
     pub fn from_contract(contract: &[u8]) -> Result<Runtime> {
+        let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
+            .map_err(|_| Error::DecodeContractFailed)?;
+
         Ok(Self::new(
-            &hex::decode(
-                &serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
-                    .map_err(|_| Error::DecodeContractFailed)?
-                    .source
-                    .wasm
-                    .as_bytes()[2..],
-            )
-            .map_err(|_| Error::DecodeContractFailed)?,
+            &hex::decode(&meta.source.wasm.as_bytes()[2..])
+                .map_err(|_| Error::DecodeContractFailed)?,
+            meta,
         )?)
     }
 
     /// New runtime
-    pub fn new(b: &[u8]) -> Result<Runtime> {
+    pub fn new(b: &[u8], metadata: Metadata) -> Result<Runtime> {
         let mut el = ModuleElement::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
             el = el
@@ -56,12 +55,18 @@ impl Runtime {
             resolver,
             instance,
             sandbox,
+            metadata,
         })
     }
 
     /// Deploy contract
-    pub fn deploy(&mut self, input: &str) -> Result<()> {
-        self.sandbox.borrow_mut().input = Some(util::step_hex(input)?);
+    pub fn deploy(&mut self, method: &str, args: &[&str]) -> Result<()> {
+        let constructors = self.metadata.constructors();
+        let (selector, tys) = constructors.get(method).ok_or(Error::GetMethodFailed {
+            name: method.to_string(),
+        })?;
+
+        self.sandbox.borrow_mut().input = Some(util::parse_args(selector, args, tys.to_vec())?);
         self.instance
             .invoke_export("deploy", &[], &mut self.resolver)
             .map_err(|_| Error::DeployContractFailed)?;
@@ -70,8 +75,13 @@ impl Runtime {
     }
 
     /// Call contract
-    pub fn call(&mut self, input: &str) -> Result<()> {
-        self.sandbox.borrow_mut().input = Some(util::step_hex(input)?);
+    pub fn call(&mut self, method: &str, args: &[&str]) -> Result<()> {
+        let constructors = self.metadata.constructors();
+        let (selector, tys) = constructors.get(method).ok_or(Error::GetMethodFailed {
+            name: method.to_string(),
+        })?;
+
+        self.sandbox.borrow_mut().input = Some(util::parse_args(selector, args, tys.to_vec())?);
         self.instance
             .invoke_export("call", &[], &mut self.resolver)
             .map_err(|_| Error::DeployContractFailed)?;

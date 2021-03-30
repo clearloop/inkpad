@@ -5,6 +5,29 @@ use wasmi::memory_units::Pages;
 
 const IMPORT_MODULE_MEMORY: &str = "env";
 
+/// Parse `Vec<String>` to `Vec<RuntimeValue>`
+pub fn parse_args(selector: &str, args: &[&str], tys: Vec<u8>) -> Result<Vec<u8>> {
+    if args.len() != tys.len() {
+        return Err(Error::InvalidArgumentLength);
+    }
+
+    let mut res = hex::decode(&selector[2..])
+        .map_err(|_| Error::DecodeSelectorFailed)?
+        .to_vec();
+    for i in 0..args.len() {
+        match args[i] {
+            "true" => res.push(1),
+            "false" => res.push(0),
+            hex if hex.starts_with("0x") => {
+                res.append(&mut hex::decode(&hex[2..]).map_err(|_| Error::ParseArgumentFailed)?)
+            }
+            patt => res.append(&mut hex::decode(&patt).map_err(|_| Error::ParseArgumentFailed)?),
+        }
+    }
+
+    Ok(res)
+}
+
 /// Trim 0x prefix
 pub fn step_hex(h: &str) -> Result<Vec<u8>> {
     if h.starts_with("0x") {

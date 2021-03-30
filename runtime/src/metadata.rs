@@ -1,5 +1,5 @@
 //! Decoder of *.contract
-use alloc::{string::String, vec::Vec};
+use alloc::{collections::BTreeMap, string::String, vec::Vec};
 use serde::Deserialize;
 
 /// A struct for operating *.contract
@@ -12,8 +12,9 @@ pub struct Metadata {
 
 impl Metadata {
     /// Get all messages
-    pub fn messages(&self) -> Vec<(String, String)> {
-        self.spec
+    pub fn messages(&self) -> BTreeMap<String, (String, Vec<u8>)> {
+        let methods: Vec<(String, String, Vec<u8>)> = self
+            .spec
             .messages
             .iter()
             .map(|c| {
@@ -24,14 +25,22 @@ impl Metadata {
                         "".into()
                     },
                     c.selector.clone(),
+                    c.args.iter().map(|a| a.r#type.r#type).collect(),
                 )
             })
-            .collect()
+            .collect();
+
+        let mut map = BTreeMap::new();
+        for v in methods {
+            map.insert(v.0.clone(), (v.1.clone(), v.2));
+        }
+        map
     }
 
     /// Get all constructors
-    pub fn constructors(&self) -> Vec<(String, String)> {
-        self.spec
+    pub fn constructors(&self) -> BTreeMap<String, (String, Vec<u8>)> {
+        let methods: Vec<(String, String, Vec<u8>)> = self
+            .spec
             .constructors
             .iter()
             .map(|c| {
@@ -42,9 +51,16 @@ impl Metadata {
                         "".into()
                     },
                     c.selector.clone(),
+                    c.args.iter().map(|a| a.r#type.r#type).collect(),
                 )
             })
-            .collect()
+            .collect();
+
+        let mut map = BTreeMap::new();
+        for v in methods {
+            map.insert(v.0.clone(), (v.1.clone(), v.2));
+        }
+        map
     }
 }
 
@@ -93,6 +109,8 @@ pub struct Message {
     // # NOTE
     //
     // For deserializing this field, implement `Deserialize` trait for this.
+    //
+    // - - - - - - - - -
     //
     // pub return_type: Type,
     pub selector: String,
