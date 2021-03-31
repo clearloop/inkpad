@@ -30,9 +30,10 @@ impl Runtime {
     pub fn new(b: &[u8], metadata: Metadata) -> Result<Runtime> {
         let mut el = ModuleElement::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
-            el = el
-                .parse_names()
-                .map_err(|_| Error::ParseWasmNameSectionFailed)?;
+            el = match el.parse_names() {
+                Ok(m) => m,
+                Err((_, m)) => m,
+            }
         }
 
         // Set memory
@@ -76,15 +77,17 @@ impl Runtime {
 
     /// Call contract
     pub fn call(&mut self, method: &str, args: &[&str]) -> Result<()> {
-        let constructors = self.metadata.constructors();
-        let (selector, tys) = constructors.get(method).ok_or(Error::GetMethodFailed {
+        let messages = self.metadata.messages();
+        let (selector, tys) = messages.get(method).ok_or(Error::GetMethodFailed {
             name: method.to_string(),
         })?;
 
         self.sandbox.borrow_mut().input = Some(util::parse_args(selector, args, tys.to_vec())?);
         self.instance
             .invoke_export("call", &[], &mut self.resolver)
-            .map_err(|_| Error::DeployContractFailed)?;
+            .map_err(|e| Error::CallContractFailed {
+                error: format!("{:?}", e),
+            })?;
 
         Ok(())
     }

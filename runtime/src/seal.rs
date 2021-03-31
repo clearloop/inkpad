@@ -4,7 +4,6 @@
 use crate::{Error, Result, Sandbox, StorageKey};
 use alloc::rc::Rc;
 use core::cell::RefCell;
-use parity_scale_codec::Encode;
 use wasmi::{RuntimeArgs, RuntimeValue};
 
 /// Custom return code for wasm functions
@@ -54,13 +53,10 @@ pub fn seal_get_storage(
     ];
 
     let mut key: StorageKey = [0; 32];
-    sandbox
-        .borrow_mut()
-        .read_sandbox_memory_into_buf(key_ptr, &mut key)?;
-    if let Some(value) = sandbox.borrow().get_storage(&key)? {
-        sandbox
-            .borrow_mut()
-            .write_sandbox_output(out_ptr, out_len_ptr, &value)?;
+    let mut bm = sandbox.borrow_mut();
+    bm.read_sandbox_memory_into_buf(key_ptr, &mut key)?;
+    if let Some(value) = bm.get_storage(&key)? {
+        bm.write_sandbox_output(out_ptr, out_len_ptr, &value)?;
         Ok(Some(RuntimeValue::I32(ReturnCode::Success as i32)))
     } else {
         Ok(Some(RuntimeValue::I32(ReturnCode::KeyNotFound as i32)))
@@ -120,6 +116,11 @@ pub fn seal_input(
 /// *TODO*: replace `1337` with a dynamic value
 ///
 /// seal_value_transferred
+///
+/// Stores the value transferred along with this call or as endowment into
+/// the supplied buffer.
+///
+/// AtLeat32Bits
 pub fn seal_value_transferred(
     sandbox: Rc<RefCell<Sandbox>>,
     args: RuntimeArgs,
@@ -135,7 +136,7 @@ pub fn seal_value_transferred(
 
     sandbox
         .borrow_mut()
-        .write_sandbox_output(out_ptr, out_len_ptr, &1337.encode())?;
+        .write_sandbox_output(out_ptr, out_len_ptr, &[0x00; 32])?;
     Ok(None)
 }
 

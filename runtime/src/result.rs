@@ -20,7 +20,8 @@ pub enum Error {
     /// Failed to parse wasm module
     ParseWasmModuleFailed,
     /// Failed to parse name section
-    ParseWasmNameSectionFailed,
+    #[snafu(display("Failed to parse name section {}", error))]
+    ParseNameSectionFailed { error: String },
     /// Failed to calcuate memory limit
     CalcuateMemoryLimitFailed,
     /// Failed to alloc memory
@@ -29,8 +30,8 @@ pub enum Error {
     InitModuleFailed,
     /// Deploy contract failed
     DeployContractFailed,
-    /// Call contract failed
-    CallContractFailed,
+    #[snafu(display("Call contract failed {}", error))]
+    CallContractFailed { error: String },
     /// Decode selector failed
     DecodeSelectorFailed,
     /// Decode contract failed
