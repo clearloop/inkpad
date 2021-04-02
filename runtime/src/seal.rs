@@ -159,8 +159,12 @@ pub fn seal_return(
             .ok_or(Error::DecodeRuntimeValueFailed)?,
     ];
 
-    Err(Error::ReturnData {
-        flags,
-        data: sandbox.borrow().read_sandbox_memory(data_ptr, data_len)?,
-    })
+    let mut bm = sandbox.borrow_mut();
+    let data = bm.read_sandbox_memory(data_ptr, data_len)?;
+    if flags == 0 {
+        bm.ret = Some(data.clone());
+    }
+
+    drop(bm);
+    Err(Error::ReturnData { flags, data })
 }

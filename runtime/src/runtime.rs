@@ -76,19 +76,22 @@ impl Runtime {
     }
 
     /// Call contract
-    pub fn call(&mut self, method: &str, args: &[&str]) -> Result<()> {
+    pub fn call(&mut self, method: &str, args: &[&str]) -> Result<Vec<u8>> {
         let messages = self.metadata.messages();
         let (selector, tys) = messages.get(method).ok_or(Error::GetMethodFailed {
             name: method.to_string(),
         })?;
 
         self.sandbox.borrow_mut().input = Some(util::parse_args(selector, args, tys.to_vec())?);
-        self.instance
-            .invoke_export("call", &[], &mut self.resolver)
-            .map_err(|e| Error::CallContractFailed {
+        let res = self.instance.invoke_export("call", &[], &mut self.resolver);
+        if let Some(ret) = self.sandbox.borrow_mut().ret.take() {
+            return Ok(ret);
+        } else {
+            res.map_err(|e| Error::CallContractFailed {
                 error: format!("{:?}", e),
             })?;
+        }
 
-        Ok(())
+        Ok(vec![])
     }
 }

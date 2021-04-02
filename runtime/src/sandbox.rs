@@ -9,6 +9,7 @@ use wasmi::MemoryRef;
 pub struct Sandbox {
     /// input data
     pub input: Option<Vec<u8>>,
+    pub ret: Option<Vec<u8>>,
     store: HashMap<StorageKey, Vec<u8>>,
     memory: MemoryRef,
 }
@@ -18,6 +19,7 @@ impl Sandbox {
     pub fn new(memory: MemoryRef) -> Sandbox {
         Sandbox {
             input: None,
+            ret: None,
             store: HashMap::new(),
             memory,
         }
