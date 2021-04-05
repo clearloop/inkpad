@@ -8,6 +8,7 @@ mod result;
 mod runtime;
 mod sandbox;
 mod seal;
+mod storage;
 mod util;
 
 type StorageKey = [u8; 32];
@@ -18,4 +19,5 @@ pub use self::{
     result::{Error, Result},
     runtime::Runtime,
     sandbox::Sandbox,
+    storage::Storage,
 };

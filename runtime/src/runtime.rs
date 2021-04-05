@@ -1,5 +1,5 @@
 //! Ceres Runtime
-use crate::{util, Error, Metadata, Resolver, Result, Sandbox};
+use crate::{storage::Memory, util, Error, Metadata, Resolver, Result, Sandbox, Storage};
 use alloc::rc::Rc;
 use core::cell::RefCell;
 use parity_wasm::elements::Module as ModuleElement;
@@ -23,11 +23,12 @@ impl Runtime {
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
+            Memory::new(),
         )?)
     }
 
     /// New runtime
-    pub fn new(b: &[u8], metadata: Metadata) -> Result<Runtime> {
+    pub fn new(b: &[u8], metadata: Metadata, storage: impl Storage) -> Result<Runtime> {
         let mut el = ModuleElement::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
             el = match el.parse_names() {
@@ -40,8 +41,16 @@ impl Runtime {
         let limit = util::scan_imports(&el).map_err(|_| Error::CalcuateMemoryLimitFailed)?;
         let mem = MemoryInstance::alloc(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
 
+        // get storage
+        let state = if let Some(state) = storage.get(util::parse_code_hash(&metadata.source.hash)?)
+        {
+            state.clone()
+        } else {
+            storage.new_state()
+        };
+
         // Create Sandbox and resolver
-        let sandbox = Rc::new(RefCell::new(Sandbox::new(mem)));
+        let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state)));
         let resolver = Resolver::new(sandbox.clone());
 
         // Create instance

@@ -10,17 +10,17 @@ pub struct Sandbox {
     /// input data
     pub input: Option<Vec<u8>>,
     pub ret: Option<Vec<u8>>,
-    store: HashMap<StorageKey, Vec<u8>>,
+    state: HashMap<StorageKey, Vec<u8>>,
     memory: MemoryRef,
 }
 
 impl Sandbox {
     /// New sandbox
-    pub fn new(memory: MemoryRef) -> Sandbox {
+    pub fn new(memory: MemoryRef, state: HashMap<StorageKey, Vec<u8>>) -> Sandbox {
         Sandbox {
             input: None,
             ret: None,
-            store: HashMap::new(),
+            state,
             memory,
         }
     }
@@ -32,12 +32,12 @@ impl Sandbox {
 
     /// Get storage
     pub fn get_storage(&self, key: &StorageKey) -> Result<Option<Vec<u8>>> {
-        Ok(self.store.get(key).map(|v| v.clone()))
+        Ok(self.state.get(key).map(|v| v.clone()))
     }
 
     /// Get storage
     pub fn set_storage(&mut self, key: &StorageKey, value: Vec<u8>) -> Result<()> {
-        self.store.insert(*key, value);
+        self.state.insert(*key, value);
         Ok(())
     }
 

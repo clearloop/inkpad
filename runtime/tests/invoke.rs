@@ -9,7 +9,11 @@ fn test_flipper() {
         .expect("Create runtime failed");
 
     rt.deploy("default", &[]).expect("Deploy failed");
+    assert_eq!(&rt.call("get", &[]).expect("Call contract failed"), &[0]);
+
     rt.deploy("new", &["true"]).expect("Deploy failed");
+    assert_eq!(&rt.call("get", &[]).expect("Call contract failed"), &[1]);
+
     rt.call("flip", &[]).expect("Call contract failed");
-    rt.call("get", &[]).expect("Call contract failed");
+    assert_eq!(&rt.call("get", &[]).expect("Call contract failed"), &[0]);
 }

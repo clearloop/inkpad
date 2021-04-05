@@ -35,7 +35,7 @@ pub enum ReturnCode {
     NotCallable = 8,
 }
 
-/// seal_get_storage
+/// Retrieve the value under the given key from storage.
 pub fn seal_get_storage(
     sandbox: Rc<RefCell<Sandbox>>,
     args: RuntimeArgs,
@@ -63,7 +63,10 @@ pub fn seal_get_storage(
     }
 }
 
-/// seal_set_storage
+/// Set the value at the given key in the contract storage.
+///
+/// The value length must not exceed the maximum defined by the contracts module parameters.
+/// Storing an empty value is disallowed.
 pub fn seal_set_storage(
     sandbox: Rc<RefCell<Sandbox>>,
     args: RuntimeArgs,
@@ -104,9 +107,9 @@ pub fn seal_input(
             .ok_or(Error::DecodeRuntimeValueFailed)?,
     ];
 
-    let mut b = sandbox.borrow_mut();
-    if let Some(input) = b.input.take() {
-        b.write_sandbox_output(out_ptr, out_len_ptr, &input)?;
+    let mut bm = sandbox.borrow_mut();
+    if let Some(input) = bm.input.take() {
+        bm.write_sandbox_output(out_ptr, out_len_ptr, &input)?;
         Ok(None)
     } else {
         Err(Error::OutOfBounds)
@@ -140,9 +143,13 @@ pub fn seal_value_transferred(
     Ok(None)
 }
 
-/// *FIX_ME*
+/// Cease contract execution and save a data buffer as a result of the execution.
 ///
-/// seal_return
+/// This function never returns as it stops execution of the caller.
+/// This is the only way to return a data buffer to the caller. Returning from
+/// execution without calling this function is equivalent to calling:
+///
+/// The flags argument is a bitfield that can be used to signal special return
 pub fn seal_return(
     sandbox: Rc<RefCell<Sandbox>>,
     args: RuntimeArgs,

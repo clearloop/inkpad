@@ -38,6 +38,18 @@ pub fn step_hex(h: &str) -> Result<Vec<u8>> {
     .map_err(|_| Error::DecodeSelectorFailed)
 }
 
+/// Parse code hash from string
+pub fn parse_code_hash(h: &str) -> Result<[u8; 32]> {
+    let hash = step_hex(h)?;
+    let mut res = [0; 32];
+    if hash.len() != 32 {
+        Err(Error::InvalidCodeHash)
+    } else {
+        res.copy_from_slice(&hash);
+        Ok(res)
+    }
+}
+
 /// Scan an import section if any.
 ///
 /// This accomplishes two tasks:

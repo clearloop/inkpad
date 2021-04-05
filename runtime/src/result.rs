@@ -42,6 +42,12 @@ pub enum Error {
     ParseArgumentFailed,
     #[snafu(display("Could not find method {}", name))]
     GetMethodFailed { name: String },
+    /// Could not set Storage
+    CouldNotSetStorage,
+    /// Get Storage failed
+    GetStorageFailed,
+    /// Invalid code hash
+    InvalidCodeHash,
 }
 
 impl HostError for Error {}
