@@ -1,5 +1,6 @@
 //! The runtime of ink! machine
-use crate::{dep::Vec, Error, Result, StorageKey};
+use crate::{Error, Result, StorageKey};
+use ceres_std::Vec;
 use hashbrown::HashMap;
 use parity_scale_codec::{Decode, DecodeAll, Encode};
 use wasmi::MemoryRef;

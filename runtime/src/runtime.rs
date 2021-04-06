@@ -1,9 +1,6 @@
 //! Ceres Runtime
-use crate::{
-    dep::{Rc, String, ToString, Vec},
-    storage::Memory,
-    util, Error, Metadata, Resolver, Result, Sandbox, Storage,
-};
+use crate::{storage::Memory, util, Error, Metadata, Resolver, Result, Sandbox, Storage};
+use ceres_std::{Rc, String, ToString, Vec};
 use core::cell::RefCell;
 use parity_wasm::elements::Module as ModuleElement;
 use wasmi::{MemoryInstance, Module, ModuleInstance, ModuleRef};

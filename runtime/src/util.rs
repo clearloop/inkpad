@@ -1,5 +1,6 @@
 //! Memory generator
-use crate::{dep::Vec, Error, Result};
+use crate::{Error, Result};
+use ceres_std::Vec;
 use parity_wasm::elements::{External, Module};
 use wasmi::memory_units::Pages;
 

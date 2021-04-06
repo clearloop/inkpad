@@ -1,7 +1,5 @@
-use crate::{
-    dep::{Box, Rc},
-    seal, Sandbox,
-};
+use crate::{seal, Sandbox};
+use ceres_std::{Box, Rc};
 use core::cell::RefCell;
 use wasmi::{
     Error, Externals, FuncInstance, FuncRef, GlobalDescriptor, GlobalRef, ImportResolver,

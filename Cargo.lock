@@ -51,6 +51,7 @@ version = "0.1.0"
 name = "ceres-runtime"
 version = "0.1.0"
 dependencies = [
+ "ceres-std",
  "hashbrown",
  "hex",
  "parity-scale-codec",

@@ -1,5 +1,5 @@
 //! Custom result
-use crate::dep::{String, Vec};
+use ceres_std::{String, Vec};
 use snafu::Snafu;
 use wasmi::HostError;
 

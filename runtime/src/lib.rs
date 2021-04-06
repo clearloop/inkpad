@@ -5,7 +5,6 @@
 #[macro_use]
 extern crate alloc;
 
-mod dep;
 mod metadata;
 mod resolver;
 mod result;
