@@ -6,10 +6,13 @@ mod memory;
 mod result;
 mod trap;
 mod value;
-mod wasmi;
-mod wasmtime;
 
 pub mod derive;
+
+#[cfg(not(feature = "std"))]
+mod wasmi;
+#[cfg(feature = "std")]
+mod wasmtime;
 
 // #[cfg(not(feature = "std"))]
 

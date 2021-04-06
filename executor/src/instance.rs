@@ -14,4 +14,7 @@ pub trait Instance<T>: Sized {
 
     /// invoke an exported function
     fn invoke(&mut self, name: &str, args: &[Value], state: &mut T) -> Result<ReturnValue>;
+
+    /// Get global value
+    fn get_global_val(&self, name: &str) -> Option<Value>;
 }

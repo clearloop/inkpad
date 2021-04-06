@@ -58,4 +58,14 @@ impl<T> derive::Instance<T> for Instance<T> {
             }),
         }
     }
+
+    fn get_global_val(&self, name: &str) -> Option<Value> {
+        Some(
+            self.instance
+                .export_by_name(name)?
+                .as_global()?
+                .get()
+                .into(),
+        )
+    }
 }
