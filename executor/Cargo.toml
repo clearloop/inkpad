@@ -8,6 +8,12 @@ edition = "2018"
 wasmi = { git = "https://github.com/patractlabs/wasmi.git", branch = "v0.7.0", optional = true }
 wasmtime = { version = "0.26.0", optional = true }
 
+# ceres dependencies
+ceres-std = { path = "../std" }
+
 [features]
 default = [ "wasmi" ]
-std = [ "wasmtime" ]
+std = [
+    "ceres-std/std" ,
+    "wasmtime",
+]
