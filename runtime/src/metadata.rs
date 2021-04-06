@@ -1,5 +1,5 @@
 //! Decoder of *.contract
-use alloc::{collections::BTreeMap, string::String, vec::Vec};
+use crate::dep::{BTreeMap, String, Vec};
 use serde::Deserialize;
 
 /// A struct for operating *.contract

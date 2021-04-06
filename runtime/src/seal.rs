@@ -1,8 +1,7 @@
 //! Seal functions
 //!
 //! Update the argument implementation with proc-mc
-use crate::{Error, Result, Sandbox, StorageKey};
-use alloc::rc::Rc;
+use crate::{dep::Rc, Error, Result, Sandbox, StorageKey};
 use core::cell::RefCell;
 use wasmi::{RuntimeArgs, RuntimeValue};
 

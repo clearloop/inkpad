@@ -1,5 +1,5 @@
 //! Custom result
-use alloc::vec::Vec;
+use crate::dep::{String, Vec};
 use snafu::Snafu;
 use wasmi::HostError;
 

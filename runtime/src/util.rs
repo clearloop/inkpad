@@ -1,5 +1,5 @@
 //! Memory generator
-use crate::{Error, Result};
+use crate::{dep::Vec, Error, Result};
 use parity_wasm::elements::{External, Module};
 use wasmi::memory_units::Pages;
 

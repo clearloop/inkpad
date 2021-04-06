@@ -2,6 +2,9 @@
 use crate::{Error, Result, StorageKey};
 use hashbrown::HashMap;
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 /// Storage interfaces
 pub trait Storage {
     // Set storage by code hash

@@ -1,5 +1,7 @@
-use crate::{seal, Sandbox};
-use alloc::{prelude::v1::Box, rc::Rc};
+use crate::{
+    dep::{Box, Rc},
+    seal, Sandbox,
+};
 use core::cell::RefCell;
 use wasmi::{
     Error, Externals, FuncInstance, FuncRef, GlobalDescriptor, GlobalRef, ImportResolver,
