@@ -1,0 +1,17 @@
+[package]
+name = "ceres-sandbox"
+version = "0.1.0"
+authors = ["clearloop <udtrokia@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+ceres-std = { path = "../std" }
+ceres-executor = { path = "../executor" }
+parity-scale-codec = "2.0.1"
+
+[features]
+default = []
+std = [
+    "ceres-std/std",
+    "ceres-executor/std",
+]

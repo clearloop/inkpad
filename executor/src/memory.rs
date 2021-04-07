@@ -2,7 +2,7 @@
 use crate::Result;
 
 /// Ceres wasm executor memory
-pub trait Memory: Sized {
+pub trait Memory: Sized + Clone {
     /// Construct a new linear memory instance
     fn new(initial: u32, maximum: Option<u32>) -> Result<Self>;
 

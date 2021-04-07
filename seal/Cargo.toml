@@ -1,0 +1,18 @@
+[package]
+name = "ceres-seal"
+version = "0.1.0"
+authors = ["clearloop <udtrokia@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+ceres-std = { path = "../std" }
+ceres-sandbox = { path = "../sandbox" }
+ceres-executor = { path = "../executor" }
+
+[features]
+default = []
+std = [
+    "ceres-std/std",
+    "ceres-sandbox/std",
+    "ceres-executor/std",
+]

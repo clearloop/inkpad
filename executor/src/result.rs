@@ -5,7 +5,7 @@ use crate::trap::Trap;
 #[derive(Debug)]
 pub enum Error {
     InitMemoryFailed,
-    MemoryOutOfBonds,
+    OutOfBounds,
     InitModuleFailed,
     ExecuteFailed,
     Trap(Trap),

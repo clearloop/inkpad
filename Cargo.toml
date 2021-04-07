@@ -5,6 +5,8 @@ parity-wasm = { git = "https://github.com/patractlabs/parity-wasm", branch = "v0
 members = [
   "executor",
   "runtime",
+  "sandbox",
+  "seal",
   "std",
 ]
 

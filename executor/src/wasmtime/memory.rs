@@ -84,7 +84,7 @@ impl derive::Memory for Memory {
         // we give up the reference before returning from this function.
         let memory = unsafe { self.memory_as_slice() };
         let range = checked_range(ptr as usize, buf.len(), memory.len())
-            .ok_or_else(|| Error::MemoryOutOfBonds)?;
+            .ok_or_else(|| Error::OutOfBounds)?;
         buf.copy_from_slice(&memory[range]);
         Ok(())
     }
@@ -92,7 +92,7 @@ impl derive::Memory for Memory {
     fn set(&self, ptr: u32, buf: &[u8]) -> Result<(), Error> {
         let memory = unsafe { self.memory_as_slice_mut() };
         let range = checked_range(ptr as usize, buf.len(), memory.len())
-            .ok_or_else(|| Error::MemoryOutOfBonds)?;
+            .ok_or_else(|| Error::OutOfBounds)?;
         &mut memory[range].copy_from_slice(buf);
         Ok(())
     }

@@ -169,6 +169,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "ceres-sandbox"
+version = "0.1.0"
+dependencies = [
+ "ceres-executor",
+ "ceres-std",
+ "parity-scale-codec",
+]
+
+[[package]]
+name = "ceres-seal"
+version = "0.1.0"
+dependencies = [
+ "ceres-executor",
+ "ceres-sandbox",
+ "ceres-std",
+]
+
+[[package]]
 name = "ceres-std"
 version = "0.1.0"
 

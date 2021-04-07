@@ -3,6 +3,7 @@ use crate::{derive, Error, Result};
 use wasmi::{memory_units::Pages, MemoryInstance, MemoryRef};
 
 /// WASMi memory implementation
+#[derive(Clone)]
 pub struct Memory(pub MemoryRef);
 
 impl derive::Memory for Memory {
@@ -14,16 +15,12 @@ impl derive::Memory for Memory {
     }
 
     fn get(&self, ptr: u32, buf: &mut [u8]) -> Result<()> {
-        self.0
-            .get_into(ptr, buf)
-            .map_err(|_| Error::MemoryOutOfBonds)?;
+        self.0.get_into(ptr, buf).map_err(|_| Error::OutOfBounds)?;
         Ok(())
     }
 
     fn set(&self, ptr: u32, value: &[u8]) -> Result<()> {
-        self.0
-            .set(ptr, value)
-            .map_err(|_| Error::MemoryOutOfBonds)?;
+        self.0.set(ptr, value).map_err(|_| Error::OutOfBounds)?;
         Ok(())
     }
 }

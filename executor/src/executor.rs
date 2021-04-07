@@ -17,6 +17,7 @@ use crate::wasmi as e;
 use crate::wasmtime as e;
 
 /// WASM executor liner memory
+#[derive(Clone)]
 pub struct Memory(e::Memory);
 
 impl Memory {
