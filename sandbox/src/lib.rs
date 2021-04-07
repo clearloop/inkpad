@@ -1,12 +1,14 @@
+#![cfg_attr(not(feature = "std"), no_std)]
 use ceres_executor::Memory;
 use ceres_std::{BTreeMap, Vec};
 use parity_scale_codec::{Decode, DecodeAll, Encode};
 
 mod result;
 
-use result::{Error, Result};
+pub use result::{Error, Result};
 
-type StorageKey = [u8; 32];
+/// Custom storage key
+pub type StorageKey = [u8; 32];
 
 /// The runtime of ink! machine
 pub struct Sandbox {

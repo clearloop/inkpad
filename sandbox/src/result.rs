@@ -1,6 +1,7 @@
 //! Ceres Sandbox Result
 
 /// Ceres sandbox error
+#[derive(Debug)]
 pub enum Error {
     DecodeRuntimeValueFailed,
     OutputBufferTooSmall,

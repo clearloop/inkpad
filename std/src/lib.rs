@@ -7,7 +7,7 @@ mod std;
 pub use self::std::*;
 
 #[cfg(not(feature = "std"))]
-extern crate alloc;
+pub extern crate alloc;
 
 #[cfg(not(feature = "std"))]
 pub use self::no_std::*;

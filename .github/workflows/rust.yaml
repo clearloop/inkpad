@@ -30,6 +30,6 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*/Cargo.lock') }}
       - name: Build
         run: |
-          cargo build --all -vv
+          cargo build --all --all-features -vv
       - name: Test
-        run: cargo test --all -vv
+        run: cargo test --all --all-features -vv
