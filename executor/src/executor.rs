@@ -10,6 +10,7 @@ use crate::{
     Result,
 };
 use ceres_std::Vec;
+use core::ops;
 
 #[cfg(not(feature = "std"))]
 use crate::wasmi as e;
@@ -18,7 +19,15 @@ use crate::wasmtime as e;
 
 /// WASM executor liner memory
 #[derive(Clone)]
-pub struct Memory(e::Memory);
+pub struct Memory(pub e::Memory);
+
+impl ops::Deref for Memory {
+    type Target = e::Memory;
+
+    fn deref(&self) -> &e::Memory {
+        &self.0
+    }
+}
 
 impl Memory {
     /// New liner memory
@@ -40,6 +49,14 @@ impl Memory {
 /// Ceres environment builder
 pub struct Builder<T>(e::Builder<T>);
 
+impl<T> ops::Deref for Builder<T> {
+    type Target = e::Builder<T>;
+
+    fn deref(&self) -> &e::Builder<T> {
+        &self.0
+    }
+}
+
 impl<T> Builder<T> {
     /// New env builder
     pub fn new() -> Self {
@@ -56,12 +73,12 @@ impl<T> Builder<T> {
     }
 
     /// Register a memory in this environment definition.
-    pub fn add_memory<M, F>(&mut self, module: M, field: F, mem: e::Memory)
+    pub fn add_memory<M, F>(&mut self, module: M, field: F, mem: Memory)
     where
         M: Into<Vec<u8>>,
         F: Into<Vec<u8>>,
     {
-        derive::Builder::add_memory(&mut self.0, module, field, mem);
+        derive::Builder::add_memory(&mut self.0, module, field, mem.0);
     }
 }
 
@@ -70,9 +87,9 @@ pub struct Instance<T>(e::Instance<T>);
 
 impl<T> Instance<T> {
     /// Instantiate a module with the given env builder
-    pub fn new(code: &[u8], builder: &e::Builder<T>, state: &mut T) -> Result<Self> {
+    pub fn new(code: &[u8], builder: &Builder<T>, state: &mut T) -> Result<Self> {
         Ok(Instance(<e::Instance<T> as derive::Instance<T>>::new(
-            code, builder, state,
+            code, &builder, state,
         )?))
     }
 

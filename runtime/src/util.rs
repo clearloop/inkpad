@@ -2,7 +2,6 @@
 use crate::{Error, Result};
 use ceres_std::Vec;
 use parity_wasm::elements::{External, Module};
-use wasmi::memory_units::Pages;
 
 const IMPORT_MODULE_MEMORY: &str = "env";
 
@@ -59,9 +58,7 @@ pub fn parse_code_hash(h: &str) -> Result<[u8; 32]> {
 ///   their signatures.
 /// - if there is a memory import, returns it's descriptor
 /// `import_fn_banlist`: list of function names that are disallowed to be imported
-pub fn scan_imports<'m>(
-    module: &Module,
-) -> core::result::Result<(Pages, Option<Pages>), &'static str> {
+pub fn scan_imports<'m>(module: &Module) -> core::result::Result<(u32, Option<u32>), &'static str> {
     let import_entries = module
         .import_section()
         .map(|is| is.entries())
@@ -85,10 +82,7 @@ pub fn scan_imports<'m>(
                 }
 
                 let limits = memory_type.limits();
-                range = Some((
-                    Pages(limits.initial() as usize),
-                    limits.maximum().map(|v| Pages(v as usize)),
-                ));
+                range = Some((limits.initial() as u32, limits.maximum().map(|v| v as u32)));
                 continue;
             }
         };
@@ -97,6 +91,6 @@ pub fn scan_imports<'m>(
     if let Some(limit) = range {
         Ok(limit)
     } else {
-        Ok((Pages(0 as usize), None))
+        Ok((0, None))
     }
 }

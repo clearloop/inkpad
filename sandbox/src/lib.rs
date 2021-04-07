@@ -1,11 +1,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
-use ceres_executor::Memory;
-use ceres_std::{BTreeMap, Vec};
+use ceres_executor::{Error, Memory, Result};
+use ceres_std::{vec, BTreeMap, Vec};
 use parity_scale_codec::{Decode, DecodeAll, Encode};
-
-mod result;
-
-pub use result::{Error, Result};
 
 /// Custom storage key
 pub type StorageKey = [u8; 32];
@@ -20,6 +16,16 @@ pub struct Sandbox {
 }
 
 impl Sandbox {
+    /// New sandbox
+    pub fn new(memory: Memory, state: BTreeMap<StorageKey, Vec<u8>>) -> Sandbox {
+        Sandbox {
+            input: None,
+            ret: None,
+            state,
+            memory,
+        }
+    }
+
     /// Get memory ref
     pub fn mem(&self) -> Memory {
         self.memory.clone()
@@ -40,7 +46,7 @@ impl Sandbox {
     pub fn read_sandbox_memory(&self, ptr: u32, len: u32) -> Result<Vec<u8>> {
         let mut buf = vec![0u8; len as usize];
         self.read_sandbox_memory_into_buf(ptr, &mut buf)?;
-        Ok(buf)
+        Ok(buf.to_vec())
     }
 
     /// Read designated chunk from the sandbox into the supplied buffer

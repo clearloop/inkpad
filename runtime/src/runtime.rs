@@ -1,15 +1,15 @@
-//! Ceres Runtime
-use crate::{storage::Memory, util, Error, Metadata, Resolver, Result, Sandbox, Storage};
+//! Ceres Runtimep
+use crate::{storage::MemoryStorage, util, Error, Metadata, Result, Storage};
+use ceres_executor::{Builder, Instance, Memory};
+use ceres_sandbox::Sandbox;
 use ceres_std::{Rc, String, ToString, Vec};
 use core::cell::RefCell;
-use parity_wasm::elements::Module as ModuleElement;
-use wasmi::{MemoryInstance, Module, ModuleInstance, ModuleRef};
+use parity_wasm::elements::Module;
 
 /// Ceres Runtime
 pub struct Runtime {
-    instance: ModuleRef,
-    resolver: Resolver,
     sandbox: Rc<RefCell<Sandbox>>,
+    instance: Instance<Sandbox>,
     metadata: Metadata,
 }
 
@@ -23,13 +23,13 @@ impl Runtime {
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
-            Memory::new(),
+            MemoryStorage::new(),
         )?)
     }
 
     /// New runtime
     pub fn new(b: &[u8], metadata: Metadata, storage: impl Storage) -> Result<Runtime> {
-        let mut el = ModuleElement::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
+        let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
             el = match el.parse_names() {
                 Ok(m) => m,
@@ -39,7 +39,7 @@ impl Runtime {
 
         // Set memory
         let limit = util::scan_imports(&el).map_err(|_| Error::CalcuateMemoryLimitFailed)?;
-        let mem = MemoryInstance::alloc(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
+        let mem = Memory::new(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
 
         // get storage
         let state = if let Some(state) = storage.get(util::parse_code_hash(&metadata.source.hash)?)
@@ -49,23 +49,36 @@ impl Runtime {
             storage.new_state()
         };
 
-        // Create Sandbox and resolver
+        // Create Sandbox and Builder
         let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state)));
-        let resolver = Resolver::new(sandbox.clone());
+        let mut builder = Builder::new();
+
+        // **Note**
+        //
+        // The memory is `cloned()`, trying using one memory.
+        builder.add_memory("env", "memory", sandbox.borrow().mem());
+        builder.add_host_func("seal0", "seal_get_storage", ceres_seal::seal_get_storage);
+        builder.add_host_func("seal0", "seal_set_storage", ceres_seal::seal_set_storage);
+        builder.add_host_func("seal0", "seal_input", ceres_seal::seal_input);
+        builder.add_host_func(
+            "seal0",
+            "seal_value_transferred",
+            ceres_seal::seal_value_transferred,
+        );
+        builder.add_host_func("seal0", "seal_return", ceres_seal::seal_return);
 
         // Create instance
-        let instance = ModuleInstance::new(
-            &Module::from_parity_wasm_module(el).map_err(|_| Error::ParseWasmModuleFailed)?,
-            &resolver,
+        let instance = Instance::new(
+            &el.to_bytes().map_err(|_| Error::InitModuleFailed)?,
+            &builder,
+            &mut sandbox.borrow_mut(),
         )
-        .map_err(|_| Error::InitModuleFailed)?
-        .assert_no_start();
+        .map_err(|_| Error::InitModuleFailed)?;
 
         Ok(Runtime {
-            resolver,
             instance,
-            sandbox,
             metadata,
+            sandbox,
         })
     }
 
@@ -76,9 +89,10 @@ impl Runtime {
             name: method.to_string(),
         })?;
 
-        self.sandbox.borrow_mut().input = Some(util::parse_args(selector, args, tys.to_vec())?);
+        let mut bm = self.sandbox.borrow_mut();
+        bm.input = Some(util::parse_args(selector, args, tys.to_vec())?);
         self.instance
-            .invoke_export("deploy", &[], &mut self.resolver)
+            .invoke("deploy", &[], &mut bm)
             .map_err(|_| Error::DeployContractFailed)?;
 
         Ok(())
@@ -92,7 +106,9 @@ impl Runtime {
         })?;
 
         self.sandbox.borrow_mut().input = Some(util::parse_args(selector, args, tys.to_vec())?);
-        let res = self.instance.invoke_export("call", &[], &mut self.resolver);
+        let res = self
+            .instance
+            .invoke("call", &[], &mut self.sandbox.borrow_mut());
         if let Some(ret) = self.sandbox.borrow_mut().ret.take() {
             return Ok(ret);
         } else {
