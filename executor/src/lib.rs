@@ -1,5 +1,6 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 mod builder;
+mod executor;
 mod func;
 mod instance;
 mod memory;
@@ -16,4 +17,7 @@ mod wasmtime;
 
 // #[cfg(not(feature = "std"))]
 
-pub use self::result::{Error, Result};
+pub use self::{
+    executor::*,
+    result::{Error, Result},
+};

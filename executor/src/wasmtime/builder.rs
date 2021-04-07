@@ -1,14 +1,19 @@
 //! Wasmtime Enviroment
 use super::{memory::Memory, util};
-use crate::{derive::HostFuncType, Error};
+use crate::{
+    derive::{self, HostFuncType},
+    Error,
+};
 use ceres_std::BTreeMap;
 use wasmtime::{Extern, ExternType, ImportType, Store};
 
+/// wasmtime external
 pub enum External<T> {
     Memory(Memory),
     Func(HostFuncType<T>),
 }
 
+/// wasmtime builder
 pub struct Builder<T> {
     pub map: BTreeMap<(Vec<u8>, Vec<u8>), External<T>>,
     pub mem: Option<Memory>,
@@ -16,34 +21,7 @@ pub struct Builder<T> {
 }
 
 impl<T> Builder<T> {
-    pub fn new() -> Self {
-        Builder {
-            map: BTreeMap::new(),
-            mem: None,
-            defined_host_functions: Vec::new(),
-        }
-    }
-
-    pub fn add_host_func<N1, N2>(&mut self, module: N1, field: N2, f: HostFuncType<T>)
-    where
-        N1: Into<Vec<u8>>,
-        N2: Into<Vec<u8>>,
-    {
-        self.map
-            .insert((module.into(), field.into()), External::Func(f));
-        self.defined_host_functions.push(f);
-    }
-
-    pub fn add_memory<N1, N2>(&mut self, module: N1, field: N2, mem: Memory)
-    where
-        N1: Into<Vec<u8>>,
-        N2: Into<Vec<u8>>,
-    {
-        self.mem = Some(mem.clone());
-        self.map
-            .insert((module.into(), field.into()), External::Memory(mem));
-    }
-
+    /// Get the current store
     pub fn store(&self) -> Option<&Store> {
         if let Some(memory) = &self.mem {
             Some(memory.store())
@@ -52,6 +30,7 @@ impl<T> Builder<T> {
         }
     }
 
+    /// Resolve extern
     pub fn resolve(
         &self,
         store: &Store,
@@ -89,5 +68,37 @@ impl<T> Builder<T> {
         }
 
         Ok(imports)
+    }
+}
+
+impl<T> derive::Builder<T> for Builder<T> {
+    type Memory = Memory;
+
+    fn new() -> Self {
+        Builder {
+            map: BTreeMap::new(),
+            mem: None,
+            defined_host_functions: Vec::new(),
+        }
+    }
+
+    fn add_host_func<N1, N2>(&mut self, module: N1, field: N2, f: HostFuncType<T>)
+    where
+        N1: Into<Vec<u8>>,
+        N2: Into<Vec<u8>>,
+    {
+        self.map
+            .insert((module.into(), field.into()), External::Func(f));
+        self.defined_host_functions.push(f);
+    }
+
+    fn add_memory<N1, N2>(&mut self, module: N1, field: N2, mem: Memory)
+    where
+        N1: Into<Vec<u8>>,
+        N2: Into<Vec<u8>>,
+    {
+        self.mem = Some(mem.clone());
+        self.map
+            .insert((module.into(), field.into()), External::Memory(mem));
     }
 }

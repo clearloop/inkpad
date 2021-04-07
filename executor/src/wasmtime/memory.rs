@@ -1,6 +1,6 @@
 //! Wasmtime memory
 use super::util;
-use crate::Error;
+use crate::{derive, Error};
 use core::{ops::Range, slice};
 use wasmtime::{Limits, Memory as MemoryRef, MemoryType, Store};
 
@@ -23,35 +23,8 @@ pub struct Memory {
 }
 
 impl Memory {
-    /// New memory with config
-    pub fn new(initial: u32, maximum: Option<u32>) -> Result<Memory, Error> {
-        let store = util::store_with_dwarf()?;
-        Ok(Memory {
-            inner: MemoryRef::new(&store, MemoryType::new(Limits::new(initial, maximum))),
-            store,
-        })
-    }
-
     pub fn store(&self) -> &Store {
         &self.store
-    }
-
-    pub fn get(&self, ptr: u32, buf: &mut [u8]) -> Result<(), Error> {
-        // This should be safe since we don't grow up memory while caching this reference and
-        // we give up the reference before returning from this function.
-        let memory = unsafe { self.memory_as_slice() };
-        let range = checked_range(ptr as usize, buf.len(), memory.len())
-            .ok_or_else(|| Error::MemoryOutOfBonds)?;
-        buf.copy_from_slice(&memory[range]);
-        Ok(())
-    }
-
-    pub fn set(&self, ptr: u32, buf: &[u8]) -> Result<(), Error> {
-        let memory = unsafe { self.memory_as_slice_mut() };
-        let range = checked_range(ptr as usize, buf.len(), memory.len())
-            .ok_or_else(|| Error::MemoryOutOfBonds)?;
-        &mut memory[range].copy_from_slice(buf);
-        Ok(())
     }
 
     /// Returns linear memory of the wasm instance as a slice.
@@ -93,5 +66,34 @@ impl Memory {
     /// Get the inner memory
     pub fn cast(self) -> MemoryRef {
         self.inner
+    }
+}
+
+impl derive::Memory for Memory {
+    /// New memory with config
+    fn new(initial: u32, maximum: Option<u32>) -> Result<Memory, Error> {
+        let store = util::store_with_dwarf()?;
+        Ok(Memory {
+            inner: MemoryRef::new(&store, MemoryType::new(Limits::new(initial, maximum))),
+            store,
+        })
+    }
+
+    fn get(&self, ptr: u32, buf: &mut [u8]) -> Result<(), Error> {
+        // This should be safe since we don't grow up memory while caching this reference and
+        // we give up the reference before returning from this function.
+        let memory = unsafe { self.memory_as_slice() };
+        let range = checked_range(ptr as usize, buf.len(), memory.len())
+            .ok_or_else(|| Error::MemoryOutOfBonds)?;
+        buf.copy_from_slice(&memory[range]);
+        Ok(())
+    }
+
+    fn set(&self, ptr: u32, buf: &[u8]) -> Result<(), Error> {
+        let memory = unsafe { self.memory_as_slice_mut() };
+        let range = checked_range(ptr as usize, buf.len(), memory.len())
+            .ok_or_else(|| Error::MemoryOutOfBonds)?;
+        &mut memory[range].copy_from_slice(buf);
+        Ok(())
     }
 }

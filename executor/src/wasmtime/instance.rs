@@ -1,7 +1,7 @@
 //! Wasmtime Instance
-use super::{builder::EnvironmentDefinitionBuilder, util};
+use super::{builder::Builder, util};
 use crate::{
-    derive::{ReturnValue, Value},
+    derive::{self, ReturnValue, Value},
     Error,
 };
 use wasmtime::{Extern, Global, Instance as InstanceRef, Module, Trap, Val};
@@ -13,17 +13,16 @@ fn extern_global(extern_: &Extern) -> Option<&Global> {
     }
 }
 
+/// wasmtime instance
 pub struct Instance<T> {
     instance: InstanceRef,
     _marker: std::marker::PhantomData<T>,
 }
 
-impl<T> Instance<T> {
-    pub fn new(
-        code: &[u8],
-        env_def_builder: &EnvironmentDefinitionBuilder<T>,
-        state: &mut T,
-    ) -> Result<Instance<T>, Error> {
+impl<T> derive::Instance<T> for Instance<T> {
+    type Builder = Builder<T>;
+
+    fn new(code: &[u8], env_def_builder: &Builder<T>, state: &mut T) -> Result<Instance<T>, Error> {
         let dummy_store = util::store_with_dwarf()?;
         let store = if let Some(store) = env_def_builder.store() {
             store
@@ -43,7 +42,7 @@ impl<T> Instance<T> {
         })
     }
 
-    pub fn invoke(
+    fn invoke(
         &mut self,
         name: &str,
         args: &[Value],
@@ -75,7 +74,7 @@ impl<T> Instance<T> {
         }
     }
 
-    pub fn get_global_val(&self, name: &str) -> Option<Value> {
+    fn get_global_val(&self, name: &str) -> Option<Value> {
         let global = match self.instance.get_export(name) {
             Some(global) => global,
             None => return None,
