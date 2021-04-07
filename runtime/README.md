@@ -1,4 +1,4 @@
-# WASM Runtime
+# Ceres Runtime
 
 The wasm executor of ink! contract
 

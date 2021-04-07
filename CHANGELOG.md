@@ -2,6 +2,8 @@
 
 * add `ceres-executor` - arch for different wasm executor
 * add `ceres-std` - std adapter
+* add `ceres-seal` - custom host functions
+* add `ceres-sandbox` - state for contract execution
 * remove `ceres-proxy`
 * remove `ceres-gui`
 

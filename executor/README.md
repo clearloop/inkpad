@@ -1,7 +1,10 @@
-## Ceres Executor
+# Ceres Executor
 
 This crate binds interfaces for both `wasmtime` and `wasmi`.
 
+## LICENSE
+
+MIT
 
 
 
