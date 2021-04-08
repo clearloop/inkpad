@@ -6,6 +6,7 @@ edition = "2018"
 
 [dependencies]
 ceres-std = { path = "../std" }
+ceres-derive = { path = "../derive" }
 ceres-sandbox = { path = "../sandbox" }
 ceres-executor = { path = "../executor" }
 

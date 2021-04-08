@@ -1,4 +1,5 @@
 #![cfg_attr(not(feature = "std"), no_std)]
+use ceres_derive::host;
 use ceres_executor::{
     derive::{ReturnValue, Value},
     Error, Result,
@@ -7,9 +8,19 @@ use ceres_sandbox::{Sandbox, StorageKey};
 
 mod ret;
 
+/// Host function trait
+pub trait Host {
+    /// Host function module
+    fn module() -> &'static str;
+
+    /// Host function name
+    fn name() -> &'static str;
+}
+
 pub use ret::ReturnCode;
 
 /// Retrieve the value under the given key from storage.
+#[host(seal0)]
 pub fn seal_get_storage(sandbox: &mut Sandbox, args: &[Value]) -> Result<ReturnValue> {
     if args.len() != 3 {
         return Err(Error::WrongArugmentLength);

@@ -3,11 +3,12 @@ parity-wasm = { git = "https://github.com/patractlabs/parity-wasm", branch = "v0
 
 [workspace]
 members = [
-  "executor",
-  "runtime",
-  "sandbox",
-  "seal",
   "std",
+  "seal",
+  "derive",
+  "sandbox",
+  "runtime",
+  "executor",
 ]
 
 # For the testing contracts
