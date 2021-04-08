@@ -1,4 +1,9 @@
-//! Host function return code
+//! Derive types && traits
+use ceres_executor::{
+    derive::{HostParcel, ReturnValue, Value},
+    Result,
+};
+use ceres_sandbox::Sandbox;
 
 /// Custom return code for wasm functions
 #[repr(u32)]
@@ -27,4 +32,25 @@ pub enum ReturnCode {
     /// The contract that was called is either no contract at all (a plain account)
     /// or is a tombstone.
     NotCallable = 8,
+}
+
+/// Host function trait
+pub trait Host: Sized {
+    /// Host function module
+    fn module() -> &'static str;
+
+    /// Host function name
+    fn name() -> &'static str;
+
+    /// Wrap host function
+    fn wrap(sandbox: &mut Sandbox, args: &[Value]) -> Result<ReturnValue>;
+
+    /// Pack instance
+    fn pack() -> HostParcel<&'static str, &'static str, Sandbox> {
+        (
+            <Self as Host>::module(),
+            <Self as Host>::name(),
+            <Self as Host>::wrap,
+        )
+    }
 }

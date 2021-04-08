@@ -6,7 +6,7 @@
 //!
 //! Which have seem methods like the matching trait.
 use crate::{
-    derive::{self, HostFuncType, ReturnValue, Value},
+    derive::{self, HostFuncType, HostParcel, ReturnValue, Value},
     Result,
 };
 use ceres_std::Vec;
@@ -70,6 +70,28 @@ impl<T> Builder<T> {
         M: Into<Vec<u8>>,
     {
         derive::Builder::add_host_func(&mut self.0, module, field, f);
+    }
+
+    /// Shortcut of `add_host_func`
+    pub fn add_host_parcel<M, F>(&mut self, parcel: HostParcel<M, F, T>)
+    where
+        F: Into<Vec<u8>>,
+        M: Into<Vec<u8>>,
+    {
+        self.add_host_func(parcel.0, parcel.1, parcel.2)
+    }
+
+    /// Shortcut of `add_host_func`
+    pub fn add_host_parcels<M, F>(mut self, parcels: Vec<HostParcel<M, F, T>>) -> Self
+    where
+        F: Into<Vec<u8>>,
+        M: Into<Vec<u8>>,
+    {
+        for parcel in parcels {
+            self.add_host_func(parcel.0, parcel.1, parcel.2)
+        }
+
+        self
     }
 
     /// Register a memory in this environment definition.

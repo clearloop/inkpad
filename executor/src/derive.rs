@@ -6,3 +6,6 @@ pub use crate::{
     memory::Memory,
     value::{ReturnValue, Type, Value},
 };
+
+/// Host function parcel
+pub type HostParcel<M, F, T> = (M, F, HostFuncType<T>);

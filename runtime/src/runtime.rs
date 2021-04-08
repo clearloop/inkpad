@@ -51,21 +51,12 @@ impl Runtime {
 
         // Create Sandbox and Builder
         let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state)));
-        let mut builder = Builder::new();
+        let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts());
 
         // **Note**
         //
         // The memory is `cloned()`, trying using one memory.
         builder.add_memory("env", "memory", sandbox.borrow().mem());
-        builder.add_host_func("seal0", "seal_get_storage", ceres_seal::seal_get_storage);
-        builder.add_host_func("seal0", "seal_set_storage", ceres_seal::seal_set_storage);
-        builder.add_host_func("seal0", "seal_input", ceres_seal::seal_input);
-        builder.add_host_func(
-            "seal0",
-            "seal_value_transferred",
-            ceres_seal::seal_value_transferred,
-        );
-        builder.add_host_func("seal0", "seal_return", ceres_seal::seal_return);
 
         // Create instance
         let instance = Instance::new(

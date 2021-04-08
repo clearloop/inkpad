@@ -6,7 +6,7 @@ Procedural macros for ceres
 
 ```rust
 #[host(seal0)]
-fn seal_input(sandbox: &mut Sandbox, out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue>;
+fn seal_input(out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue>;
 ```
 
 ```rust
@@ -30,6 +30,15 @@ impl Host for SealInput {
             let [out_ptr, out_len_ptr] = [args[0].into(), args[1].into()];
             seal_input(sandbox, out_ptr, out_len_ptr)
         }
+    }
+    
+    /// Pack instance
+    fn pack() -> (&'static str, &'static str, HostFuncType<Sandbox>) {
+        (
+            <Self as Host>::module(),
+            <Self as Host>::name(),
+            <Self as Host>::wrap,
+        )
     }
 }
 ```
