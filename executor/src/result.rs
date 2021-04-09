@@ -15,6 +15,7 @@ pub enum Error {
     DecodeRuntimeValueFailed,
     OutputBufferTooSmall,
     WrongArugmentLength,
+    SetStorageFailed,
     ReturnData { flags: u32, data: Vec<u8> },
 }
 

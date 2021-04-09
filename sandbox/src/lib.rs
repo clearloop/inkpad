@@ -1,18 +1,33 @@
 #![cfg_attr(not(feature = "std"), no_std)]
-use ceres_executor::{Error, Memory, Result};
+use ceres_executor::Memory;
 use ceres_std::{vec, BTreeMap, Vec};
-use parity_scale_codec::{Decode, DecodeAll, Encode};
 
 /// Custom storage key
 pub type StorageKey = [u8; 32];
 
+mod chain;
+mod contract;
+mod hash;
+mod instantiate;
+mod memory;
+mod restore;
+mod storage;
+mod termination;
+mod transfer;
+
 /// The runtime of ink! machine
 pub struct Sandbox {
-    /// input data
     pub input: Option<Vec<u8>>,
     pub ret: Option<Vec<u8>>,
+    pub instantiates: Vec<instantiate::InstantiateEntry>,
+    pub restores: Vec<restore::RestoreEntry>,
+    pub rent_allowance: u64,
+    pub terminations: Vec<termination::TerminationEntry>,
+    pub transfers: Vec<transfer::TransferEntry>,
     state: BTreeMap<StorageKey, Vec<u8>>,
     memory: Memory,
+    events: Vec<(Vec<[u8; 32]>, Vec<u8>)>, // schedule: Schedule,
+                                           // rent_params: RentParams
 }
 
 impl Sandbox {
@@ -21,72 +36,14 @@ impl Sandbox {
         Sandbox {
             input: None,
             ret: None,
+            instantiates: vec![],
+            restores: vec![],
+            rent_allowance: 0,
+            terminations: vec![],
+            transfers: vec![],
+            events: vec![],
             state,
             memory,
         }
-    }
-
-    /// Get memory ref
-    pub fn mem(&self) -> Memory {
-        self.memory.clone()
-    }
-
-    /// Get storage
-    pub fn get_storage(&self, key: &StorageKey) -> Result<Option<Vec<u8>>> {
-        Ok(self.state.get(key).map(|v| v.clone()))
-    }
-
-    /// Get storage
-    pub fn set_storage(&mut self, key: &StorageKey, value: Vec<u8>) -> Result<()> {
-        self.state.insert(*key, value);
-        Ok(())
-    }
-
-    /// Read designated chunk from the sandbox memory.
-    pub fn read_sandbox_memory(&self, ptr: u32, len: u32) -> Result<Vec<u8>> {
-        let mut buf = vec![0u8; len as usize];
-        self.read_sandbox_memory_into_buf(ptr, &mut buf)?;
-        Ok(buf.to_vec())
-    }
-
-    /// Read designated chunk from the sandbox into the supplied buffer
-    pub fn read_sandbox_memory_into_buf(&self, ptr: u32, buf: &mut [u8]) -> Result<()> {
-        self.memory.get(ptr, buf).map_err(|_| Error::OutOfBounds)?;
-        Ok(())
-    }
-
-    /// Read designated chunk from the sandbox memory and attempt to decode into the specified type.
-    pub fn read_sandbox_memory_as<D: Decode>(&mut self, ptr: u32, len: u32) -> Result<D> {
-        let buf = self.read_sandbox_memory(ptr, len)?;
-        let decoded = D::decode_all(&mut &buf[..]).map_err(|_| Error::DecodeRuntimeValueFailed)?;
-        Ok(decoded)
-    }
-
-    /// Write the given buffer to the designated location in the sandbox memory.
-    pub fn write_sandbox_memory(&mut self, ptr: u32, buf: &[u8]) -> Result<()> {
-        Ok(self.memory.set(ptr, buf).map_err(|_| Error::OutOfBounds)?)
-    }
-
-    /// Write the given buffer and its length to the designated locations in sandbox memory
-    ///
-    /// buf -> memory
-    pub fn write_sandbox_output(
-        &mut self,
-        out_ptr: u32,
-        out_len_ptr: u32,
-        buf: &[u8],
-    ) -> Result<()> {
-        let buf_len = buf.len() as u32;
-        let len: u32 = self.read_sandbox_memory_as(out_len_ptr, 4)?;
-        if len < buf_len {
-            Err(Error::OutputBufferTooSmall)?
-        }
-
-        self.memory
-            .set(out_ptr, buf)
-            .and_then(|_| self.memory.set(out_len_ptr, &buf_len.encode()))
-            .map_err(|_| Error::OutOfBounds)?;
-
-        Ok(())
     }
 }

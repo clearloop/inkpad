@@ -3,6 +3,7 @@
 use ceres_std::{vec, Vec};
 
 mod balance;
+mod chain;
 mod derive;
 mod fun;
 mod storage;
@@ -17,6 +18,7 @@ pub fn pallet_contracts(
         fun::SealInput::pack(),
         fun::SealReturn::pack(),
         storage::SealGetStorage::pack(),
+        storage::SealClearStorage::pack(),
         storage::SealSetStorage::pack(),
     ]
 }

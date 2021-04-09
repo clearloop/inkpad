@@ -6,6 +6,7 @@ use ceres_executor::{
     Error, Result,
 };
 use ceres_sandbox::{Sandbox, StorageKey};
+use ceres_std::vec;
 
 /// Retrieve the value under the given key from storage.
 #[host(seal0)]
@@ -17,6 +18,18 @@ pub fn seal_get_storage(key_ptr: u32, out_ptr: u32, out_len_ptr: u32) -> Result<
         Ok(Value::I32(ReturnCode::Success as i32).into())
     } else {
         Ok(Value::I32(ReturnCode::KeyNotFound as i32).into())
+    }
+}
+
+// Clear the value at the given key in the contract storage.
+#[host(seal0)]
+pub fn seal_clear_storage(key_ptr: u32) -> Result<ReturnValue> {
+    let mut key: StorageKey = [0; 32];
+    sandbox.read_sandbox_memory_into_buf(key_ptr, &mut key)?;
+    if sandbox.set_storage(&key, vec![]).is_ok() {
+        Ok(ReturnValue::Unit)
+    } else {
+        Err(Error::SetStorageFailed)
     }
 }
 

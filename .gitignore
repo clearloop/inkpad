@@ -1,9 +1,4 @@
 .log
-app
 **/*target
-node_modules
-yarn-error.log
-public/bundle.*
-public/*.otf
-public/*.js
+**/*.DS_Store
 **/*.wasm
