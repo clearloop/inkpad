@@ -14,6 +14,7 @@ mod restore;
 mod storage;
 mod termination;
 mod transfer;
+mod util;
 
 /// The runtime of ink! machine
 pub struct Sandbox {
@@ -21,13 +22,14 @@ pub struct Sandbox {
     pub ret: Option<Vec<u8>>,
     pub instantiates: Vec<instantiate::InstantiateEntry>,
     pub restores: Vec<restore::RestoreEntry>,
-    pub rent_allowance: u64,
+    pub rent_allowance: [u8; 32],
     pub terminations: Vec<termination::TerminationEntry>,
     pub transfers: Vec<transfer::TransferEntry>,
     state: BTreeMap<StorageKey, Vec<u8>>,
     memory: Memory,
-    events: Vec<(Vec<[u8; 32]>, Vec<u8>)>, // schedule: Schedule,
-                                           // rent_params: RentParams
+    events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
+    // schedule: Schedule,
+    // rent_params: RentParams
 }
 
 impl Sandbox {
@@ -38,7 +40,7 @@ impl Sandbox {
             ret: None,
             instantiates: vec![],
             restores: vec![],
-            rent_allowance: 0,
+            rent_allowance: [0; 32],
             terminations: vec![],
             transfers: vec![],
             events: vec![],

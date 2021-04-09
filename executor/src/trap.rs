@@ -45,6 +45,9 @@ pub enum TrapCode {
 
     // Unknown Error
     Unknown,
+
+    // Termination
+    Termination,
 }
 
 /// Wasm Trap
@@ -54,4 +57,13 @@ pub struct Trap {
     pub code: TrapCode,
     /// Wasm backtrace (in wasmtime, this includes native backtrace)
     pub trace: Vec<String>,
+}
+
+impl From<TrapCode> for Trap {
+    fn from(code: TrapCode) -> Trap {
+        Trap {
+            code,
+            trace: Vec::new(),
+        }
+    }
 }

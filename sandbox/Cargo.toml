@@ -5,13 +5,17 @@ authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+funty = { version = "=1.0", default-features = false }
+parity-scale-codec = "2"
+
 ceres-std = { path = "../std" }
 ceres-executor = { path = "../executor" }
-parity-scale-codec = "2.0.1"
+
 
 [features]
 default = []
 std = [
+    "funty/std",
     "ceres-std/std",
     "ceres-executor/std",
 ]

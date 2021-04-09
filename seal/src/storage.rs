@@ -21,7 +21,7 @@ pub fn seal_get_storage(key_ptr: u32, out_ptr: u32, out_len_ptr: u32) -> Result<
     }
 }
 
-// Clear the value at the given key in the contract storage.
+/// Clear the value at the given key in the contract storage.
 #[host(seal0)]
 pub fn seal_clear_storage(key_ptr: u32) -> Result<ReturnValue> {
     let mut key: StorageKey = [0; 32];

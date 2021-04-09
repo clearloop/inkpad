@@ -2,11 +2,11 @@ use crate::derive::Host;
 use ceres_derive::host;
 use ceres_executor::{
     derive::{ReturnValue, Value},
-    Error, Result,
+    Error, Result, TrapCode,
 };
 use ceres_sandbox::Sandbox;
 
-/// seal_input
+/// Stores the input passed by the caller into the supplied buffer.
 #[host(seal0)]
 pub fn seal_input(out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue> {
     if let Some(input) = sandbox.input.take() {
@@ -32,4 +32,19 @@ pub fn seal_return(flags: u32, data_ptr: u32, data_len: u32) -> Result<ReturnVal
     }
 
     Err(Error::ReturnData { flags, data })
+}
+
+/// Remove the calling account and transfer remaining balance.
+///
+/// This function never returns. Either the termination was successful and the
+/// execution of the destroyed contract is halted. Or it failed during the termination
+/// which is considered fatal and results in a trap + rollback.
+#[host(seal0)]
+pub fn seal_terminate(beneficiary_ptr: u32, beneficiary_len: u32) -> Result<ReturnValue> {
+    let beneficiary = sandbox.read_sandbox_memory_as(beneficiary_ptr, beneficiary_len)?;
+    sandbox
+        .terminate(beneficiary)
+        .map_err(|_| Error::Trap(TrapCode::Termination.into()))?;
+
+    Ok(ReturnValue::Unit)
 }

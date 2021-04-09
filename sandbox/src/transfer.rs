@@ -1,7 +1,9 @@
 //! Transfer Entry
-use crate::Sandbox;
+use crate::{util::al, Sandbox};
 use ceres_executor::Result;
 use ceres_std::Vec;
+use funty::{AtLeast16, IsNumber};
+use parity_scale_codec::Encode;
 
 /// Transfer Entry
 pub struct TransferEntry {
@@ -9,6 +11,8 @@ pub struct TransferEntry {
     value: u64,
     data: Vec<u8>,
 }
+
+// type Balance: IsNumber + AtLeast16 = u64;
 
 impl Sandbox {
     /// Transfer value to account
@@ -36,19 +40,19 @@ impl Sandbox {
         [1; 32]
     }
 
-    pub fn balance(&self) -> u64 {
-        228
+    pub fn balance(&self) -> Vec<u8> {
+        al(42.encode(), 16)
     }
 
-    pub fn value_transferred(&self) -> u64 {
-        1337
+    pub fn value_transferred(&self) -> Vec<u8> {
+        al(0.encode(), 16)
     }
 
-    pub fn now(&self) -> &u64 {
-        &1111
+    pub fn now(&self) -> [u8; 32] {
+        [0; 32]
     }
 
-    pub fn minimum_balance(&self) -> u64 {
-        16
+    pub fn minimum_balance(&self) -> Vec<u8> {
+        al(0.encode(), 16)
     }
 }
