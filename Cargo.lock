@@ -186,7 +186,6 @@ version = "0.1.0"
 dependencies = [
  "ceres-executor",
  "ceres-std",
- "funty",
  "parity-scale-codec",
 ]
 
@@ -754,7 +753,20 @@ dependencies = [
  "arrayvec",
  "bitvec",
  "byte-slice-cast",
+ "parity-scale-codec-derive",
  "serde",
+]
+
+[[package]]
+name = "parity-scale-codec-derive"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f44c5f94427bd0b5076e8f7e15ca3f60a4d8ac0077e4793884e6fdfd8915344e"
+dependencies = [
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -773,6 +785,15 @@ name = "ppv-lite86"
 version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ac74c624d6b2d21f425f752262f42188365d7b8ff1aff74c82e45136510a4857"
+
+[[package]]
+name = "proc-macro-crate"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d6ea3c4595b96363c13943497db34af4460fb474a95c43f4446ad341b8c9785"
+dependencies = [
+ "toml",
+]
 
 [[package]]
 name = "proc-macro2"

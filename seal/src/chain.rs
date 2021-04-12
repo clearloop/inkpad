@@ -25,3 +25,36 @@ pub fn block_number(out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue> {
     sandbox.write_sandbox_output(out_ptr, out_len_ptr, &sandbox.block_number())?;
     Ok(ReturnValue::Unit)
 }
+
+/// Stores the price for the specified amount of gas into the supplied buffer.
+///
+/// The value is stored to linear memory at the address pointed to by `out_ptr`.
+/// `out_len_ptr` must point to a u32 value that describes the available space at
+/// `out_ptr`. This call overwrites it with the size of the value. If the available
+/// space at `out_ptr` is less than the size of the value a trap is triggered.
+///
+/// The data is encoded as T::Balance.
+///
+/// # Note
+///
+/// It is recommended to avoid specifying very small values for `gas` as the prices for a single
+/// gas can be smaller than one.
+#[host(seal0)]
+pub fn seal_weight_to_fee(gas: u64, out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue> {
+    sandbox.write_sandbox_output(out_ptr, out_len_ptr, &sandbox.get_weight_price(gas))?;
+    Ok(ReturnValue::Unit)
+}
+
+/// Stores the amount of gas left into the supplied buffer.
+///
+/// The value is stored to linear memory at the address pointed to by `out_ptr`.
+/// `out_len_ptr` must point to a u32 value that describes the available space at
+/// `out_ptr`. This call overwrites it with the size of the value. If the available
+/// space at `out_ptr` is less than the size of the value a trap is triggered.
+///
+/// The data is encoded as Gas.
+#[host(seal0)]
+pub fn seal_gas_left(out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue> {
+    sandbox.write_sandbox_output(out_ptr, out_len_ptr, &sandbox.gas_meter.gas_left_bytes())?;
+    Ok(ReturnValue::Unit)
+}

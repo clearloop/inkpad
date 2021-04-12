@@ -5,7 +5,10 @@ use ceres_std::{vec, Vec};
 mod chain;
 mod contract;
 mod derive;
+mod event;
 mod fun;
+// mod instantiate;
+mod restore;
 mod storage;
 mod transfer;
 
@@ -17,17 +20,19 @@ pub fn pallet_contracts(
     vec![
         chain::Gas::pack(),
         chain::BlockNumber::pack(),
+        chain::SealWeightToFee::pack(),
         contract::SealTombstoneDeposit::pack(),
         contract::SealRentAllowance::pack(),
         contract::SealSetRentAllowance::pack(),
-        transfer::SealValueTransferred::pack(),
-        transfer::SealCaller::pack(),
-        transfer::SealAddress::pack(),
         fun::SealInput::pack(),
         fun::SealReturn::pack(),
         fun::SealTerminate::pack(),
+        restore::Restore::pack(),
         storage::SealGetStorage::pack(),
         storage::SealClearStorage::pack(),
         storage::SealSetStorage::pack(),
+        transfer::SealValueTransferred::pack(),
+        transfer::SealCaller::pack(),
+        transfer::SealAddress::pack(),
     ]
 }

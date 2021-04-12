@@ -42,9 +42,6 @@ pub fn seal_return(flags: u32, data_ptr: u32, data_len: u32) -> Result<ReturnVal
 #[host(seal0)]
 pub fn seal_terminate(beneficiary_ptr: u32, beneficiary_len: u32) -> Result<ReturnValue> {
     let beneficiary = sandbox.read_sandbox_memory_as(beneficiary_ptr, beneficiary_len)?;
-    sandbox
-        .terminate(beneficiary)
-        .map_err(|_| Error::Trap(TrapCode::Termination.into()))?;
-
-    Ok(ReturnValue::Unit)
+    sandbox.terminate(beneficiary)?;
+    Err(Error::Trap(TrapCode::Termination.into()))
 }

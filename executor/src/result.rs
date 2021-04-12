@@ -17,6 +17,14 @@ pub enum Error {
     WrongArugmentLength,
     SetStorageFailed,
     ReturnData { flags: u32, data: Vec<u8> },
+    // Topics
+    TooManyTopics,
+    DuplicateTopics,
+    TopicValueTooLarge,
+    // Gas
+    OutOfGas,
+    // Custom Error
+    Custom(&'static str),
 }
 
 /// Ceres executor result

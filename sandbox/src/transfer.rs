@@ -2,14 +2,13 @@
 use crate::{util::al, Sandbox};
 use ceres_executor::Result;
 use ceres_std::Vec;
-use funty::{AtLeast16, IsNumber};
 use parity_scale_codec::Encode;
 
 /// Transfer Entry
 pub struct TransferEntry {
-    to: [u8; 32],
-    value: u64,
-    data: Vec<u8>,
+    pub to: [u8; 32],
+    pub value: u64,
+    pub data: Vec<u8>,
 }
 
 // type Balance: IsNumber + AtLeast16 = u64;

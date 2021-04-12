@@ -11,10 +11,22 @@ mod hash;
 mod instantiate;
 mod memory;
 mod restore;
+mod schedule;
 mod storage;
 mod termination;
 mod transfer;
 mod util;
+
+use self::{
+    contract::{GasMeter, RentParams},
+    schedule::Schedule,
+};
+
+/// Return flags
+pub struct ExecReturnValue {
+    pub flags: u32,
+    pub data: Vec<u8>,
+}
 
 /// The runtime of ink! machine
 pub struct Sandbox {
@@ -25,11 +37,12 @@ pub struct Sandbox {
     pub rent_allowance: [u8; 32],
     pub terminations: Vec<termination::TerminationEntry>,
     pub transfers: Vec<transfer::TransferEntry>,
+    pub schedule: Schedule,
+    pub rent_params: RentParams,
+    pub gas_meter: GasMeter,
     state: BTreeMap<StorageKey, Vec<u8>>,
     memory: Memory,
     events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
-    // schedule: Schedule,
-    // rent_params: RentParams
 }
 
 impl Sandbox {
@@ -44,6 +57,9 @@ impl Sandbox {
             terminations: vec![],
             transfers: vec![],
             events: vec![],
+            schedule: Default::default(),
+            rent_params: Default::default(),
+            gas_meter: Default::default(),
             state,
             memory,
         }

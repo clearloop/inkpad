@@ -48,6 +48,9 @@ pub enum TrapCode {
 
     // Termination
     Termination,
+
+    // Restoration
+    Restoration,
 }
 
 /// Wasm Trap
