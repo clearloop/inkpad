@@ -15,7 +15,7 @@ mod transfer;
 
 pub use self::{
     derive::{Host, ReturnCode},
-    ri::NoRuntimeInterfaces,
+    ri::{NoRuntimeInterfaces, RuntimeInterfaces},
 };
 
 /// Pallet contract host functions

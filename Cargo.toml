@@ -3,6 +3,7 @@ parity-wasm = { git = "https://github.com/patractlabs/parity-wasm", branch = "v0
 
 [workspace]
 members = [
+  "ri",
   "std",
   "seal",
   "derive",
