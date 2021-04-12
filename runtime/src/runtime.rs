@@ -51,7 +51,9 @@ impl Runtime {
 
         // Create Sandbox and Builder
         let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state)));
-        let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts());
+        let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts(
+            ceres_seal::NoRuntimeInterfaces,
+        ));
 
         // **Note**
         //

@@ -15,8 +15,6 @@ mod wasmi;
 #[cfg(feature = "std")]
 mod wasmtime;
 
-// #[cfg(not(feature = "std"))]
-
 pub use self::{
     executor::*,
     result::{Error, Result},
