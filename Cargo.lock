@@ -182,13 +182,29 @@ dependencies = [
 ]
 
 [[package]]
-name = "ceres-runtime"
+name = "ceres-ri"
 version = "0.1.0"
 dependencies = [
+ "blake2-rfc",
  "ceres-executor",
  "ceres-sandbox",
  "ceres-seal",
  "ceres-std",
+ "rand",
+ "sha2",
+ "tiny-keccak",
+]
+
+[[package]]
+name = "ceres-runtime"
+version = "0.1.0"
+dependencies = [
+ "ceres-executor",
+ "ceres-ri",
+ "ceres-sandbox",
+ "ceres-seal",
+ "ceres-std",
+ "cfg-if",
  "hashbrown 0.11.1",
  "hex",
  "parity-scale-codec",
@@ -221,20 +237,6 @@ dependencies = [
 [[package]]
 name = "ceres-std"
 version = "0.1.0"
-
-[[package]]
-name = "ceres_runtime_interfaces"
-version = "0.1.0"
-dependencies = [
- "blake2-rfc",
- "ceres-executor",
- "ceres-sandbox",
- "ceres-seal",
- "ceres-std",
- "rand",
- "sha2",
- "tiny-keccak",
-]
 
 [[package]]
 name = "cfg-if"

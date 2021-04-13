@@ -41,7 +41,7 @@ impl Runtime {
         let limit = util::scan_imports(&el).map_err(|_| Error::CalcuateMemoryLimitFailed)?;
         let mem = Memory::new(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
 
-        // get storage
+        // Get storage
         let state = if let Some(state) = storage.get(util::parse_code_hash(&metadata.source.hash)?)
         {
             state.clone()
@@ -51,9 +51,19 @@ impl Runtime {
 
         // Create Sandbox and Builder
         let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state)));
-        let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts(
-            ceres_seal::NoRuntimeInterfaces,
-        ));
+
+        // Construct interfaces
+        cfg_if::cfg_if! {
+            if #[cfg(not(feature = "std"))] {
+                let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts(
+                    ceres_seal::NoRuntimeInterfaces,
+                ));
+            } else {
+                let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts(
+                    ceres_ri::Instance
+                ));
+            }
+        }
 
         // **Note**
         //
