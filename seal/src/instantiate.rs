@@ -3,10 +3,10 @@ use crate::derive::Host;
 use ceres_derive::host;
 use ceres_executor::{
     derive::{ReturnValue, Value},
-    Error, Result, TrapCode,
+    Error, Result,
 };
 use ceres_sandbox::Sandbox;
-use ceres_std::{vec, Vec};
+use parity_scale_codec::Encode;
 
 /// Instantiate a contract with the specified code hash.
 ///
@@ -57,7 +57,7 @@ use ceres_std::{vec, Vec};
 pub fn instantiate(
     code_hash_ptr: u32,
     code_hash_len: u32,
-    gas: u64,
+    _gas: u64,
     value_ptr: u32,
     value_len: u32,
     input_data_ptr: u32,
@@ -73,36 +73,65 @@ pub fn instantiate(
     let value: u64 = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
     let input_data = sandbox.read_sandbox_memory(input_data_ptr, input_data_len)?;
     let salt = sandbox.read_sandbox_memory(salt_ptr, salt_len)?;
+    let (address, output, _) =
+        sandbox.instantiate(code_hash, value, &mut Default::default(), input_data, &salt)?;
 
-    let nested_gas_limit = if gas == 0 {
-        sandbox.gas_meter.gas_left
-    } else {
-        gas.into()
-    };
+    if !output.flags.contains(ceres_sandbox::ReturnFlags::REVERT) {
+        sandbox.write_sandbox_output(address_ptr, address_len_ptr, &address.encode())?;
+    }
+    sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
-    let instantiate_outcome = &sandbox
-        .gas_meter
-        .with_nested(nested_gas_limit, |nested_meter| {
-            match nested_meter {
-                Some(nested_meter) => {
-                    sandbox.instantiate(code_hash, value, nested_meter, input_data, &salt)
-                }
-                // there is not enough gas to allocate for the nested call.
-                None => Err(Error::OutOfGas.into()),
-            }
-        });
+    Ok(ReturnValue::Unit)
+}
 
-    // let code_len = match &instantiate_outcome {
-    //     Ok((_, _, code_len)) => code_len,
-    //     Err((_, code_len)) => code_len,
-    // };
-    // if let Ok((address, output, _)) = &instantiate_outcome {
-    //     if !output.flags.contains(ReturnFlags::REVERT) {
-    //         sandbox.write_sandbox_output(address_ptr, address_len_ptr, &address.encode())?;
-    //     }
-    //     ctx.write_sandbox_output(output_ptr, output_len_ptr, &output.data, true, |len| {
-    //         Some(RuntimeToken::InstantiateCopyOut(len))
-    //     })?;
-    // }
+/// Make a call to another contract.
+///
+/// The callees output buffer is copied to `output_ptr` and its length to `output_len_ptr`.
+/// The copy of the output buffer can be skipped by supplying the sentinel value
+/// of `u32::max_value()` to `output_ptr`.
+///
+/// # Parameters
+///
+/// - callee_ptr: a pointer to the address of the callee contract.
+///   Should be decodable as an `T::AccountId`. Traps otherwise.
+/// - callee_len: length of the address buffer.
+/// - gas: how much gas to devote to the execution.
+/// - value_ptr: a pointer to the buffer with value, how much value to send.
+///   Should be decodable as a `T::Balance`. Traps otherwise.
+/// - value_len: length of the value buffer.
+/// - input_data_ptr: a pointer to a buffer to be used as input data to the callee.
+/// - input_data_len: length of the input data buffer.
+/// - output_ptr: a pointer where the output buffer is copied to.
+/// - output_len_ptr: in-out pointer to where the length of the buffer is read from
+///   and the actual length is written to.
+///
+/// # Errors
+///
+/// An error means that the call wasn't successful output buffer is returned unless
+/// stated otherwise.
+///
+/// `ReturnCode::CalleeReverted`: Output buffer is returned.
+/// `ReturnCode::CalleeTrapped`
+/// `ReturnCode::BelowSubsistenceThreshold`
+/// `ReturnCode::TransferFailed`
+/// `ReturnCode::NotCallable`
+#[host(seal0)]
+pub fn seal_call(
+    callee_ptr: u32,
+    callee_len: u32,
+    _gas: u64,
+    value_ptr: u32,
+    value_len: u32,
+    input_data_ptr: u32,
+    input_data_len: u32,
+    output_ptr: u32,
+    output_len_ptr: u32,
+) -> Result<ReturnValue> {
+    let callee: [u8; 32] = sandbox.read_sandbox_memory_as(callee_ptr, callee_len)?;
+    let value: u64 = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
+    let input_data = sandbox.read_sandbox_memory(input_data_ptr, input_data_len)?;
+    let output = sandbox.call(callee, value, input_data)?;
+    sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
+
     Ok(ReturnValue::Unit)
 }

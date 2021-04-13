@@ -7,7 +7,7 @@ mod contract;
 mod derive;
 mod event;
 mod fun;
-// mod instantiate;
+mod instantiate;
 mod restore;
 mod ri;
 mod storage;

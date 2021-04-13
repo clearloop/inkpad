@@ -31,7 +31,7 @@ impl Sandbox {
         Ok((
             code_hash,
             ExecReturnValue {
-                flags: 0,
+                flags: crate::ReturnFlags::empty(),
                 data: Vec::new(),
             },
             0,

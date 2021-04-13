@@ -10,6 +10,8 @@ ceres-derive = { path = "../derive" }
 ceres-sandbox = { path = "../sandbox" }
 ceres-executor = { path = "../executor" }
 
+parity-scale-codec = { version = "2", features = ["derive"]}
+
 [features]
 default = []
 std = [

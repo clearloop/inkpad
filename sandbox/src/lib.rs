@@ -1,4 +1,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
+#[macro_use]
+extern crate bitflags;
+
 use ceres_executor::Memory;
 use ceres_std::{vec, BTreeMap, Vec};
 
@@ -21,12 +24,21 @@ use self::{
     contract::{GasMeter, RentParams},
     schedule::Schedule,
 };
-
+use parity_scale_codec::{Decode, Encode};
 pub use tx::Transaction;
+
+bitflags! {
+    /// Flags used by a contract to customize exit behaviour.
+    #[derive(Encode, Decode)]
+    pub struct ReturnFlags: u32 {
+        /// If this bit is set all changes made by the contract execution are rolled back.
+        const REVERT = 0x0000_0001;
+    }
+}
 
 /// Return flags
 pub struct ExecReturnValue {
-    pub flags: u32,
+    pub flags: ReturnFlags,
     pub data: Vec<u8>,
 }
 

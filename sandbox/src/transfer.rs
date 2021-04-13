@@ -1,5 +1,5 @@
 //! Transfer Entry
-use crate::Sandbox;
+use crate::{ExecReturnValue, Sandbox};
 use ceres_executor::Result;
 use ceres_std::Vec;
 
@@ -22,10 +22,13 @@ impl Sandbox {
     }
 
     /// Call other contract
-    pub fn call(&mut self, to: [u8; 32], value: u64, data: Vec<u8>) -> Result<()> {
+    pub fn call(&mut self, to: [u8; 32], value: u64, data: Vec<u8>) -> Result<ExecReturnValue> {
         self.ext.transfers.push(TransferEntry { to, value, data });
 
-        Ok(())
+        Ok(ExecReturnValue {
+            flags: crate::ReturnFlags::empty(),
+            data: Vec::new(),
+        })
     }
 
     pub fn caller(&self) -> [u8; 32] {

@@ -219,6 +219,7 @@ dependencies = [
 name = "ceres-sandbox"
 version = "0.1.0"
 dependencies = [
+ "bitflags",
  "ceres-executor",
  "ceres-std",
  "parity-scale-codec",
@@ -233,6 +234,7 @@ dependencies = [
  "ceres-executor",
  "ceres-sandbox",
  "ceres-std",
+ "parity-scale-codec",
 ]
 
 [[package]]
