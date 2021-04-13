@@ -67,11 +67,7 @@ pub struct Sandbox {
 
 impl Sandbox {
     /// New sandbox
-    pub fn new(
-        memory: Memory,
-        state: BTreeMap<StorageKey, Vec<u8>>,
-        tx: Option<tx::Transaction>,
-    ) -> Sandbox {
+    pub fn new(memory: Memory, state: BTreeMap<StorageKey, Vec<u8>>) -> Sandbox {
         Sandbox {
             input: None,
             ret: None,
@@ -86,7 +82,7 @@ impl Sandbox {
                 gas_meter: Default::default(),
             },
             events: vec![],
-            tx: tx.unwrap_or_default(),
+            tx: Default::default(),
             state,
             memory,
         }

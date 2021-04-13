@@ -24,17 +24,11 @@ impl Runtime {
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             MemoryStorage::new(),
-            None,
         )?)
     }
 
     /// New runtime
-    pub fn new(
-        b: &[u8],
-        metadata: Metadata,
-        storage: impl Storage,
-        tx: Option<Transaction>,
-    ) -> Result<Runtime> {
+    pub fn new(b: &[u8], metadata: Metadata, storage: impl Storage) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
             el = match el.parse_names() {
@@ -56,7 +50,7 @@ impl Runtime {
         };
 
         // Create Sandbox and Builder
-        let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state, tx)));
+        let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state)));
 
         // Construct interfaces
         cfg_if::cfg_if! {
@@ -92,7 +86,11 @@ impl Runtime {
     }
 
     /// Deploy contract
-    pub fn deploy(&mut self, method: &str, args: &[&str]) -> Result<()> {
+    pub fn deploy(&mut self, method: &str, args: &[&str], tx: Option<Transaction>) -> Result<()> {
+        if let Some(tx) = tx {
+            self.sandbox.borrow_mut().tx = tx;
+        }
+
         let constructors = self.metadata.constructors();
         let (selector, tys) = constructors.get(method).ok_or(Error::GetMethodFailed {
             name: method.to_string(),
@@ -108,7 +106,16 @@ impl Runtime {
     }
 
     /// Call contract
-    pub fn call(&mut self, method: &str, args: &[&str]) -> Result<Vec<u8>> {
+    pub fn call(
+        &mut self,
+        method: &str,
+        args: &[&str],
+        tx: Option<Transaction>,
+    ) -> Result<Vec<u8>> {
+        if let Some(tx) = tx {
+            self.sandbox.borrow_mut().tx = tx;
+        }
+
         let messages = self.metadata.messages();
         let (selector, tys) = messages.get(method).ok_or(Error::GetMethodFailed {
             name: method.to_string(),
