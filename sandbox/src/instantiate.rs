@@ -21,7 +21,7 @@ impl Sandbox {
         data: Vec<u8>,
         salt: &[u8],
     ) -> Result<([u8; 32], ExecReturnValue, u32)> {
-        self.instantiates.push(InstantiateEntry {
+        self.ext.instantiates.push(InstantiateEntry {
             code_hash: code_hash.clone(),
             endowment,
             data: data.to_vec(),

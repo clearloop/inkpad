@@ -1,14 +1,14 @@
 //! Ceres Runtimep
 use crate::{storage::MemoryStorage, util, Error, Metadata, Result, Storage};
 use ceres_executor::{Builder, Instance, Memory};
-use ceres_sandbox::Sandbox;
+use ceres_sandbox::{Sandbox, Transaction};
 use ceres_std::{Rc, String, ToString, Vec};
 use core::cell::RefCell;
 use parity_wasm::elements::Module;
 
 /// Ceres Runtime
 pub struct Runtime {
-    sandbox: Rc<RefCell<Sandbox>>,
+    pub sandbox: Rc<RefCell<Sandbox>>,
     instance: Instance<Sandbox>,
     metadata: Metadata,
 }
@@ -24,11 +24,17 @@ impl Runtime {
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             MemoryStorage::new(),
+            None,
         )?)
     }
 
     /// New runtime
-    pub fn new(b: &[u8], metadata: Metadata, storage: impl Storage) -> Result<Runtime> {
+    pub fn new(
+        b: &[u8],
+        metadata: Metadata,
+        storage: impl Storage,
+        tx: Option<Transaction>,
+    ) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
             el = match el.parse_names() {
@@ -50,7 +56,7 @@ impl Runtime {
         };
 
         // Create Sandbox and Builder
-        let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state)));
+        let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state, tx)));
 
         // Construct interfaces
         cfg_if::cfg_if! {

@@ -222,6 +222,7 @@ dependencies = [
  "ceres-executor",
  "ceres-std",
  "parity-scale-codec",
+ "serde",
 ]
 
 [[package]]

@@ -19,7 +19,7 @@ impl Sandbox {
         rent_allowance: u64,
         delta: Vec<[u8; 32]>,
     ) -> Result<(u32, u32)> {
-        self.restores.push(RestoreEntry {
+        self.ext.restores.push(RestoreEntry {
             dest,
             code_hash,
             rent_allowance,

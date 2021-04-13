@@ -46,7 +46,7 @@ pub fn seal_deposit_event(
     };
 
     // If there are more than `event_topics`, then trap.
-    if topics.len() > sandbox.schedule.limits.event_topics as usize {
+    if topics.len() > sandbox.ext.schedule.limits.event_topics as usize {
         Err(Error::TooManyTopics)?;
     }
 

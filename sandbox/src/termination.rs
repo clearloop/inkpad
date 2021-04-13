@@ -9,7 +9,7 @@ pub struct TerminationEntry {
 
 impl Sandbox {
     pub fn terminate(&mut self, beneficiary: [u8; 32]) -> Result<u32> {
-        self.terminations.push(TerminationEntry { beneficiary });
+        self.ext.terminations.push(TerminationEntry { beneficiary });
         Ok(0)
     }
 }

@@ -1,8 +1,7 @@
 //! Transfer Entry
-use crate::{util::al, Sandbox};
+use crate::Sandbox;
 use ceres_executor::Result;
 use ceres_std::Vec;
-use parity_scale_codec::Encode;
 
 /// Transfer Entry
 pub struct TransferEntry {
@@ -11,12 +10,10 @@ pub struct TransferEntry {
     pub data: Vec<u8>,
 }
 
-// type Balance: IsNumber + AtLeast16 = u64;
-
 impl Sandbox {
     /// Transfer value to account
     pub fn transfer(&mut self, to: [u8; 32], value: u64) -> Result<()> {
-        self.transfers.push(TransferEntry {
+        self.ext.transfers.push(TransferEntry {
             to,
             value,
             data: Vec::new(),
@@ -26,32 +23,32 @@ impl Sandbox {
 
     /// Call other contract
     pub fn call(&mut self, to: [u8; 32], value: u64, data: Vec<u8>) -> Result<()> {
-        self.transfers.push(TransferEntry { to, value, data });
+        self.ext.transfers.push(TransferEntry { to, value, data });
 
         Ok(())
     }
 
     pub fn caller(&self) -> [u8; 32] {
-        [0; 32]
+        self.tx.caller()
     }
 
     pub fn address(&self) -> [u8; 32] {
-        [1; 32]
+        self.tx.address()
     }
 
     pub fn balance(&self) -> Vec<u8> {
-        al(42.encode(), 16)
+        self.tx.balance()
     }
 
     pub fn value_transferred(&self) -> Vec<u8> {
-        al(0.encode(), 16)
+        self.tx.value_transferred()
     }
 
     pub fn now(&self) -> [u8; 32] {
-        [0; 32]
+        self.tx.now()
     }
 
     pub fn minimum_balance(&self) -> Vec<u8> {
-        al(0.encode(), 16)
+        self.tx.minimum_balance()
     }
 }

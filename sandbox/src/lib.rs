@@ -7,7 +7,6 @@ pub type StorageKey = [u8; 32];
 
 mod chain;
 mod contract;
-mod hash;
 mod instantiate;
 mod memory;
 mod restore;
@@ -15,6 +14,7 @@ mod schedule;
 mod storage;
 mod termination;
 mod transfer;
+mod tx;
 mod util;
 
 use self::{
@@ -22,16 +22,16 @@ use self::{
     schedule::Schedule,
 };
 
+pub use tx::Transaction;
+
 /// Return flags
 pub struct ExecReturnValue {
     pub flags: u32,
     pub data: Vec<u8>,
 }
 
-/// The runtime of ink! machine
-pub struct Sandbox {
-    pub input: Option<Vec<u8>>,
-    pub ret: Option<Vec<u8>>,
+/// Extend data
+pub struct Ext {
     pub instantiates: Vec<instantiate::InstantiateEntry>,
     pub restores: Vec<restore::RestoreEntry>,
     pub rent_allowance: [u8; 32],
@@ -40,6 +40,14 @@ pub struct Sandbox {
     pub schedule: Schedule,
     pub rent_params: RentParams,
     pub gas_meter: GasMeter,
+}
+
+/// The runtime of ink! machine
+pub struct Sandbox {
+    pub input: Option<Vec<u8>>,
+    pub ret: Option<Vec<u8>>,
+    pub ext: Ext,
+    pub tx: tx::Transaction,
     state: BTreeMap<StorageKey, Vec<u8>>,
     memory: Memory,
     events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
@@ -47,19 +55,26 @@ pub struct Sandbox {
 
 impl Sandbox {
     /// New sandbox
-    pub fn new(memory: Memory, state: BTreeMap<StorageKey, Vec<u8>>) -> Sandbox {
+    pub fn new(
+        memory: Memory,
+        state: BTreeMap<StorageKey, Vec<u8>>,
+        tx: Option<tx::Transaction>,
+    ) -> Sandbox {
         Sandbox {
             input: None,
             ret: None,
-            instantiates: vec![],
-            restores: vec![],
-            rent_allowance: [0; 32],
-            terminations: vec![],
-            transfers: vec![],
+            ext: Ext {
+                instantiates: vec![],
+                restores: vec![],
+                rent_allowance: [0; 32],
+                terminations: vec![],
+                transfers: vec![],
+                schedule: Default::default(),
+                rent_params: Default::default(),
+                gas_meter: Default::default(),
+            },
             events: vec![],
-            schedule: Default::default(),
-            rent_params: Default::default(),
-            gas_meter: Default::default(),
+            tx: tx.unwrap_or_default(),
             state,
             memory,
         }

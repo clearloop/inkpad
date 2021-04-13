@@ -55,6 +55,10 @@ pub fn seal_weight_to_fee(gas: u64, out_ptr: u32, out_len_ptr: u32) -> Result<Re
 /// The data is encoded as Gas.
 #[host(seal0)]
 pub fn seal_gas_left(out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue> {
-    sandbox.write_sandbox_output(out_ptr, out_len_ptr, &sandbox.gas_meter.gas_left_bytes())?;
+    sandbox.write_sandbox_output(
+        out_ptr,
+        out_len_ptr,
+        &sandbox.ext.gas_meter.gas_left_bytes(),
+    )?;
     Ok(ReturnValue::Unit)
 }

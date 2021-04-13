@@ -10,10 +10,14 @@ parity-scale-codec = { version = "2", features = ["derive"]}
 ceres-std = { path = "../std" }
 ceres-executor = { path = "../executor" }
 
+serde = { version = "1", default-features = false, features = ["derive"] }
 
 [features]
-default = []
+default = [
+    "serde/alloc",
+]
 std = [
+    "serde/std",
     "ceres-std/std",
     "ceres-executor/std",
 ]

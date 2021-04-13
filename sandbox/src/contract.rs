@@ -73,19 +73,20 @@ pub struct RentParams {
 }
 
 impl Sandbox {
+    /// TODO
     pub fn tombstone_deposit(&self) -> [u8; 32] {
         [1; 32]
     }
 
     pub fn rent_allowance(&self) -> [u8; 32] {
-        self.rent_allowance
+        self.ext.rent_allowance
     }
 
     pub fn set_rent_allowance(&mut self, rent_allowence: [u8; 32]) {
-        self.rent_allowance = rent_allowence;
+        self.ext.rent_allowance = rent_allowence;
     }
 
     pub fn rent_params(&self) -> Vec<u8> {
-        self.rent_params.encode()
+        self.ext.rent_params.encode()
     }
 }
