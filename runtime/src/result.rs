@@ -48,6 +48,12 @@ pub enum Error {
     GetStorageFailed,
     /// Invalid code hash
     InvalidCodeHash,
+    #[snafu(display("{}", err))]
+    Custom { err: &'static str },
+    /// Insert Contract failed
+    InsertContractFailed,
+    /// Get Contract failed
+    GetContractFailed,
 }
 
 impl HostError for Error {}
