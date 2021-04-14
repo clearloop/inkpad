@@ -176,7 +176,11 @@ dependencies = [
 name = "ceres-cli"
 version = "0.1.0"
 dependencies = [
+ "ceres-runtime",
+ "ceres-sandbox",
+ "hex",
  "structopt",
+ "thiserror",
 ]
 
 [[package]]

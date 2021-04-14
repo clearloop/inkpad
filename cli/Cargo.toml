@@ -9,4 +9,10 @@ name = "ceres"
 path = "bin/ceres.rs"
 
 [dependencies]
+hex = "0.4.3"
+thiserror = "1.0.24"
 structopt = "0.3.21"
+
+# ceres deps
+ceres-runtime = { path = "../runtime", features = [ "std" ] }
+ceres-sandbox = { path = "../sandbox", features = [ "std" ] }
