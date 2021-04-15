@@ -1,7 +1,6 @@
 //! Custom result
 use ceres_std::{String, Vec};
 use snafu::Snafu;
-use wasmi::HostError;
 
 /// Ceres Error
 #[derive(Snafu, Debug)]
@@ -14,9 +13,6 @@ pub enum Error {
     OutputBufferTooSmall,
     #[snafu(display("flags: {}, data: {:?}", flags, data))]
     ReturnData { flags: u32, data: Vec<u8> },
-    /// Wasmi trap
-    #[snafu(context(false))]
-    Trap { source: wasmi::Trap },
     /// Failed to parse wasm module
     ParseWasmModuleFailed,
     /// Failed to parse name section
@@ -55,8 +51,6 @@ pub enum Error {
     /// Get Contract failed
     GetContractFailed,
 }
-
-impl HostError for Error {}
 
 /// Wrapped result
 pub type Result<T> = core::result::Result<T, Error>;

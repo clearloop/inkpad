@@ -15,7 +15,7 @@ pub struct Opt {
         name = "*.contract | name | code-hash",
         help = "If empty, ceres will load the last contract which has been executed"
     )]
-    pub contract: String,
+    pub contract: Option<String>,
     #[structopt(subcommand)]
     pub command: Command,
 }

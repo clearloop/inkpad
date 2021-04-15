@@ -1,9 +1,10 @@
 //! Decoder of *.contract
 use ceres_std::{BTreeMap, String, Vec};
+use derivative::Derivative;
 use serde::{Deserialize, Serialize};
 
 /// A struct for operating *.contract
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Metadata {
     pub source: Source,
     pub contract: Contract,
@@ -65,12 +66,14 @@ impl Metadata {
 }
 
 /// Source section in *.contract
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derivative(Debug)]
+#[derive(Clone, Derivative, Deserialize, Serialize)]
 pub struct Source {
     /// code hash
     pub hash: String,
     /// hex string in the output metadata, and
     /// this is required in our decoder
+    #[derivative(Debug = "ignore")]
     pub wasm: String,
 }
 
