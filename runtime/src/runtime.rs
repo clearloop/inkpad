@@ -133,10 +133,6 @@ impl Runtime {
             .invoke("deploy", &[], &mut bm)
             .map_err(|_| Error::DeployContractFailed)?;
 
-        self.storage.set(
-            util::parse_code_hash(&self.metadata.source.hash)?,
-            bm.state.clone(),
-        )?;
         Ok(())
     }
 
@@ -168,10 +164,16 @@ impl Runtime {
             })?;
         }
 
+        Ok(vec![])
+    }
+
+    /// Flush storage
+    pub fn flush(&mut self) -> Result<()> {
         self.storage.set(
             util::parse_code_hash(&self.metadata.source.hash)?,
-            bm.state.clone(),
+            self.sandbox.borrow().state.clone(),
         )?;
-        Ok(vec![])
+
+        Ok(())
     }
 }
