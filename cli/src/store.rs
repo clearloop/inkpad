@@ -6,6 +6,7 @@ use sled::Db;
 use std::{fs, path::PathBuf, process};
 
 /// A ceres storage implementation using sled
+#[derive(Clone)]
 pub struct Storage(pub Db);
 
 impl Storage {
@@ -39,7 +40,7 @@ impl Storage {
         let if_path = PathBuf::from(contract);
         Ok(if if_path.exists() {
             let source = fs::read(if_path)?;
-            let rt = Runtime::from_contract_and_storage(&source, self)?;
+            let rt = Runtime::from_contract_and_storage(&source, self.clone())?;
             self.0.insert(
                 &rt.metadata.contract.name,
                 bincode::serialize(&rt.metadata.clone())?,
@@ -65,7 +66,10 @@ impl Storage {
         } else {
             self.0.get(contract.as_bytes())
         } {
-            Runtime::from_metadata_and_storage(bincode::deserialize::<Metadata>(&contract)?, self)?
+            Runtime::from_metadata_and_storage(
+                bincode::deserialize::<Metadata>(&contract)?,
+                self.clone(),
+            )?
         } else {
             Self::quit();
 

@@ -18,13 +18,13 @@ pub use self::{
 pub fn run() -> Result<()> {
     let opt = Opt::from_args();
     let mut store = Storage::new()?;
-    let rt = store.rt(&opt.contract.unwrap_or("".to_string()))?;
+    let mut rt = store.rt(&opt.contract.unwrap_or("".to_string()))?;
 
     match opt.command {
         Command::List => cmd::list::exec(&store)?,
         Command::Info => cmd::info::exec(&rt)?,
-        Command::Deploy(tx) => cmd::deploy::exec(&rt, tx)?,
-        Command::Call(tx) => cmd::call::exec(&rt, tx)?,
+        Command::Deploy(tx) => cmd::deploy::exec(&mut rt, tx)?,
+        Command::Call(tx) => cmd::call::exec(&mut rt, tx)?,
     }
 
     store.0.flush()?;

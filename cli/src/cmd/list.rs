@@ -14,11 +14,11 @@ pub fn exec(store: &Storage) -> Result<()> {
         contracts.push(bincode::deserialize(&v)?);
     }
 
-    let mut output: String = format!("{} {}\n", util::pad("contract", 20), "code-hash");
-    output.push_str(&format!("{}\n", &"-".repeat(87)));
+    let mut output: String = format!("\n\t{} {}\n", util::pad("contract", 20), "code-hash");
+    output.push_str(&format!("\t{}\n", &"-".repeat(87)));
     contracts.iter().for_each(|c| {
         output.push_str(&format!(
-            "{} {}\n",
+            "\t{} {}\n",
             &util::pad(&c.contract.name, 20),
             &c.source.hash
         ))

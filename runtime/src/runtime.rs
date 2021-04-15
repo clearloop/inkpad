@@ -11,6 +11,7 @@ pub struct Runtime {
     pub sandbox: Rc<RefCell<Sandbox>>,
     instance: Instance<Sandbox>,
     pub metadata: Metadata,
+    storage: Box<dyn Storage>,
 }
 
 impl Runtime {
@@ -23,12 +24,15 @@ impl Runtime {
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
-            &MemoryStorage::new(),
+            MemoryStorage::new(),
         )?)
     }
 
     /// Create runtime from contract
-    pub fn from_contract_and_storage(contract: &[u8], storage: &impl Storage) -> Result<Runtime> {
+    pub fn from_contract_and_storage(
+        contract: &[u8],
+        storage: impl Storage + 'static,
+    ) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
             .map_err(|_| Error::DecodeContractFailed)?;
 
@@ -41,7 +45,10 @@ impl Runtime {
     }
 
     /// Create runtime from contract
-    pub fn from_metadata_and_storage(meta: Metadata, storage: &impl Storage) -> Result<Runtime> {
+    pub fn from_metadata_and_storage(
+        meta: Metadata,
+        storage: impl Storage + 'static,
+    ) -> Result<Runtime> {
         Ok(Self::new(
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
@@ -51,7 +58,7 @@ impl Runtime {
     }
 
     /// New runtime
-    pub fn new(b: &[u8], metadata: Metadata, storage: &impl Storage) -> Result<Runtime> {
+    pub fn new(b: &[u8], metadata: Metadata, storage: impl Storage + 'static) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
             el = match el.parse_names() {
@@ -105,6 +112,7 @@ impl Runtime {
             instance,
             metadata,
             sandbox,
+            storage: Box::new(storage),
         })
     }
 
@@ -125,6 +133,10 @@ impl Runtime {
             .invoke("deploy", &[], &mut bm)
             .map_err(|_| Error::DeployContractFailed)?;
 
+        self.storage.set(
+            util::parse_code_hash(&self.metadata.source.hash)?,
+            bm.state.clone(),
+        )?;
         Ok(())
     }
 
@@ -144,11 +156,11 @@ impl Runtime {
             name: method.to_string(),
         })?;
 
-        self.sandbox.borrow_mut().input = Some(util::parse_args(selector, args, tys.to_vec())?);
-        let res = self
-            .instance
-            .invoke("call", &[], &mut self.sandbox.borrow_mut());
-        if let Some(ret) = self.sandbox.borrow_mut().ret.take() {
+        let mut bm = self.sandbox.borrow_mut();
+        bm.input = Some(util::parse_args(selector, args, tys.to_vec())?);
+
+        let res = self.instance.invoke("call", &[], &mut bm);
+        if let Some(ret) = bm.ret.take() {
             return Ok(ret);
         } else {
             res.map_err(|e| Error::CallContractFailed {
@@ -156,6 +168,10 @@ impl Runtime {
             })?;
         }
 
+        self.storage.set(
+            util::parse_code_hash(&self.metadata.source.hash)?,
+            bm.state.clone(),
+        )?;
         Ok(vec![])
     }
 }
