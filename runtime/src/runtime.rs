@@ -128,7 +128,11 @@ impl Runtime {
         })?;
 
         let mut bm = self.sandbox.borrow_mut();
-        bm.input = Some(util::parse_args(selector, args, tys.to_vec())?);
+        bm.input = Some(util::parse_args(
+            selector,
+            args,
+            tys.iter().map(|ty| ty.1).collect(),
+        )?);
         self.instance
             .invoke("deploy", &[], &mut bm)
             .map_err(|_| Error::DeployContractFailed)?;
@@ -153,7 +157,11 @@ impl Runtime {
         })?;
 
         let mut bm = self.sandbox.borrow_mut();
-        bm.input = Some(util::parse_args(selector, args, tys.to_vec())?);
+        bm.input = Some(util::parse_args(
+            selector,
+            args,
+            tys.iter().map(|ty| ty.1).collect(),
+        )?);
 
         let res = self.instance.invoke("call", &[], &mut bm);
         if let Some(ret) = bm.ret.take() {

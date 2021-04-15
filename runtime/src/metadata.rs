@@ -13,8 +13,8 @@ pub struct Metadata {
 
 impl Metadata {
     /// Get all messages
-    pub fn messages(&self) -> BTreeMap<String, (String, Vec<u8>)> {
-        let methods: Vec<(String, String, Vec<u8>)> = self
+    pub fn messages(&self) -> BTreeMap<String, (String, Vec<(Option<String>, u32)>)> {
+        let methods: Vec<(String, String, Vec<(Option<String>, u32)>)> = self
             .spec
             .messages
             .iter()
@@ -26,7 +26,19 @@ impl Metadata {
                         "".into()
                     },
                     c.selector.clone(),
-                    c.args.iter().map(|a| a.r#type.r#type).collect(),
+                    c.args
+                        .iter()
+                        .map(|a| {
+                            (
+                                if !a.r#type.display_name.is_empty() {
+                                    Some(a.r#type.display_name[0].clone())
+                                } else {
+                                    None
+                                },
+                                a.r#type.r#type,
+                            )
+                        })
+                        .collect(),
                 )
             })
             .collect();
@@ -39,8 +51,8 @@ impl Metadata {
     }
 
     /// Get all constructors
-    pub fn constructors(&self) -> BTreeMap<String, (String, Vec<u8>)> {
-        let methods: Vec<(String, String, Vec<u8>)> = self
+    pub fn constructors(&self) -> BTreeMap<String, (String, Vec<(Option<String>, u32)>)> {
+        let methods: Vec<(String, String, Vec<(Option<String>, u32)>)> = self
             .spec
             .constructors
             .iter()
@@ -52,7 +64,19 @@ impl Metadata {
                         "".into()
                     },
                     c.selector.clone(),
-                    c.args.iter().map(|a| a.r#type.r#type).collect(),
+                    c.args
+                        .iter()
+                        .map(|a| {
+                            (
+                                if !a.r#type.display_name.is_empty() {
+                                    Some(a.r#type.display_name[0].clone())
+                                } else {
+                                    None
+                                },
+                                a.r#type.r#type,
+                            )
+                        })
+                        .collect(),
                 )
             })
             .collect();
@@ -131,5 +155,5 @@ pub struct Arg {
 #[serde(rename_all = "camelCase")]
 pub struct Type {
     pub display_name: Vec<String>,
-    pub r#type: u8,
+    pub r#type: u32,
 }
