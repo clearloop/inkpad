@@ -5,7 +5,7 @@ mod cmd;
 mod result;
 mod store;
 mod tx;
-mod util;
+pub mod util;
 
 pub use self::{
     result::{Error, Result},
