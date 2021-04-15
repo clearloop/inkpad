@@ -13,7 +13,7 @@ parity-wasm = "0.41.0"
 serde_json = "1.0.64"
 serde = { version = "1.0.125", features = ["derive"] }
 snafu = "0.6.10"
-wasmi = { git = "https://github.com/patractlabs/wasmi.git", branch = "v0.7.0" }
+derivative = "2.2.0"
 
 # ceres dependencies
 ceres-ri = {path = "../ri", optional = true }

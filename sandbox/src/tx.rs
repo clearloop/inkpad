@@ -7,12 +7,12 @@ use serde::{Deserialize, Serialize};
 /// Chain State
 #[derive(Clone, Encode, Decode, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Transaction {
-    caller: [u8; 32],
-    address: [u8; 32],
-    balance: u64,
-    value_transferred: u64,
-    now: [u8; 32],
-    minimum_balance: u64,
+    pub caller: [u8; 32],
+    pub address: [u8; 32],
+    pub balance: u64,
+    pub value_transferred: u64,
+    pub now: [u8; 32],
+    pub minimum_balance: u64,
 }
 
 impl Default for Transaction {

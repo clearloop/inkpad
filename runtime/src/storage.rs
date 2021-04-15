@@ -7,11 +7,11 @@ use alloc::vec::Vec;
 
 /// Storage interfaces
 pub trait Storage {
-    // Set storage by code hash
+    /// Set storage by code hash
     fn set(&mut self, code_hash: StorageKey, data: BTreeMap<StorageKey, Vec<u8>>) -> Result<()>;
 
     /// Get storage by code hash
-    fn get(&self, code_hash: StorageKey) -> Option<&BTreeMap<StorageKey, Vec<u8>>>;
+    fn get(&self, code_hash: StorageKey) -> Option<BTreeMap<StorageKey, Vec<u8>>>;
 
     /// New state
     fn new_state(&self) -> BTreeMap<StorageKey, Vec<u8>>;
@@ -36,8 +36,12 @@ impl Storage for MemoryStorage {
         }
     }
 
-    fn get(&self, code_hash: StorageKey) -> Option<&BTreeMap<StorageKey, Vec<u8>>> {
-        self.0.get(&code_hash)
+    fn get(&self, code_hash: StorageKey) -> Option<BTreeMap<StorageKey, Vec<u8>>> {
+        if let Some(map) = self.0.get(&code_hash) {
+            Some(map.clone())
+        } else {
+            None
+        }
     }
 
     /// New state

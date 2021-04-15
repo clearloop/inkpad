@@ -6,7 +6,7 @@ use parity_wasm::elements::{External, Module};
 const IMPORT_MODULE_MEMORY: &str = "env";
 
 /// Parse `Vec<String>` to `Vec<RuntimeValue>`
-pub fn parse_args(selector: &str, args: &[&str], tys: Vec<u8>) -> Result<Vec<u8>> {
+pub fn parse_args(selector: &str, args: &[&str], tys: Vec<u32>) -> Result<Vec<u8>> {
     if args.len() != tys.len() {
         return Err(Error::InvalidArgumentLength);
     }
