@@ -1,5 +1,8 @@
-//! Run command call
-use crate::Opt;
+//! List all contracts
+use crate::{Result, Tx};
+use ceres_runtime::Runtime;
 
-/// Run command call
-pub fn run(opt: Opt) {}
+/// List all contracts
+pub fn exec(rt: &Runtime, tx: Tx) -> Result<()> {
+    Ok(())
+}

@@ -1,9 +1,9 @@
 //! Decoder of *.contract
 use ceres_std::{BTreeMap, String, Vec};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// A struct for operating *.contract
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Metadata {
     pub source: Source,
     pub contract: Contract,
@@ -65,7 +65,7 @@ impl Metadata {
 }
 
 /// Source section in *.contract
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Source {
     /// code hash
     pub hash: String,
@@ -75,21 +75,21 @@ pub struct Source {
 }
 
 /// Contract section in *.contract
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Contract {
     /// Just for displaying this on UIs
     pub name: String,
 }
 
 /// ABI of methods
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Spec {
     pub constructors: Vec<Constructor>,
     pub messages: Vec<Message>,
 }
 
 /// Constructor
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Constructor {
     pub args: Vec<Arg>,
     pub docs: Vec<String>,
@@ -98,7 +98,7 @@ pub struct Constructor {
 }
 
 /// Message
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Message {
     pub args: Vec<Arg>,
@@ -117,14 +117,14 @@ pub struct Message {
 }
 
 /// Custom arg interface
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Arg {
     pub name: String,
     pub r#type: Type,
 }
 
 /// Type defination
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Type {
     pub display_name: Vec<String>,

@@ -24,6 +24,9 @@ pub struct Tx {
     /// minimum balance
     #[structopt(long, short)]
     pub minimum_balance: Option<u64>,
+    /// Arguments
+    #[structopt(long, short, name = "string,")]
+    pub args: Vec<String>,
 }
 
 impl Tx {

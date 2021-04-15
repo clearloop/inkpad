@@ -2,37 +2,33 @@
 use crate::Tx;
 use structopt::StructOpt;
 
-/// Ceres command tool
+pub mod call;
+pub mod deploy;
+pub mod info;
+pub mod list;
+
 #[derive(Debug, StructOpt)]
 #[structopt(name = "ceres")]
-pub enum Opt {
+pub struct Opt {
+    /// Target contract
+    #[structopt(
+        name = "*.contract | name | code-hash",
+        help = "If empty, ceres will load the last contract which has been executed"
+    )]
+    pub contract: String,
+    #[structopt(subcommand)]
+    pub command: Command,
+}
+
+/// Ceres command tool
+#[derive(Debug, StructOpt)]
+pub enum Command {
+    /// Lists all contracts
+    List,
     /// Prints info of *.contract
-    Info {
-        /// Target contract
-        #[structopt(long, short, name = "*.contract | name | code-hash")]
-        contract: String,
-    },
-    /// Call a deploy method
-    Deploy {
-        /// Target contract
-        #[structopt(long, short, name = "*.contract | name | code-hash")]
-        contract: String,
-        /// Arguments
-        #[structopt(long, short)]
-        args: Vec<String>,
-        /// Transaction config
-        #[structopt(flatten)]
-        tx: Tx,
-    },
-    /// Call a call method
-    Call {
-        /// Target contract
-        #[structopt(long, short, name = "*.contract | name | code-hash")]
-        contract: String,
-        /// Arguments
-        args: Vec<String>,
-        /// Transaction config
-        #[structopt(flatten)]
-        tx: Tx,
-    },
+    Info,
+    /// Calls a deploy method
+    Deploy(Tx),
+    /// Calls a call method
+    Call(Tx),
 }

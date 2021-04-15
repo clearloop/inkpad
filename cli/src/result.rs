@@ -13,6 +13,14 @@ pub enum Error {
     SledError(#[from] sled::Error),
     #[error("`{0}`")]
     Curstom(&'static str),
+    #[error("`{0}`")]
+    IoError(#[from] std::io::Error),
+    #[error("`{0}`")]
+    RuntimeError(#[from] ceres_runtime::Error),
+    #[error("`{0}`")]
+    ParseContractFailed(String),
+    #[error("`{0}`")]
+    SerializeFailed(#[from] bincode::Error),
 }
 
 /// Ceres result

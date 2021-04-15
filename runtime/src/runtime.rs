@@ -10,7 +10,7 @@ use parity_wasm::elements::Module;
 pub struct Runtime {
     pub sandbox: Rc<RefCell<Sandbox>>,
     instance: Instance<Sandbox>,
-    metadata: Metadata,
+    pub metadata: Metadata,
 }
 
 impl Runtime {
@@ -23,12 +23,35 @@ impl Runtime {
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
-            MemoryStorage::new(),
+            &MemoryStorage::new(),
+        )?)
+    }
+
+    /// Create runtime from contract
+    pub fn from_contract_and_storage(contract: &[u8], storage: &impl Storage) -> Result<Runtime> {
+        let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
+            .map_err(|_| Error::DecodeContractFailed)?;
+
+        Ok(Self::new(
+            &hex::decode(&meta.source.wasm.as_bytes()[2..])
+                .map_err(|_| Error::DecodeContractFailed)?,
+            meta,
+            storage,
+        )?)
+    }
+
+    /// Create runtime from contract
+    pub fn from_metadata_and_storage(meta: Metadata, storage: &impl Storage) -> Result<Runtime> {
+        Ok(Self::new(
+            &hex::decode(&meta.source.wasm.as_bytes()[2..])
+                .map_err(|_| Error::DecodeContractFailed)?,
+            meta,
+            storage,
         )?)
     }
 
     /// New runtime
-    pub fn new(b: &[u8], metadata: Metadata, storage: impl Storage) -> Result<Runtime> {
+    pub fn new(b: &[u8], metadata: Metadata, storage: &impl Storage) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
             el = match el.parse_names() {

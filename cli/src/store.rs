@@ -1,11 +1,12 @@
 //! Storage implementation
-use ceres_runtime::{Error, Result};
+use ceres_runtime::{Error, Metadata, Result, Runtime};
 use ceres_std::BTreeMap;
 use etc::{Etc, FileSystem, Meta};
 use sled::Db;
+use std::{fs, path::PathBuf};
 
 /// A ceres storage implementation using sled
-pub struct Storage(Db);
+pub struct Storage(pub Db);
 
 impl Storage {
     /// New storage
@@ -15,6 +16,33 @@ impl Storage {
         etc.mkdir(".ceres")?;
 
         Ok(Storage(sled::open(etc.real_path()?)?))
+    }
+
+    /// Contract instance
+    ///
+    /// * From path of `*.contract`
+    /// * From name of `*.contract`
+    /// * From code_hash of `*.contract`
+    pub fn rt(&self, contract: &str) -> crate::Result<Runtime> {
+        let storage = Storage::new()?;
+        let if_path = PathBuf::from(contract);
+
+        Ok(if if_path.exists() {
+            let source = fs::read(if_path)?;
+            let rt = Runtime::from_contract_and_storage(&source, &storage)?;
+            storage.0.insert(
+                &rt.metadata.contract.name,
+                bincode::serialize(&rt.metadata.clone())?,
+            )?;
+            rt
+        } else if let Ok(Some(contract)) = storage.0.get(contract.as_bytes()) {
+            Runtime::from_metadata_and_storage(
+                bincode::deserialize::<Metadata>(&contract)?,
+                &storage,
+            )?
+        } else {
+            return Err(crate::Error::ParseContractFailed(contract.to_string()));
+        })
     }
 }
 
