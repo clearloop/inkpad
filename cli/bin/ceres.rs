@@ -1,3 +1,3 @@
 fn main() {
-    ceres_cli::run();
+    ceres_cli::run().unwrap();
 }

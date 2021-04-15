@@ -12,7 +12,7 @@ pub enum Error {
     #[error("Sled Error")]
     SledError(#[from] sled::Error),
     #[error("`{0}`")]
-    Curstom(&'static str),
+    Custom(&'static str),
     #[error("`{0}`")]
     IoError(#[from] std::io::Error),
     #[error("`{0}`")]

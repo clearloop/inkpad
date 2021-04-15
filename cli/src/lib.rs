@@ -17,15 +17,16 @@ pub use self::{
 /// Run CLI
 pub fn run() -> Result<()> {
     let opt = Opt::from_args();
-    let store = Storage::new()?;
+    let mut store = Storage::new()?;
     let rt = store.rt(&opt.contract)?;
 
     match opt.command {
-        Command::Info => cmd::list::exec(&rt)?,
-        Command::List => cmd::info::exec(&rt)?,
+        Command::List => cmd::list::exec(&rt)?,
+        Command::Info => cmd::info::exec(&rt)?,
         Command::Deploy(tx) => cmd::deploy::exec(&rt, tx)?,
         Command::Call(tx) => cmd::call::exec(&rt, tx)?,
     }
 
+    store.0.flush()?;
     Ok(())
 }

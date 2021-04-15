@@ -12,10 +12,10 @@ impl Storage {
     /// New storage
     pub fn new() -> crate::Result<Self> {
         let etc =
-            Etc::new(&dirs::home_dir().ok_or(crate::Error::Curstom("Could not find home dir"))?)?;
-        etc.mkdir(".ceres")?;
+            Etc::new(&dirs::home_dir().ok_or(crate::Error::Custom("Could not find home dir"))?)?;
 
-        Ok(Storage(sled::open(etc.real_path()?)?))
+        let storage = Storage(sled::open(etc.open(".ceres/contracts")?.real_path()?)?);
+        Ok(storage)
     }
 
     /// Contract instance
@@ -23,23 +23,22 @@ impl Storage {
     /// * From path of `*.contract`
     /// * From name of `*.contract`
     /// * From code_hash of `*.contract`
-    pub fn rt(&self, contract: &str) -> crate::Result<Runtime> {
-        let storage = Storage::new()?;
-        let if_path = PathBuf::from(contract);
+    pub fn rt(&mut self, contract: &str) -> crate::Result<Runtime> {
+        if contract.is_empty() {
+            return Err(crate::Error::Custom("Please provide an ink! contract"));
+        }
 
+        let if_path = PathBuf::from(contract);
         Ok(if if_path.exists() {
             let source = fs::read(if_path)?;
-            let rt = Runtime::from_contract_and_storage(&source, &storage)?;
-            storage.0.insert(
+            let rt = Runtime::from_contract_and_storage(&source, self)?;
+            self.0.insert(
                 &rt.metadata.contract.name,
                 bincode::serialize(&rt.metadata.clone())?,
             )?;
             rt
-        } else if let Ok(Some(contract)) = storage.0.get(contract.as_bytes()) {
-            Runtime::from_metadata_and_storage(
-                bincode::deserialize::<Metadata>(&contract)?,
-                &storage,
-            )?
+        } else if let Ok(Some(contract)) = self.0.get(contract.as_bytes()) {
+            Runtime::from_metadata_and_storage(bincode::deserialize::<Metadata>(&contract)?, self)?
         } else {
             return Err(crate::Error::ParseContractFailed(contract.to_string()));
         })

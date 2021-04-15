@@ -4,5 +4,6 @@ use ceres_runtime::Runtime;
 
 /// List all contracts
 pub fn exec(rt: &Runtime) -> Result<()> {
+    println!("{:?}", rt.metadata);
     Ok(())
 }
