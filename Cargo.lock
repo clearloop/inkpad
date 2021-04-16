@@ -206,6 +206,7 @@ dependencies = [
  "etc",
  "hex",
  "serde",
+ "serde_json",
  "sled",
  "structopt",
  "thiserror",

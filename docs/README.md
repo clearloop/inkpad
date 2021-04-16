@@ -15,7 +15,7 @@ $ cargo install --git https://github.com/patractlabs/ceres --bin ceres
 
 ## Usage
 
-```
+```text
 ceres 0.1.0
 Ceres command tool
 
@@ -39,7 +39,7 @@ SUBCOMMANDS:
 
 ## Example
 
-```shell
+```text
 $ ceres flipper.contract deploy default
 Deploy contract succeed!
 
