@@ -9,7 +9,7 @@ mod metadata;
 mod result;
 mod runtime;
 mod storage;
-mod util;
+pub mod util;
 
 type StorageKey = [u8; 32];
 

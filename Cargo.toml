@@ -4,9 +4,11 @@ version = "0.1.0"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 
+
 [[bin]]
 name = "ceres"
 path = "bin/ceres.rs"
+
 
 [dependencies]
 etc = "0.1.16"
@@ -23,8 +25,17 @@ ceres-std = { path = "crates/std", features = [ "std" ] }
 ceres-runtime = { path = "crates/runtime", features = [ "std" ] }
 ceres-sandbox = { path = "crates/sandbox", features = [ "std" ] }
 
+
 [dev-dependencies]
+parity-wasm = "0.41.0"
 serde_json = "1.0.64"
+wat = "1.0.37"
+
+# ceres dev
+ceres-executor = { path = "crates/executor", features = [ "std" ] }
+ceres-seal = { path = "crates/seal", features = [ "std" ]}
+ceres-ri = { path = "crates/ri", features = [ "std" ]}
+
 
 [workspace]
 members = [
@@ -36,6 +47,7 @@ members = [
   "crates/runtime",
   "crates/executor",
 ]
+
 
 [patch.crates-io]
 parity-wasm = { git = "https://github.com/patractlabs/parity-wasm", branch = "v0.41.0" }
