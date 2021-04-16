@@ -54,7 +54,7 @@ pub enum TrapCode {
 }
 
 /// Wasm Trap
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Trap {
     /// Trap code
     pub code: TrapCode,

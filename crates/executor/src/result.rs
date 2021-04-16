@@ -2,16 +2,21 @@
 use crate::trap::Trap;
 use ceres_std::Vec;
 
+#[cfg(not(feature = "std"))]
+use wasmi::Error as E;
+#[cfg(feature = "std")]
+type E = String;
+
 /// Ceres executor errors
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Error {
     InitMemoryFailed,
     OutOfBounds,
-    InitModuleFailed,
+    InitModuleFailed(E),
     ExecuteFailed,
     Trap(Trap),
     CreateWasmtimeConfigFailed,
-    GetExternalFailed,
+    GetExternalFailed(String),
     DecodeRuntimeValueFailed,
     OutputBufferTooSmall,
     WrongArugmentLength,
