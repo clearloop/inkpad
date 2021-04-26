@@ -1,6 +1,6 @@
 //! Ceres executor result
 use crate::trap::Trap;
-use ceres_std::Vec;
+use ceres_std::{fmt, Vec};
 
 #[cfg(not(feature = "std"))]
 use wasmi::Error as E;
@@ -13,7 +13,7 @@ pub enum Error {
     InitMemoryFailed,
     OutOfBounds,
     InitModuleFailed(E),
-    ExecuteFailed,
+    ExecuteFailed(String),
     Trap(Trap),
     CreateWasmtimeConfigFailed,
     GetExternalFailed(String),
@@ -30,6 +30,13 @@ pub enum Error {
     OutOfGas,
     // Custom Error
     Custom(&'static str),
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> core::result::Result<(), fmt::Error> {
+        f.write_str(&format!("{:?}", &self))?;
+        Ok(())
+    }
 }
 
 /// Ceres executor result

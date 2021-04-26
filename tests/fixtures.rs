@@ -3,6 +3,7 @@ use ceres_ri::Instance as RI;
 use ceres_runtime::util;
 use ceres_sandbox::Sandbox;
 use ceres_seal::pallet_contracts;
+use parity_scale_codec::Encode;
 use parity_wasm::elements::Module;
 
 const ALICE: &str = "0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d";
@@ -20,7 +21,9 @@ fn fixture(name: &str) -> (Result<Instance<Sandbox>, ceres_executor::Error>, San
     let limit = util::scan_imports(&el).expect("Scan imports failed");
     let mem = Memory::new(limit.0, limit.1).expect("New memory failed");
     let mut sandbox = Sandbox::new(mem.clone(), Default::default());
-    sandbox.tx.caller = util::parse_code_hash(&ALICE).expect("Parse addr failed");
+    sandbox
+        .tx
+        .set_caller(util::parse_code_hash(&ALICE).expect("Parse addr failed"));
 
     // Generate Instance
     let mut builder = Builder::new().add_host_parcels(pallet_contracts(RI));
@@ -39,3 +42,17 @@ fn instantiate_and_call_deposit_event() {
 
     assert_eq!(s.events, vec![(vec![], vec![1, 2, 3, 4])]);
 }
+
+// // TODO: invalid memory reference
+// //
+// #[test]
+// fn deposit_event_max_value_limit() {
+//     let (r, mut s) = fixture("event_size");
+//     let mut i = r.expect("Instantiate failed");
+//     s.tx.set_balance(30_000);
+//     i.invoke("deploy", &[], &mut s).expect("Deploy failed");
+//
+//     // Test max value size
+//     s.input = Some(s.max_value_size().encode());
+//     i.invoke("call", &[], &mut s).expect("Invoke failed");
+// }

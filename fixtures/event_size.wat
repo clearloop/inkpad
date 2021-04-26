@@ -19,20 +19,20 @@
 		(call $seal_input (i32.const 4) (i32.const 0))
 
 		;; assert input size == 4
-		(call $assert
-			(i32.eq
-				(i32.load (i32.const 0))
-				(i32.const 4)
-			)
-		)
+		;; (call $assert
+		;; 	(i32.eq
+		;; 		(i32.load (i32.const 0))
+		;; 		(i32.const 4)
+		;; 	)
+		;; )
 
 		;; place a garbage value in storage, the size of which is specified by the call input.
-		(call $seal_deposit_event
-			(i32.const 0) ;; topics_ptr
-			(i32.const 0) ;; topics_len
-			(i32.const 0) ;; data_ptr
-			(i32.load (i32.const 4)) ;; data_len
-		)
+		;;(call $seal_deposit_event
+		;;	(i32.const 0) ;; topics_ptr
+		;;	(i32.const 0) ;; topics_len
+		;;	(i32.const 0) ;; data_ptr
+		;;	(i32.load (i32.const 4)) ;; data_len
+		;;)
 	)
 
 	(func (export "deploy"))

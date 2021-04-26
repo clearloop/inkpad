@@ -4,7 +4,7 @@ use crate::{
     derive::{self, ReturnValue, Value},
     Error,
 };
-use wasmtime::{Extern, Global, Instance as InstanceRef, Module, Trap, Val};
+use wasmtime::{Extern, Global, Instance as InstanceRef, Module, Val};
 
 fn extern_global(extern_: &Extern) -> Option<&Global> {
     match extern_ {
@@ -56,21 +56,26 @@ impl<T> derive::Instance<T> for Instance<T> {
             .map(|v| util::to_val(v))
             .collect::<Vec<_>>();
 
-        let func = self.instance.get_func(name).ok_or(Error::ExecuteFailed)?;
+        let func = self
+            .instance
+            .get_func(name)
+            .ok_or(Error::ExecuteFailed(format!(
+                "Get function {} failed",
+                name
+            )))?;
         match func.call(&args) {
             Ok(result) => Ok(util::to_ret_val(if result.len() != 1 {
                 return Ok(ReturnValue::Unit);
             } else {
                 result[0].to_owned()
             })
-            .ok_or(Error::ExecuteFailed)?),
-            Err(e) => {
-                if let Ok(trap) = e.downcast::<Trap>() {
-                    Err(trap.into())
-                } else {
-                    Err(Error::ExecuteFailed)
-                }
-            }
+            .ok_or(Error::ExecuteFailed(format!(
+                "Call function {} failed",
+                name
+            )))?),
+            Err(e) => Err(e
+                .downcast::<Error>()
+                .map_err(|e| Error::ExecuteFailed(e.to_string()))?),
         }
     }
 

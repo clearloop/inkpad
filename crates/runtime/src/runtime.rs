@@ -133,9 +133,10 @@ impl Runtime {
             args,
             tys.iter().map(|ty| ty.1).collect(),
         )?);
-        self.instance
-            .invoke("deploy", &[], &mut bm)
-            .map_err(|_| Error::DeployContractFailed)?;
+        self.instance.invoke("deploy", &[], &mut bm).map_err(|e| {
+            panic!("{:?}", e);
+            // Error::DeployContractFailed
+        })?;
 
         Ok(())
     }
