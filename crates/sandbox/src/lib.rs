@@ -62,7 +62,7 @@ pub struct Sandbox {
     pub tx: tx::Transaction,
     pub state: BTreeMap<StorageKey, Vec<u8>>,
     memory: Memory,
-    events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
+    pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
 }
 
 impl Sandbox {

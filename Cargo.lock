@@ -199,17 +199,23 @@ name = "ceres-cli"
 version = "0.1.0"
 dependencies = [
  "bincode",
+ "ceres-executor",
+ "ceres-ri",
  "ceres-runtime",
  "ceres-sandbox",
+ "ceres-seal",
  "ceres-std",
  "dirs",
  "etc",
  "hex",
+ "parity-scale-codec",
+ "parity-wasm",
  "serde",
  "serde_json",
  "sled",
  "structopt",
  "thiserror",
+ "wat",
 ]
 
 [[package]]

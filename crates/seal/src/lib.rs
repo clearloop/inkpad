@@ -29,6 +29,7 @@ pub fn pallet_contracts(
         contract::SealTombstoneDeposit::pack(),
         contract::SealRentAllowance::pack(),
         contract::SealSetRentAllowance::pack(),
+        event::SealDepositEvent::pack(),
         fun::SealInput::pack(),
         fun::SealReturn::pack(),
         fun::SealTerminate::pack(),

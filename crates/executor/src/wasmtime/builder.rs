@@ -50,7 +50,9 @@ impl<T> Builder<T> {
                 continue;
             }
 
-            let external = self.map.get(&key).ok_or(Error::GetExternalFailed)?;
+            let external = self.map.get(&key).ok_or(Error::GetExternalFailed(
+                String::from_utf8_lossy(&key.1).to_string(),
+            ))?;
             match external {
                 External::Func(func) => match ty.ty() {
                     ExternType::Func(sig) => {
