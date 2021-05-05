@@ -4,7 +4,7 @@
 	(import "env" "memory" (memory 16 16))
 
 	;; [0, 4) size of the input buffer
-	(data (i32.const 0) "\04")
+	(data (i32.const 0) "\08")
 
 	(func $assert (param i32)
 		(block $ok
