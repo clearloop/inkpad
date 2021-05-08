@@ -9,7 +9,6 @@ use parity_scale_codec::Encode;
 use parity_wasm::elements::Module;
 
 const ALICE: &str = "0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d";
-// const BOB: &str = "0x8eaf04151687736326c9fea17e25fc5287613693c912909cb226aa4794f26a48";
 
 /// Get a fixture and compile to instance
 fn fixture(
@@ -79,3 +78,9 @@ fn deposit_event_max_value_limit() {
         assert!(i.invoke("call", &[], &mut bm).is_ok());
     });
 }
+
+// #[test]
+// fn call_return_code() {}
+
+// #[test]
+// fn instantiate_return_code() {}
