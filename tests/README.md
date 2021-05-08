@@ -11,16 +11,14 @@ Tests below are removed from `pallet-contracts`, because `ceres` doesn't care ab
 
 ### Event
 
-* `instantiate_and_call_deposit_event`
-
 * ~~`deposit_event_max_value_limit`~~
 
 
 ### Gas
 
-* `run_out_of_gas`
+* ~~`run_out_of_gas`~~
 
-* `reinstrument_does_charge`
+* ~~`reinstrument_does_charge`~~
 
 
 ### Storage
