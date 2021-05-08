@@ -4,7 +4,7 @@ use ceres_runtime::util;
 use ceres_sandbox::Sandbox;
 use ceres_seal::pallet_contracts;
 use ceres_std::Rc;
-use core::cell::RefCell;
+use core::cell::{RefCell, RefMut};
 use parity_scale_codec::Encode;
 use parity_wasm::elements::Module;
 
@@ -39,6 +39,24 @@ fn fixture(
     (Instance::new(&wasm, &builder, &mut bm), sandbox)
 }
 
+/// Shortcut of fxitures
+fn f(name: &str, f: fn(i: Instance<Sandbox>, s: RefMut<Sandbox>)) {
+    let (r, s) = fixture(name);
+
+    // set initialized balance
+    let mut bm = s.borrow_mut();
+    bm.tx.set_balance(1_000_000);
+
+    // deploy by default
+    let mut instance = r.expect("Instantiate wasm module failed");
+    instance
+        .invoke("deploy", &[], &mut bm)
+        .expect("Deploy failed");
+
+    // closures
+    f(instance, bm)
+}
+
 #[test]
 fn instantiate_and_call_deposit_event() {
     let (r, s) = fixture("return_from_start_fn");
@@ -53,14 +71,11 @@ fn instantiate_and_call_deposit_event() {
 
 #[test]
 fn deposit_event_max_value_limit() {
-    let (r, s) = fixture("event_size");
-    let mut i = r.expect("Instantiate failed");
-    let mut bm = s.borrow_mut();
-    bm.tx.set_balance(30_000);
-    i.invoke("deploy", &[], &mut bm).expect("Deploy failed");
+    f("event_size", |mut i, mut bm| {
+        bm.input = Some(bm.max_value_size().encode());
+        i.invoke("call", &[], &mut bm).expect("Invoke failed");
 
-    // Test max value size
-    println!("max value size: {:?}", bm.max_value_size().encode());
-    bm.input = Some(bm.max_value_size().encode());
-    i.invoke("call", &[], &mut bm).expect("Invoke failed");
+        bm.input = Some((bm.max_value_size() + 1).encode());
+        assert!(i.invoke("call", &[], &mut bm).is_ok());
+    });
 }

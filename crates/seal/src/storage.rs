@@ -39,6 +39,9 @@ pub fn seal_clear_storage(key_ptr: u32) -> Result<ReturnValue> {
 /// Storing an empty value is disallowed.
 #[host(seal0)]
 pub fn seal_set_storage(key_ptr: u32, value_ptr: u32, value_len: u32) -> Result<ReturnValue> {
+    if value_len > sandbox.max_value_size() {
+        return Err(Error::TopicValueTooLarge);
+    }
     let mut key: StorageKey = [0; 32];
     sandbox.read_sandbox_memory_into_buf(key_ptr, &mut key)?;
     let value = sandbox.read_sandbox_memory(value_ptr, value_len)?;
