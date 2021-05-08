@@ -50,5 +50,8 @@ members = [
 ]
 
 
+[profile.release]
+codegen-units=1
+
 [patch.crates-io]
 parity-wasm = { git = "https://github.com/patractlabs/parity-wasm", branch = "v0.41.0" }
