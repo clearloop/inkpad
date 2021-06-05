@@ -78,9 +78,3 @@ fn deposit_event_max_value_limit() {
         assert!(i.invoke("call", &[], &mut bm).is_ok());
     });
 }
-
-// #[test]
-// fn call_return_code() {}
-
-// #[test]
-// fn instantiate_return_code() {}

@@ -231,6 +231,7 @@ dependencies = [
 name = "ceres-executor"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "ceres-std",
  "wasmi",
  "wasmtime",

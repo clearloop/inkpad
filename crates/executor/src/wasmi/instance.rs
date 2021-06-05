@@ -5,7 +5,7 @@ use crate::{
     Error, Result,
 };
 use ::wasmi::{Module, ModuleInstance, ModuleRef};
-use ceres_std::Vec;
+use ceres_std::{ToString, Vec};
 
 /// WASMi instance
 pub struct Instance<T> {
@@ -31,7 +31,7 @@ impl<T> derive::Instance<T> for Instance<T> {
             };
             let instance = not_started_instance
                 .run_start(&mut externals)
-                .map_err(|_| Error::ExecuteFailed)?;
+                .map_err(|e| Error::ExecuteFailed(e.to_string()))?;
             instance
         };
 
@@ -54,7 +54,7 @@ impl<T> derive::Instance<T> for Instance<T> {
             Ok(Some(v)) => Ok(v.into()),
             Err(e) => Err(match e {
                 ::wasmi::Error::Trap(t) => Error::Trap(t.into()),
-                _ => Error::ExecuteFailed,
+                e => Error::ExecuteFailed(e.to_string()),
             }),
         }
     }
