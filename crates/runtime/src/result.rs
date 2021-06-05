@@ -3,7 +3,7 @@ use ceres_std::{String, Vec};
 use snafu::Snafu;
 
 /// Ceres Error
-#[derive(Snafu, Debug)]
+#[derive(Snafu, Debug, Eq, PartialEq)]
 pub enum Error {
     /// Memory out of bounds
     OutOfBounds,
@@ -27,7 +27,7 @@ pub enum Error {
     /// Deploy contract failed
     DeployContractFailed,
     #[snafu(display("Call contract failed {}", error))]
-    CallContractFailed { error: String },
+    CallContractFailed { error: ceres_executor::Error },
     /// Decode selector failed
     DecodeSelectorFailed,
     /// Decode contract failed

@@ -168,9 +168,7 @@ impl Runtime {
         if let Some(ret) = bm.ret.take() {
             return Ok(ret);
         } else {
-            res.map_err(|e| Error::CallContractFailed {
-                error: format!("{:?}", e),
-            })?;
+            res.map_err(|error| Error::CallContractFailed { error })?;
         }
 
         Ok(vec![])

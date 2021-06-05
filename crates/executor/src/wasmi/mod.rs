@@ -4,6 +4,7 @@ mod external;
 mod func;
 mod instance;
 mod memory;
+// mod result;
 mod trap;
 mod value;
 

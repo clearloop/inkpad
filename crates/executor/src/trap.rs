@@ -1,5 +1,6 @@
 //! wasm traps
 use ceres_std::{String, Vec};
+// use core::convert::TryFrom;
 
 /// A trap code describing the reason for a trap.
 ///
@@ -70,3 +71,11 @@ impl From<TrapCode> for Trap {
         }
     }
 }
+
+// impl TryFrom<anyhow::Error> for Trap {
+//     type Error = crate::Error;
+//
+//     fn try_from(e: anyhow::Error) -> Result<Trap, Self::Error> {
+//         e.downcast::<Error::>
+//     }
+// }

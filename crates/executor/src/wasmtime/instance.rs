@@ -29,12 +29,12 @@ impl<T> derive::Instance<T> for Instance<T> {
         } else {
             &dummy_store
         };
-        let module = Module::from_binary(&store.engine(), code)
-            .map_err(|e| Error::InitModuleFailed(e.to_string()))?;
+        let module =
+            Module::from_binary(&store.engine(), code).map_err(|_| Error::InitModuleFailed)?;
         let imports =
             env_def_builder.resolve(store, state, module.imports().collect::<Vec<_>>())?;
-        let instance = InstanceRef::new(store, &module, &imports)
-            .map_err(|e| Error::InitModuleFailed(e.to_string()))?;
+        let instance =
+            InstanceRef::new(store, &module, &imports).map_err(|_| Error::InitModuleFailed)?;
 
         Ok(Instance {
             instance,
@@ -56,26 +56,19 @@ impl<T> derive::Instance<T> for Instance<T> {
             .map(|v| util::to_val(v))
             .collect::<Vec<_>>();
 
-        let func = self
-            .instance
-            .get_func(name)
-            .ok_or(Error::ExecuteFailed(format!(
-                "Get function {} failed",
-                name
-            )))?;
+        let func = self.instance.get_func(name).ok_or(Error::ExecuteFailed)?;
         match func.call(&args) {
             Ok(result) => Ok(util::to_ret_val(if result.len() != 1 {
                 return Ok(ReturnValue::Unit);
             } else {
                 result[0].to_owned()
             })
-            .ok_or(Error::ExecuteFailed(format!(
-                "Call function {} failed",
-                name
-            )))?),
-            Err(e) => Err(e
-                .downcast::<Error>()
-                .map_err(|e| Error::ExecuteFailed(e.to_string()))?),
+            .ok_or(Error::ExecuteFailed)?),
+            Err(e) => Err(if let Ok(trap) = e.downcast::<::wasmtime::Trap>() {
+                Error::from(trap)
+            } else {
+                Error::ExecuteFailed
+            }),
         }
     }
 

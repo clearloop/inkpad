@@ -1,19 +1,20 @@
 //! Ceres executor result
 use crate::trap::Trap;
-use ceres_std::{fmt, Vec};
+use ceres_std::{fmt, format, String, Vec};
 
-#[cfg(not(feature = "std"))]
-use wasmi::Error as E;
-#[cfg(feature = "std")]
-type E = String;
+// #[cfg(not(feature = "std"))]
+// use wasmi::Error as E;
+// #[cfg(feature = "std")]
+// type E = String;
 
 /// Ceres executor errors
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum Error {
     InitMemoryFailed,
+    /// Memory outof bounds
     OutOfBounds,
-    InitModuleFailed(E),
-    ExecuteFailed(String),
+    InitModuleFailed,
+    ExecuteFailed,
     Trap(Trap),
     CreateWasmtimeConfigFailed,
     GetExternalFailed(String),
@@ -21,21 +22,32 @@ pub enum Error {
     OutputBufferTooSmall,
     WrongArugmentLength,
     SetStorageFailed,
-    ReturnData { flags: u32, data: Vec<u8> },
-    // Topics
+    ReturnData {
+        flags: u32,
+        data: Vec<u8>,
+    },
+    /// Topics
     TooManyTopics,
     DuplicateTopics,
     TopicValueTooLarge,
-    // Gas
+    /// Gas
     OutOfGas,
-    // Custom Error
+    /// Custom Error
     Custom(&'static str),
+    /// Downcast anyhow error failed
+    AnyHow,
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> core::result::Result<(), fmt::Error> {
         f.write_str(&format!("{:?}", &self))?;
         Ok(())
+    }
+}
+
+impl From<anyhow::Error> for Error {
+    fn from(_: anyhow::Error) -> Error {
+        Error::AnyHow
     }
 }
 
