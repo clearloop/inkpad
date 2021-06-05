@@ -8,13 +8,13 @@ use ceres_std::{fmt, format, String, Vec};
 // type E = String;
 
 /// Ceres executor errors
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum Error {
     InitMemoryFailed,
     /// Memory outof bounds
     OutOfBounds,
     InitModuleFailed,
-    ExecuteFailed(String),
+    ExecuteFailed,
     Trap(Trap),
     CreateWasmtimeConfigFailed,
     GetExternalFailed(String),
@@ -34,12 +34,20 @@ pub enum Error {
     OutOfGas,
     /// Custom Error
     Custom(&'static str),
+    /// Downcast anyhow error failed
+    AnyHow,
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> core::result::Result<(), fmt::Error> {
         f.write_str(&format!("{:?}", &self))?;
         Ok(())
+    }
+}
+
+impl From<anyhow::Error> for Error {
+    fn from(_: anyhow::Error) -> Error {
+        Error::AnyHow
     }
 }
 
