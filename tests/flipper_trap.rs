@@ -15,13 +15,12 @@ fn test_flipper_trap() {
         &[0]
     );
 
-    assert_eq!(
-        rt.call("flip", &[], None).err(),
-        Some(ceres_runtime::Error::CallContractFailed {
-            error: ceres_executor::Error::Trap(Trap {
-                code: TrapCode::UnreachableCodeReached,
-                trace: vec!["wasm trap: unreachable".to_string()],
-            })
-        })
-    )
+    if let Some(ceres_runtime::Error::CallContractFailed {
+        error: ceres_executor::Error::Trap(Trap { code, .. }),
+    }) = rt.call("flip", &[], None).err()
+    {
+        assert_eq!(code, TrapCode::UnreachableCodeReached);
+    } else {
+        panic!("Call flipper_trap with unexpected error");
+    }
 }
