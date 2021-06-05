@@ -2,6 +2,3 @@
 **/*target
 **/*.DS_Store
 **/*.wasm
-
-# Test resources
-fixtures/flipper_trap.contract
