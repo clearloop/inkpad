@@ -1,6 +1,6 @@
 //! wasm traps
 use ceres_std::{String, Vec};
-use core::convert::TryFrom;
+// use core::convert::TryFrom;
 
 /// A trap code describing the reason for a trap.
 ///

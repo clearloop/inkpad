@@ -29,12 +29,12 @@ impl<T> derive::Instance<T> for Instance<T> {
         } else {
             &dummy_store
         };
-        let module = Module::from_binary(&store.engine(), code)
-            .map_err(|e| Error::InitModuleFailed(e.to_string()))?;
+        let module =
+            Module::from_binary(&store.engine(), code).map_err(|_| Error::InitModuleFailed)?;
         let imports =
             env_def_builder.resolve(store, state, module.imports().collect::<Vec<_>>())?;
-        let instance = InstanceRef::new(store, &module, &imports)
-            .map_err(|e| Error::InitModuleFailed(e.to_string()))?;
+        let instance =
+            InstanceRef::new(store, &module, &imports).map_err(|_| Error::InitModuleFailed)?;
 
         Ok(Instance {
             instance,
