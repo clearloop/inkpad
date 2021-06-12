@@ -18,7 +18,7 @@ pub trait Storage {
 }
 
 /// Memory storage
-pub struct MemoryStorage(BTreeMap<StorageKey, BTreeMap<StorageKey, Vec<u8>>>);
+pub struct MemoryStorage(pub BTreeMap<StorageKey, BTreeMap<StorageKey, Vec<u8>>>);
 
 impl MemoryStorage {
     /// New memory storage

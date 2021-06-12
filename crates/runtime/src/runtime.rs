@@ -107,11 +107,12 @@ impl Runtime {
 
         // Create instance
         let instance = Instance::new(
-            &el.to_bytes().map_err(|_| Error::InitModuleFailed)?,
+            &el.to_bytes()
+                .map_err(|error| Error::SerializeFailed { error })?,
             &builder,
             &mut sandbox.borrow_mut(),
         )
-        .map_err(|_| Error::InitModuleFailed)?;
+        .map_err(|error| Error::InitModuleFailed { error })?;
 
         drop(storage_mut);
         Ok(Runtime {

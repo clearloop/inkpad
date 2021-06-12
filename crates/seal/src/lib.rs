@@ -40,6 +40,7 @@ pub fn pallet_contracts(
         transfer::SealValueTransferred::pack(),
         transfer::SealCaller::pack(),
         transfer::SealAddress::pack(),
+        instantiate::SealCall::pack(),
     ];
 
     if ri::RuntimeInterfaces::enabled(&interfaces) {

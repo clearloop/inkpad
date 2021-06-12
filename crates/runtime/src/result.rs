@@ -3,7 +3,7 @@ use ceres_std::{String, Vec};
 use snafu::Snafu;
 
 /// Ceres Error
-#[derive(Snafu, Debug, Eq, PartialEq)]
+#[derive(Snafu, Debug)]
 pub enum Error {
     /// Memory out of bounds
     OutOfBounds,
@@ -22,8 +22,13 @@ pub enum Error {
     CalcuateMemoryLimitFailed,
     /// Failed to alloc memory
     AllocMemoryFailed,
+    #[snafu(display("Serialize failed {}", error))]
+    SerializeFailed {
+        error: parity_wasm::SerializationError,
+    },
     /// Init ModuleInstance failed
-    InitModuleFailed,
+    #[snafu(display("Init module failed {}", error))]
+    InitModuleFailed { error: ceres_executor::Error },
     /// Deploy contract failed
     #[snafu(display("Deploy contract failed {}", error))]
     DeployContractFailed { error: ceres_executor::Error },
@@ -52,6 +57,17 @@ pub enum Error {
     /// Get Contract failed
     GetContractFailed,
 }
+
+impl PartialEq for Error {
+    fn eq(&self, other: &Self) -> bool {
+        match self {
+            Error::SerializeFailed { error: _ } => false,
+            _ => self.eq(other),
+        }
+    }
+}
+
+impl Eq for Error {}
 
 /// Wrapped result
 pub type Result<T> = core::result::Result<T, Error>;
