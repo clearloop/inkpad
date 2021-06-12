@@ -25,7 +25,8 @@ pub enum Error {
     /// Init ModuleInstance failed
     InitModuleFailed,
     /// Deploy contract failed
-    DeployContractFailed,
+    #[snafu(display("Deploy contract failed {}", error))]
+    DeployContractFailed { error: ceres_executor::Error },
     #[snafu(display("Call contract failed {}", error))]
     CallContractFailed { error: ceres_executor::Error },
     /// Decode selector failed

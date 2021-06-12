@@ -17,5 +17,5 @@ pub use self::{
     metadata::Metadata,
     result::{Error, Result},
     runtime::Runtime,
-    storage::Storage,
+    storage::{MemoryStorage, Storage},
 };

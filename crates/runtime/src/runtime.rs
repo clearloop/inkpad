@@ -1,4 +1,4 @@
-//! Ceres Runtimep
+//! Ceres Runtime
 use crate::{storage::MemoryStorage, util, Error, Metadata, Result, Storage};
 use ceres_executor::{Builder, Instance, Memory};
 use ceres_sandbox::{Sandbox, Transaction};
@@ -11,7 +11,7 @@ pub struct Runtime {
     pub sandbox: Rc<RefCell<Sandbox>>,
     instance: Instance<Sandbox>,
     pub metadata: Metadata,
-    storage: Box<dyn Storage>,
+    storage: Rc<RefCell<dyn Storage>>,
 }
 
 impl Runtime {
@@ -24,14 +24,14 @@ impl Runtime {
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
-            MemoryStorage::new(),
+            Rc::new(RefCell::new(MemoryStorage::new())),
         )?)
     }
 
     /// Create runtime from contract
     pub fn from_contract_and_storage(
         contract: &[u8],
-        storage: impl Storage + 'static,
+        storage: Rc<RefCell<impl Storage + 'static>>,
     ) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
             .map_err(|_| Error::DecodeContractFailed)?;
@@ -47,7 +47,7 @@ impl Runtime {
     /// Create runtime from contract
     pub fn from_metadata_and_storage(
         meta: Metadata,
-        storage: impl Storage + 'static,
+        storage: Rc<RefCell<impl Storage + 'static>>,
     ) -> Result<Runtime> {
         Ok(Self::new(
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
@@ -58,7 +58,11 @@ impl Runtime {
     }
 
     /// New runtime
-    pub fn new(b: &[u8], metadata: Metadata, storage: impl Storage + 'static) -> Result<Runtime> {
+    pub fn new(
+        b: &[u8],
+        metadata: Metadata,
+        storage: Rc<RefCell<impl Storage + 'static>>,
+    ) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
             el = match el.parse_names() {
@@ -72,12 +76,13 @@ impl Runtime {
         let mem = Memory::new(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
 
         // Get storage
-        let state = if let Some(state) = storage.get(util::parse_code_hash(&metadata.source.hash)?)
-        {
-            state.clone()
-        } else {
-            storage.new_state()
-        };
+        let storage_mut = storage.borrow_mut();
+        let state =
+            if let Some(state) = storage_mut.get(util::parse_code_hash(&metadata.source.hash)?) {
+                state.clone()
+            } else {
+                storage_mut.new_state()
+            };
 
         // Create Sandbox and Builder
         let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state)));
@@ -108,11 +113,12 @@ impl Runtime {
         )
         .map_err(|_| Error::InitModuleFailed)?;
 
+        drop(storage_mut);
         Ok(Runtime {
             instance,
             metadata,
             sandbox,
-            storage: Box::new(storage),
+            storage,
         })
     }
 
@@ -133,10 +139,9 @@ impl Runtime {
             args,
             tys.iter().map(|ty| ty.1).collect(),
         )?);
-        self.instance.invoke("deploy", &[], &mut bm).map_err(|e| {
-            panic!("{:?}", e);
-            // Error::DeployContractFailed
-        })?;
+        self.instance
+            .invoke("deploy", &[], &mut bm)
+            .map_err(|error| Error::DeployContractFailed { error })?;
 
         Ok(())
     }
@@ -176,7 +181,7 @@ impl Runtime {
 
     /// Flush storage
     pub fn flush(&mut self) -> Result<()> {
-        self.storage.set(
+        self.storage.borrow_mut().set(
             util::parse_code_hash(&self.metadata.source.hash)?,
             self.sandbox.borrow().state.clone(),
         )?;

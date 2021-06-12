@@ -3,7 +3,7 @@ use ceres_runtime::{Error, Metadata, Result, Runtime};
 use ceres_std::BTreeMap;
 use etc::{Etc, FileSystem, Meta};
 use sled::Db;
-use std::{fs, path::PathBuf, process};
+use std::{cell::RefCell, fs, path::PathBuf, process, rc::Rc};
 
 /// A ceres storage implementation using sled
 #[derive(Clone)]
@@ -33,14 +33,11 @@ impl Storage {
     /// * From name of `*.contract`
     /// * From code_hash of `*.contract`
     pub fn rt(&mut self, contract: &str) -> crate::Result<Runtime> {
-        if self.0.len() == 0 {
-            Self::quit();
-        }
-
         let if_path = PathBuf::from(contract);
+        let storage = Rc::new(RefCell::new(self.clone()));
         Ok(if if_path.exists() {
             let source = fs::read(if_path)?;
-            let rt = Runtime::from_contract_and_storage(&source, self.clone())?;
+            let rt = Runtime::from_contract_and_storage(&source, storage)?;
             self.0.insert(
                 &rt.metadata.contract.name,
                 bincode::serialize(&rt.metadata.clone())?,
@@ -68,7 +65,7 @@ impl Storage {
         } {
             Runtime::from_metadata_and_storage(
                 bincode::deserialize::<Metadata>(&contract)?,
-                self.clone(),
+                storage,
             )?
         } else {
             Self::quit();
