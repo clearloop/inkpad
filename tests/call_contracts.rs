@@ -33,27 +33,6 @@ fn test_call_contracts() {
     })
     .collect::<Vec<String>>();
 
-    // // init accumulator
-    // let accumulator = Runtime::from_contract_and_storage(
-    //     include_bytes!("../contracts/accumulator.contract"),
-    //     shared.clone(),
-    // )
-    // .unwrap();
-    //
-    // // init adder
-    // let adder = Runtime::from_contract_and_storage(
-    //     include_bytes!("../contracts/adder.contract"),
-    //     shared.clone(),
-    // )
-    // .unwrap();
-    //
-    // // init subber
-    // let subber = Runtime::from_contract_and_storage(
-    //     include_bytes!("../contracts/subber.contract"),
-    //     shared.clone(),
-    // )
-    // .unwrap();
-
     // init delegator
     let mut delegator = Runtime::from_contract_and_storage(
         include_bytes!("../contracts/delegator.contract"),
@@ -61,6 +40,12 @@ fn test_call_contracts() {
     )
     .unwrap();
     delegator
-        .deploy("new", &["0", "0", &hashes[0], &hashes[1], &hashes[2]], None)
+        .deploy(
+            "new",
+            &["00", "00", &hashes[0], &hashes[1], &hashes[2]],
+            None,
+        )
         .unwrap();
+
+    println!("{:?}", delegator.call("get", &[], None));
 }

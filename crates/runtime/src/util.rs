@@ -7,8 +7,6 @@ const IMPORT_MODULE_MEMORY: &str = "env";
 
 /// Parse `Vec<String>` to `Vec<RuntimeValue>`
 pub fn parse_args(selector: &str, args: &[&str], tys: Vec<u32>) -> Result<Vec<u8>> {
-    println!("{:?}", tys.len());
-    println!("{:?}", args.len());
     if args.len() != tys.len() {
         return Err(Error::InvalidArgumentLength);
     }

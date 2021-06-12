@@ -54,7 +54,7 @@ use parity_scale_codec::Encode;
 /// `ReturnCode::NewContractNotFunded`
 /// `ReturnCode::CodeNotFound`
 #[host(seal0)]
-pub fn instantiate(
+pub fn seal_instantiate(
     code_hash_ptr: u32,
     code_hash_len: u32,
     _gas: u64,
