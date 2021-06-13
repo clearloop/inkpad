@@ -56,18 +56,24 @@ impl<T> derive::Instance<T> for Instance<T> {
             .map(|v| util::to_val(v))
             .collect::<Vec<_>>();
 
-        let func = self.instance.get_func(name).ok_or(Error::ExecuteFailed)?;
+        let func = self
+            .instance
+            .get_func(name)
+            .ok_or(Error::GetFunctionNameFailed)?;
         match func.call(&args) {
             Ok(result) => Ok(util::to_ret_val(if result.len() != 1 {
                 return Ok(ReturnValue::Unit);
             } else {
-                result[0].to_owned()
-            })
-            .ok_or(Error::ExecuteFailed)?),
+                match result[0] {
+                    Val::I32(0) => result[0].to_owned(),
+                    Val::I32(n) => return Err(Error::ExecuteFailed(n.into())),
+                    _ => return Err(Error::UnkownError),
+                }
+            })?),
             Err(e) => Err(if let Ok(trap) = e.downcast::<::wasmtime::Trap>() {
                 Error::from(trap)
             } else {
-                Error::ExecuteFailed
+                Error::UnkownError
             }),
         }
     }

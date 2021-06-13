@@ -44,7 +44,7 @@ impl Runtime {
         )?)
     }
 
-    /// Create runtime from contract
+    /// Create runtime from metadata and storage
     pub fn from_metadata_and_storage(
         meta: Metadata,
         storage: Rc<RefCell<impl Storage + 'static>>,

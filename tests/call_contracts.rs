@@ -19,9 +19,9 @@ fn test_call_contracts() {
     let shared = Rc::new(RefCell::new(MemoryStorage::new()));
 
     let hashes = [
-        include_bytes!("../contracts/accumulator.contract").to_vec(),
-        include_bytes!("../contracts/adder.contract").to_vec(),
-        include_bytes!("../contracts/subber.contract").to_vec(),
+        include_bytes!("../contracts/accumulator.contract.debug").to_vec(),
+        include_bytes!("../contracts/adder.contract.debug").to_vec(),
+        include_bytes!("../contracts/subber.contract.debug").to_vec(),
     ]
     .iter()
     .map(|contract| {
@@ -33,7 +33,7 @@ fn test_call_contracts() {
 
     // init delegator
     let mut delegator = Runtime::from_contract_and_storage(
-        include_bytes!("../contracts/delegator.contract"),
+        include_bytes!("../contracts/delegator.contract.debug"),
         shared.clone(),
     )
     .unwrap();
@@ -44,4 +44,6 @@ fn test_call_contracts() {
             None,
         )
         .unwrap();
+
+    // println!("{:?}", delegator.call("get", &[], None));
 }
