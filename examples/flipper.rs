@@ -4,7 +4,7 @@
 use ceres_runtime::Runtime;
 
 fn main() {
-    let mut rt = Runtime::from_contract(include_bytes!("../fixtures/flipper.contract"))
+    let mut rt = Runtime::from_contract(include_bytes!("../contracts/flipper.contract"))
         .expect("Create runtime failed");
 
     rt.deploy("default", &[], None).expect("Deploy failed");

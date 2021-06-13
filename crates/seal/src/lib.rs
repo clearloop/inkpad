@@ -37,9 +37,12 @@ pub fn pallet_contracts(
         storage::SealGetStorage::pack(),
         storage::SealClearStorage::pack(),
         storage::SealSetStorage::pack(),
-        transfer::SealValueTransferred::pack(),
-        transfer::SealCaller::pack(),
         transfer::SealAddress::pack(),
+        transfer::SealBalance::pack(),
+        transfer::SealCaller::pack(),
+        transfer::SealValueTransferred::pack(),
+        instantiate::SealCall::pack(),
+        instantiate::SealInstantiate::pack(),
     ];
 
     if ri::RuntimeInterfaces::enabled(&interfaces) {
