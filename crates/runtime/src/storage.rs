@@ -1,5 +1,5 @@
 //! Storage interfaces
-use crate::{Error, Result, StorageKey};
+use crate::{Result, StorageKey};
 use ceres_std::BTreeMap;
 
 #[cfg(not(feature = "std"))]
@@ -29,19 +29,12 @@ impl MemoryStorage {
 
 impl Storage for MemoryStorage {
     fn set(&mut self, code_hash: StorageKey, data: BTreeMap<StorageKey, Vec<u8>>) -> Result<()> {
-        if let Some(_) = self.0.insert(code_hash, data) {
-            Ok(())
-        } else {
-            Err(Error::CouldNotSetStorage)
-        }
+        self.0.insert(code_hash, data);
+        Ok(())
     }
 
     fn get(&self, code_hash: StorageKey) -> Option<BTreeMap<StorageKey, Vec<u8>>> {
-        if let Some(map) = self.0.get(&code_hash) {
-            Some(map.clone())
-        } else {
-            None
-        }
+        self.0.get(&code_hash).map(|v| v.clone())
     }
 
     /// New state

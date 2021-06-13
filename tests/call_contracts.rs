@@ -25,11 +25,9 @@ fn test_call_contracts() {
     ]
     .iter()
     .map(|contract| {
-        Runtime::from_contract_and_storage(contract, shared.clone())
-            .unwrap()
-            .metadata
-            .source
-            .hash
+        let mut rt = Runtime::from_contract_and_storage(contract, shared.clone()).unwrap();
+        rt.flush().unwrap();
+        rt.metadata.source.hash
     })
     .collect::<Vec<String>>();
 
@@ -46,6 +44,4 @@ fn test_call_contracts() {
             None,
         )
         .unwrap();
-
-    println!("{:?}", delegator.call("get", &[], None));
 }
