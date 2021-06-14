@@ -1,6 +1,10 @@
 # Ceres
 
 ![Rust](https://github.com/patractlabs/ceres/workflows/Ceres/badge.svg)
+[![crate](https://img.shields.io/crates/v/ceres.svg)](https://crates.io/crates/ceres)
+[![doc](https://img.shields.io/badge/current-docs-brightgreen.svg)](https://docs.rs/ceres/)
+[![downloads](https://img.shields.io/crates/d/ceres.svg)](https://crates.io/crates/ceres)
+[![LICENSE](https://img.shields.io/crates/l/ceres.svg)](https://choosealicense.com/licenses/apache-2.0/)
 
 Run ink! contract anywhere.
 

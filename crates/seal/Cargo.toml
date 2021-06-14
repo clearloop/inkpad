@@ -1,14 +1,22 @@
 [package]
 name = "ceres-seal"
 version = "0.1.0"
-authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
+authors = [
+  "Patract <hi@patract.io>",
+  "clearloop <udtrokia@gmail.com>"
+]
+description = "ceres runtime interfaces"
+repository = "https://github.com/patractlabs/ceres"
+license = "MIT"
+readme = './README.md'
+keywords = ["wasm", "substrate", "runtime"]
 
 [dependencies]
-ceres-std = { path = "../std" }
-ceres-derive = { path = "../derive" }
-ceres-sandbox = { path = "../sandbox" }
-ceres-executor = { path = "../executor" }
+ceres-std = { path = "../std", version = "^0" }
+ceres-derive = { path = "../derive", version = "^0" }
+ceres-sandbox = { path = "../sandbox", version = "^0" }
+ceres-executor = { path = "../executor", version = "^0" }
 
 parity-scale-codec = { version = "2", features = ["derive"]}
 
