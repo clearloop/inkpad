@@ -1,5 +1,10 @@
 # Ceres Runtime
 
+[![crate](https://img.shields.io/crates/v/ceres-runtime.svg)](https://crates.io/crates/ceres-runtime)
+[![doc](https://img.shields.io/badge/current-docs-brightgreen.svg)](https://docs.rs/ceres-runtime/)
+[![downloads](https://img.shields.io/crates/d/ceres-runtime.svg)](https://crates.io/crates/ceres-runtime)
+[![LICENSE](https://img.shields.io/crates/l/ceres-runtime.svg)](https://choosealicense.com/licenses/apache-2.0/)
+
 The wasm executor of ink! contract
 
 This repo provides:

@@ -38,6 +38,17 @@ ceres-seal = { path = "crates/seal", features = [ "std" ]}
 ceres-ri = { path = "crates/ri", features = [ "std" ]}
 
 
+[features]
+default = [ "wasmtime" ]
+wasmtime = [
+    "ceres-std/std",
+    "ceres-runtime/std",
+    "ceres-sandbox/std",
+    "ceres-executor/std",
+    "ceres-seal/std",
+    "ceres-ri/std",
+]
+
 [workspace]
 members = [
   "crates/ri",

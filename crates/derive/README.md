@@ -1,5 +1,10 @@
 # Ceres Derive
 
+[![crate](https://img.shields.io/crates/v/ceres-derive.svg)](https://crates.io/crates/ceres-derive)
+[![doc](https://img.shields.io/badge/current-docs-brightgreen.svg)](https://docs.rs/ceres-derive/)
+[![downloads](https://img.shields.io/crates/d/ceres-derive.svg)](https://crates.io/crates/ceres-derive)
+[![LICENSE](https://img.shields.io/crates/l/ceres-derive.svg)](https://choosealicense.com/licenses/apache-2.0/)
+
 Procedural macros for ceres
 
 ## `#[host(module)]`
