@@ -17,6 +17,8 @@ keywords = ["wasm", "substrate", "runtime"]
 name = "ceres"
 path = "bin/ceres.rs"
 
+[patch.crates-io]
+parity-wasm = { git = "https://github.com/patractlabs/parity-wasm", branch = "v0.41.0" }
 
 [dependencies]
 etc = "0.1.16"
@@ -66,12 +68,10 @@ members = [
   "crates/sandbox",
   "crates/runtime",
   "crates/executor",
+  # browser interfaces
   "crates/browser"
 ]
 
-
 [profile.release]
 codegen-units=1
-
-[patch.crates-io]
-parity-wasm = { git = "https://github.com/patractlabs/parity-wasm", branch = "v0.41.0" }
+opt-level = "s"
