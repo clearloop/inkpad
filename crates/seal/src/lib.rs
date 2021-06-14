@@ -14,7 +14,7 @@ mod storage;
 mod transfer;
 
 pub use self::{
-    derive::{Host, ReturnCode},
+    derive::Host,
     ri::{NoRuntimeInterfaces, RuntimeInterfaces},
 };
 
