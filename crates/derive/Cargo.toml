@@ -1,8 +1,16 @@
 [package]
 name = "ceres-derive"
 version = "0.1.0"
-authors = ["clearloop <udtrokia@gmail.com>"]
+authors = [
+  "Patract <hi@patract.io>",
+  "clearloop <udtrokia@gmail.com>"
+]
+description = "derive macros for ceres"
 edition = "2018"
+repository = "https://github.com/patractlabs/ceres"
+license = "MIT"
+readme = './README.md'
+keywords = ["wasm", "substrate", "runtime"]
 
 [lib]
 proc-macro = true
