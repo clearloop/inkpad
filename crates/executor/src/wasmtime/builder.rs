@@ -23,11 +23,7 @@ pub struct Builder<T> {
 impl<T> Builder<T> {
     /// Get the current store
     pub fn store(&self) -> Option<&Store> {
-        if let Some(memory) = &self.mem {
-            Some(memory.store())
-        } else {
-            None
-        }
+        self.mem.as_ref().map(|memory| memory.store())
     }
 
     /// Resolve extern
@@ -50,9 +46,9 @@ impl<T> Builder<T> {
                 continue;
             }
 
-            let external = self.map.get(&key).ok_or(Error::GetExternalFailed(
-                String::from_utf8_lossy(&key.1).to_string(),
-            ))?;
+            let external = self.map.get(&key).ok_or_else(|| {
+                Error::GetExternalFailed(String::from_utf8_lossy(&key.1).to_string())
+            })?;
             match external {
                 External::Func(func) => match ty.ty() {
                     ExternType::Func(sig) => {

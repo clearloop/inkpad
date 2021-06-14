@@ -6,6 +6,7 @@ use parity_wasm::elements::{External, Module};
 const IMPORT_MODULE_MEMORY: &str = "env";
 
 /// Parse `Vec<String>` to `Vec<RuntimeValue>`
+#[allow(clippy::needless_range_loop)]
 pub fn parse_args(selector: &str, args: &[&str], tys: Vec<u32>) -> Result<Vec<u8>> {
     if args.len() != tys.len() {
         return Err(Error::InvalidArgumentLength);
@@ -19,7 +20,11 @@ pub fn parse_args(selector: &str, args: &[&str], tys: Vec<u32>) -> Result<Vec<u8
             "true" => res.push(1),
             "false" => res.push(0),
             hex if hex.starts_with("0x") => {
-                res.append(&mut hex::decode(&hex[2..]).map_err(|_| Error::ParseArgumentFailed)?)
+                if let Some(stripped) = hex.strip_prefix("0x") {
+                    res.append(&mut hex::decode(stripped).map_err(|_| Error::ParseArgumentFailed)?)
+                } else {
+                    return Err(Error::DecodeSelectorFailed);
+                }
             }
             patt => res.append(&mut hex::decode(&patt).map_err(|_| Error::ParseArgumentFailed)?),
         }
@@ -30,8 +35,8 @@ pub fn parse_args(selector: &str, args: &[&str], tys: Vec<u32>) -> Result<Vec<u8
 
 /// Trim 0x prefix
 pub fn step_hex(h: &str) -> Result<Vec<u8>> {
-    if h.starts_with("0x") {
-        hex::decode(&h[2..])
+    if let Some(stripped) = h.strip_prefix("0x") {
+        hex::decode(stripped)
     } else {
         hex::decode(&h)
     }
@@ -58,7 +63,7 @@ pub fn parse_code_hash(h: &str) -> Result<[u8; 32]> {
 ///   their signatures.
 /// - if there is a memory import, returns it's descriptor
 /// `import_fn_banlist`: list of function names that are disallowed to be imported
-pub fn scan_imports<'m>(module: &Module) -> core::result::Result<(u32, Option<u32>), &'static str> {
+pub fn scan_imports(module: &Module) -> core::result::Result<(u32, Option<u32>), &'static str> {
     let import_entries = module
         .import_section()
         .map(|is| is.entries())

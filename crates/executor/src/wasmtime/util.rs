@@ -86,7 +86,7 @@ pub fn to_val(v: Value) -> Val {
 
 pub fn to_ret_val(v: Val) -> Result<ReturnValue, Error> {
     from_val(v)
-        .map(|v| ReturnValue::Value(v))
+        .map(ReturnValue::Value)
         .ok_or(Error::UnExpectedReturnValue)
 }
 
@@ -125,7 +125,7 @@ impl From<Trap> for Error {
         Error::Trap(OutterTrap {
             code,
             trace: format!("{}", trap)
-                .split("\n")
+                .split('\n')
                 .map(|s| s.to_string())
                 .collect::<Vec<_>>(),
         })

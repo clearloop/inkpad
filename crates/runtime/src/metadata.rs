@@ -3,6 +3,9 @@ use ceres_std::{BTreeMap, String, Vec};
 use derivative::Derivative;
 use serde::{Deserialize, Serialize};
 
+type Method = (String, Vec<(Option<String>, u32)>);
+type MethodWithName = (String, String, Vec<(Option<String>, u32)>);
+
 /// A struct for operating *.contract
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Metadata {
@@ -13,17 +16,17 @@ pub struct Metadata {
 
 impl Metadata {
     /// Get all messages
-    pub fn messages(&self) -> BTreeMap<String, (String, Vec<(Option<String>, u32)>)> {
-        let methods: Vec<(String, String, Vec<(Option<String>, u32)>)> = self
+    pub fn messages(&self) -> BTreeMap<String, Method> {
+        let methods: Vec<MethodWithName> = self
             .spec
             .messages
             .iter()
             .map(|c| {
                 (
-                    if c.name.len() > 0 {
-                        c.name[0].clone()
-                    } else {
+                    if c.name.is_empty() {
                         "".into()
+                    } else {
+                        c.name[0].clone()
                     },
                     c.selector.clone(),
                     c.args
@@ -51,14 +54,14 @@ impl Metadata {
     }
 
     /// Get all constructors
-    pub fn constructors(&self) -> BTreeMap<String, (String, Vec<(Option<String>, u32)>)> {
-        let methods: Vec<(String, String, Vec<(Option<String>, u32)>)> = self
+    pub fn constructors(&self) -> BTreeMap<String, Method> {
+        let methods: Vec<MethodWithName> = self
             .spec
             .constructors
             .iter()
             .map(|c| {
                 (
-                    if c.name.len() > 0 {
+                    if !c.name.is_empty() {
                         c.name[0].clone()
                     } else {
                         "".into()

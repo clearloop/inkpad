@@ -50,11 +50,7 @@ impl<T> derive::Instance<T> for Instance<T> {
         // into closures while generating the WASM module.
         _state: &mut T,
     ) -> Result<ReturnValue, Error> {
-        let args = args
-            .iter()
-            .cloned()
-            .map(|v| util::to_val(v))
-            .collect::<Vec<_>>();
+        let args = args.iter().cloned().map(util::to_val).collect::<Vec<_>>();
         let func = self
             .instance
             .get_func(name)

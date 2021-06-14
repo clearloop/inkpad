@@ -6,7 +6,7 @@ use syn::parse_macro_input;
 
 /// Parse host function
 pub fn parse(attr: TokenStream, item: TokenStream) -> TokenStream {
-    let ts = TokenStream::from(item);
+    let ts = item;
     let input: HostFunction = parse_macro_input!(ts);
 
     // construct struct

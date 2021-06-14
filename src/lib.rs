@@ -18,7 +18,7 @@ pub use self::{
 pub fn run() -> Result<()> {
     let opt = Opt::from_args();
     let mut store = Storage::new()?;
-    let mut rt = store.rt(&opt.contract.unwrap_or("".to_string()))?;
+    let mut rt = store.rt(&opt.contract.unwrap_or_else(|| "".to_string()))?;
 
     match opt.command {
         Command::List => cmd::list::exec(&store)?,

@@ -18,12 +18,13 @@ pub trait Storage {
 }
 
 /// Memory storage
+#[derive(Default)]
 pub struct MemoryStorage(pub BTreeMap<StorageKey, BTreeMap<StorageKey, Vec<u8>>>);
 
 impl MemoryStorage {
     /// New memory storage
     pub fn new() -> MemoryStorage {
-        MemoryStorage(BTreeMap::new())
+        Self::default()
     }
 }
 
@@ -33,6 +34,7 @@ impl Storage for MemoryStorage {
         Ok(())
     }
 
+    #[allow(clippy::map_clone)]
     fn get(&self, code_hash: StorageKey) -> Option<BTreeMap<StorageKey, Vec<u8>>> {
         self.0.get(&code_hash).map(|v| v.clone())
     }

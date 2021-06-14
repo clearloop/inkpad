@@ -20,12 +20,12 @@ impl Runtime {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
             .map_err(|_| Error::DecodeContractFailed)?;
 
-        Ok(Self::new(
+        Self::new(
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             Rc::new(RefCell::new(MemoryStorage::new())),
-        )?)
+        )
     }
 
     /// Create runtime from contract
@@ -36,12 +36,12 @@ impl Runtime {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
             .map_err(|_| Error::DecodeContractFailed)?;
 
-        Ok(Self::new(
+        Self::new(
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             storage,
-        )?)
+        )
     }
 
     /// Create runtime from metadata and storage
@@ -49,12 +49,12 @@ impl Runtime {
         meta: Metadata,
         storage: Rc<RefCell<impl Storage + 'static>>,
     ) -> Result<Runtime> {
-        Ok(Self::new(
+        Self::new(
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             storage,
-        )?)
+        )
     }
 
     /// New runtime
@@ -79,7 +79,7 @@ impl Runtime {
         let storage_mut = storage.borrow_mut();
         let state =
             if let Some(state) = storage_mut.get(util::parse_code_hash(&metadata.source.hash)?) {
-                state.clone()
+                state
             } else {
                 storage_mut.new_state()
             };
@@ -116,9 +116,9 @@ impl Runtime {
 
         drop(storage_mut);
         Ok(Runtime {
+            sandbox,
             instance,
             metadata,
-            sandbox,
             storage,
         })
     }

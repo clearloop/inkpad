@@ -30,14 +30,14 @@ pub fn seal_deposit_event(
         // because we are rejecting duplicates which removes the non determinism.
         items.sort_unstable();
         // Find any two consecutive equal elements.
-        items.windows(2).any(|w| match &w {
-            &[a, b] => a == b,
+        items.windows(2).any(|w| match w {
+            [a, b] => a == b,
             _ => false,
         })
     }
 
     if data_len > sandbox.max_value_size() {
-        Err(Error::TopicValueTooLarge)?;
+        return Err(Error::TopicValueTooLarge);
     }
 
     let mut topics: Vec<[u8; 32]> = match topics_len {
@@ -47,14 +47,14 @@ pub fn seal_deposit_event(
 
     // If there are more than `event_topics`, then trap.
     if topics.len() > sandbox.ext.schedule.limits.event_topics as usize {
-        Err(Error::TooManyTopics)?;
+        return Err(Error::TooManyTopics);
     }
 
     // Check for duplicate topics. If there are any, then trap.
     // Complexity O(n * log(n)) and no additional allocations.
     // This also sorts the topics.
     if has_duplicates(&mut topics) {
-        Err(Error::DuplicateTopics)?;
+        return Err(Error::DuplicateTopics);
     }
 
     let event_data = sandbox.read_sandbox_memory(data_ptr, data_len)?;

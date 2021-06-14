@@ -25,13 +25,13 @@ impl Sandbox {
     /// Read designated chunk from the sandbox memory and attempt to decode into the specified type.
     pub fn read_sandbox_memory_as<D: Decode>(&mut self, ptr: u32, len: u32) -> Result<D> {
         let buf = self.read_sandbox_memory(ptr, len)?;
-        let decoded = D::decode_all(&mut &buf[..]).map_err(|_| Error::DecodeRuntimeValueFailed)?;
+        let decoded = D::decode_all(&buf[..]).map_err(|_| Error::DecodeRuntimeValueFailed)?;
         Ok(decoded)
     }
 
     /// Write the given buffer to the designated location in the sandbox memory.
     pub fn write_sandbox_memory(&mut self, ptr: u32, buf: &[u8]) -> Result<()> {
-        Ok(self.memory.set(ptr, buf).map_err(|_| Error::OutOfBounds)?)
+        self.memory.set(ptr, buf).map_err(|_| Error::OutOfBounds)
     }
 
     /// Write the given buffer and its length to the designated locations in sandbox memory
@@ -46,7 +46,7 @@ impl Sandbox {
         let buf_len = buf.len() as u32;
         let len: u32 = self.read_sandbox_memory_as(out_len_ptr, 4)?;
         if len < buf_len {
-            Err(Error::OutputBufferTooSmall)?
+            return Err(Error::OutputBufferTooSmall);
         }
 
         self.memory

@@ -22,7 +22,7 @@ impl Sandbox {
         salt: &[u8],
     ) -> Result<([u8; 32], ExecReturnValue, u32)> {
         self.ext.instantiates.push(InstantiateEntry {
-            code_hash: code_hash.clone(),
+            code_hash,
             endowment,
             data: data.to_vec(),
             gas_left: gas_meter.gas_left,
