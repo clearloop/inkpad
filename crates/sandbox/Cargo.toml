@@ -1,12 +1,20 @@
 [package]
 name = "ceres-sandbox"
 version = "0.1.0"
-authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
+authors = [
+  "Patract <hi@patract.io>",
+  "clearloop <udtrokia@gmail.com>"
+]
+description = "sandbox of ceres"
+repository = "https://github.com/patractlabs/ceres"
+license = "MIT"
+readme = './README.md'
+keywords = ["wasm", "substrate", "runtime"]
 
 [dependencies]
-ceres-std = { path = "../std" }
-ceres-executor = { path = "../executor" }
+ceres-std = { path = "../std", version = "^0" }
+ceres-executor = { path = "../executor", version = "^0" }
 
 bitflags = "1.2.1"
 serde = { version = "1", default-features = false, features = ["derive"] }

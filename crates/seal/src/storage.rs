@@ -1,9 +1,9 @@
 //! Storage functions
-use crate::derive::{Host, ReturnCode};
+use crate::derive::Host;
 use ceres_derive::host;
 use ceres_executor::{
     derive::{ReturnValue, Value},
-    Error, Result,
+    Error, Result, ReturnCode,
 };
 use ceres_sandbox::{Sandbox, StorageKey};
 use ceres_std::vec;

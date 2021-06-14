@@ -1,8 +1,16 @@
 [package]
 name = "ceres-ri"
 version = "0.1.0"
-authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
+authors = [
+  "Patract <hi@patract.io>",
+  "clearloop <udtrokia@gmail.com>"
+]
+description = "ceres runtime interfaces"
+repository = "https://github.com/patractlabs/ceres"
+license = "MIT"
+readme = './README.md'
+keywords = ["wasm", "substrate", "runtime"]
 
 [dependencies]
 blake2-rfc = "0.2.18"
@@ -11,10 +19,10 @@ sha2 = "0.9.3"
 tiny-keccak = { version = "2.0.2", features = ["keccak"] }
 
 # ceres dependencies
-ceres-std = { path = "../std" }
-ceres-seal = { path = "../seal" }
-ceres-executor = { path = "../executor" }
-ceres-sandbox = { path = "../sandbox" }
+ceres-std = { path = "../std", version = "^0" }
+ceres-seal = { path = "../seal", version = "^0" }
+ceres-executor = { path = "../executor", version = "^0" }
+ceres-sandbox = { path = "../sandbox", version = "^0" }
 
 [features]
 default = []

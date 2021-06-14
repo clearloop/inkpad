@@ -1,6 +1,10 @@
 # Ceres
 
 ![Rust](https://github.com/patractlabs/ceres/workflows/Ceres/badge.svg)
+[![crate](https://img.shields.io/crates/v/ceres-cli.svg)](https://crates.io/crates/ceres-cli)
+[![doc](https://img.shields.io/badge/current-docs-brightgreen.svg)](https://docs.rs/ceres-cli/)
+[![downloads](https://img.shields.io/crates/d/ceres-cli.svg)](https://crates.io/crates/ceres-cli)
+[![LICENSE](https://img.shields.io/crates/l/ceres-cli.svg)](https://choosealicense.com/licenses/apache-2.0/)
 
 Run ink! contract anywhere.
 
@@ -81,6 +85,6 @@ can run your ink! contract anywhere, even in the browser.
 
 ## LICENSE
 
-MIT
+Apache-2.0
 
 [rt]: crates/runtime

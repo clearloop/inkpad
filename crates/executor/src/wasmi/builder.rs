@@ -8,7 +8,7 @@ use ::wasmi::{
     Error, FuncInstance, FuncRef, GlobalDescriptor, GlobalRef, ImportResolver, MemoryDescriptor,
     MemoryRef, Signature, TableDescriptor, TableRef,
 };
-use ceres_std::{format, BTreeMap, ToOwned, Vec};
+use ceres_std::{format, BTreeMap, String, ToOwned, Vec};
 
 enum ExternVal {
     HostFunc(HostFuncIndex),
@@ -84,8 +84,8 @@ impl<T> ImportResolver for Builder<T> {
         _field_name: &str,
         _global_type: &GlobalDescriptor,
     ) -> Result<GlobalRef, Error> {
-        Err(Error::Instantiation(format!(
-            "Importing globals is not supported yet"
+        Err(Error::Instantiation(String::from(
+            "Importing globals is not supported yet",
         )))
     }
 
@@ -121,8 +121,8 @@ impl<T> ImportResolver for Builder<T> {
         _field_name: &str,
         _table_type: &TableDescriptor,
     ) -> Result<TableRef, Error> {
-        Err(Error::Instantiation(format!(
-            "Importing tables is not supported yet"
+        Err(Error::Instantiation(String::from(
+            "Importing tables is not supported yet",
         )))
     }
 }

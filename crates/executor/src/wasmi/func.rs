@@ -6,6 +6,7 @@ use ceres_std::Vec;
 pub struct HostFuncIndex(pub usize);
 
 /// Defined host functions
+#[derive(Default)]
 pub struct DefinedHostFunctions<T>(pub Vec<derive::HostFuncType<T>>);
 
 impl<T> Clone for DefinedHostFunctions<T> {

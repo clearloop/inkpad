@@ -4,7 +4,7 @@ use crate::{
     derive::{self, ReturnValue, Value},
     Error, Result,
 };
-use ::wasmi::{Module, ModuleInstance, ModuleRef};
+use ::wasmi::{Module, ModuleInstance, ModuleRef, RuntimeValue};
 use ceres_std::Vec;
 
 /// WASMi instance
@@ -29,10 +29,10 @@ impl<T> derive::Instance<T> for Instance<T> {
                 state,
                 defined_host_functions: &defined_host_functions,
             };
-            let instance = not_started_instance
+
+            not_started_instance
                 .run_start(&mut externals)
-                .map_err(|_| Error::UnkownError)?;
-            instance
+                .map_err(|_| Error::UnkownError)?
         };
 
         Ok(Instance {
@@ -52,8 +52,8 @@ impl<T> derive::Instance<T> for Instance<T> {
         match result {
             Ok(None) => Ok(ReturnValue::Unit),
             Ok(Some(v)) => Ok(match v {
-                Value::I32(0) => result[0].to_owned(),
-                Value::I32(n) => return Err(Error::ExecuteFailed(n.into())),
+                RuntimeValue::I32(0) => ReturnValue::from(Value::I32(0)),
+                RuntimeValue::I32(n) => return Err(Error::ExecuteFailed(n.into())),
                 _ => return Err(Error::UnkownError),
             }),
             Err(e) => Err(match e {

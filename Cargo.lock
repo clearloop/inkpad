@@ -221,7 +221,7 @@ dependencies = [
  "anyhow",
  "ceres-std",
  "log",
- "wasmi",
+ "patract-wasmi",
  "wasmtime",
 ]
 
@@ -1021,6 +1021,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "acbf547ad0c65e31259204bd90935776d1c693cec2f4ff7abb7a1bbbd40dfe58"
 
 [[package]]
+name = "patract-wasmi"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d3da6371cee7f016db5a6ebdbf89c3d0d58c280bcbe9d07b5d810e012036b372"
+dependencies = [
+ "downcast-rs",
+ "libc",
+ "memory_units",
+ "num-rational",
+ "num-traits",
+ "parity-wasm",
+ "rustc-demangle",
+ "wasmi-validation",
+]
+
+[[package]]
 name = "ppv-lite86"
 version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1512,24 +1528,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fd6fbd9a79829dd1ad0cc20627bf1ed606756a7f77edff7b66b7064f9cb327c6"
 
 [[package]]
-name = "wasmi"
-version = "0.6.2"
-source = "git+https://github.com/patractlabs/wasmi.git?branch=v0.7.0#7378e371da8304d4388df7e937031f53f4211983"
-dependencies = [
- "downcast-rs",
- "libc",
- "memory_units",
- "num-rational",
- "num-traits",
- "parity-wasm",
- "rustc-demangle",
- "wasmi-validation",
-]
-
-[[package]]
 name = "wasmi-validation"
 version = "0.3.0"
-source = "git+https://github.com/patractlabs/wasmi.git?branch=v0.7.0#7378e371da8304d4388df7e937031f53f4211983"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ea78c597064ba73596099281e2f4cfc019075122a65cdda3205af94f0b264d93"
 dependencies = [
  "parity-wasm",
 ]

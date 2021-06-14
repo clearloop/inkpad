@@ -1,8 +1,16 @@
 [package]
 name = "ceres-cli"
 version = "0.1.0"
-authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
+authors = [
+  "Patract <hi@patract.io>",
+  "clearloop <udtrokia@gmail.com>"
+]
+description = "Run ink! contract in command line!"
+repository = "https://github.com/patractlabs/ceres"
+license = "MIT"
+readme = './README.md'
+keywords = ["wasm", "substrate", "runtime"]
 
 
 [[bin]]
@@ -21,9 +29,9 @@ thiserror = "1.0.24"
 structopt = "0.3.21"
 
 # ceres deps
-ceres-std = { path = "crates/std", features = [ "std" ] }
-ceres-runtime = { path = "crates/runtime", features = [ "std" ] }
-ceres-sandbox = { path = "crates/sandbox", features = [ "std" ] }
+ceres-std = { path = "crates/std", version = "^0" }
+ceres-runtime = { path = "crates/runtime", version = "^0" }
+ceres-sandbox = { path = "crates/sandbox", version = "^0" }
 
 
 [dev-dependencies]
@@ -33,10 +41,21 @@ wat = "1.0.37"
 parity-scale-codec = "2"
 
 # ceres dev
-ceres-executor = { path = "crates/executor", features = [ "std" ] }
-ceres-seal = { path = "crates/seal", features = [ "std" ]}
-ceres-ri = { path = "crates/ri", features = [ "std" ]}
+ceres-executor = { path = "crates/executor", version = "^0" }
+ceres-seal = { path = "crates/seal", version = "^0" }
+ceres-ri = { path = "crates/ri", version = "^0" }
 
+
+[features]
+default = [ "wasmtime" ]
+wasmtime = [
+    "ceres-std/std",
+    "ceres-runtime/std",
+    "ceres-sandbox/std",
+    "ceres-executor/std",
+    "ceres-seal/std",
+    "ceres-ri/std",
+]
 
 [workspace]
 members = [

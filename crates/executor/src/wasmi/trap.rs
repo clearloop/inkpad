@@ -3,10 +3,10 @@ use crate::trap::{self, TrapCode};
 use ceres_std::fmt;
 use wasmi::{Trap, TrapKind};
 
-impl Into<trap::Trap> for Trap {
-    fn into(self) -> trap::Trap {
+impl From<Trap> for trap::Trap {
+    fn from(trap: Trap) -> trap::Trap {
         trap::Trap {
-            code: match self.kind() {
+            code: match trap.kind() {
                 TrapKind::StackOverflow => TrapCode::StackOverflow,
                 TrapKind::DivisionByZero => TrapCode::IntegerDivisionByZero,
                 TrapKind::ElemUninitialized => TrapCode::BadSignature,
@@ -17,7 +17,7 @@ impl Into<trap::Trap> for Trap {
                 TrapKind::Unreachable => TrapCode::UnreachableCodeReached,
                 TrapKind::Host(_) => TrapCode::HostError,
             },
-            trace: self.wasm_trace().to_vec(),
+            trace: trap.wasm_trace().to_vec(),
         }
     }
 }
@@ -25,7 +25,7 @@ impl Into<trap::Trap> for Trap {
 impl fmt::Display for trap::Trap {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         let trace = &self.trace;
-        if trace.len() == 0 {
+        if trace.is_empty() {
             write!(f, "[]")?;
         } else {
             for (index, trace) in trace.iter().enumerate() {
