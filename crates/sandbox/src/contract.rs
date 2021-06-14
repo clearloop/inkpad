@@ -73,7 +73,6 @@ pub struct RentParams {
 }
 
 impl Sandbox {
-    /// TODO
     pub fn tombstone_deposit(&self) -> [u8; 32] {
         [1; 32]
     }

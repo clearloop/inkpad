@@ -84,8 +84,10 @@ pub fn to_val(v: Value) -> Val {
     }
 }
 
-pub fn to_ret_val(v: Val) -> Option<ReturnValue> {
-    from_val(v).map(|v| ReturnValue::Value(v))
+pub fn to_ret_val(v: Val) -> Result<ReturnValue, Error> {
+    from_val(v)
+        .map(|v| ReturnValue::Value(v))
+        .ok_or(Error::UnExpectedReturnValue)
 }
 
 fn from_ret_val(v: ReturnValue) -> Option<Val> {

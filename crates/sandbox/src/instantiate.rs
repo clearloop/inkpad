@@ -28,6 +28,7 @@ impl Sandbox {
             gas_left: gas_meter.gas_left,
             salt: salt.to_vec(),
         });
+
         Ok((
             code_hash,
             ExecReturnValue {

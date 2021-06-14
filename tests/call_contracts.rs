@@ -37,11 +37,12 @@ fn test_call_contracts() {
         shared.clone(),
     )
     .unwrap();
-    delegator
+
+    assert!(delegator
         .deploy(
             "new",
             &["00", "00", &hashes[0], &hashes[1], &hashes[2]],
             None,
         )
-        .unwrap();
+        .is_err());
 }
