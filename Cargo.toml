@@ -66,6 +66,7 @@ members = [
   "crates/sandbox",
   "crates/runtime",
   "crates/executor",
+  "crates/browser"
 ]
 
 
