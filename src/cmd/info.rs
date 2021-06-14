@@ -8,7 +8,7 @@ pub fn exec(rt: &Runtime) -> Result<()> {
     let mut output = String::new();
     output.push_str(&format!("\n\tname: {}\n", meta.contract.name));
     output.push_str(&format!("\tcode_hash: {}\n", meta.source.hash));
-    output.push_str(&format!("\tcontructors:\n"));
+    output.push_str(&"\tcontructors:\n".to_string());
     meta.constructors().iter().for_each(|(k, v)| {
         output.push_str(&format!(
             "\t\t - {} [ {} ]\n",
@@ -19,7 +19,7 @@ pub fn exec(rt: &Runtime) -> Result<()> {
                 .join(", ")
         ))
     });
-    output.push_str(&format!("\tmethods:\n"));
+    output.push_str(&"\tmethods:\n".to_string());
     meta.messages().iter().for_each(|(k, v)| {
         output.push_str(&format!(
             "\t\t - {} [ {} ]\n",

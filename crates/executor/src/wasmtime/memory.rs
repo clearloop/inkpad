@@ -52,6 +52,7 @@ impl Memory {
     /// See `[memory_as_slice]`. In addition to those requirements, since a mutable reference is
     /// returned it must be ensured that only one mutable and no shared references to memory exists
     /// at the same time.
+    #[allow(clippy::mut_from_ref)]
     unsafe fn memory_as_slice_mut(&self) -> &mut [u8] {
         let ptr = self.inner.data_ptr();
         let len = self.inner.data_size();
@@ -83,17 +84,17 @@ impl derive::Memory for Memory {
         // This should be safe since we don't grow up memory while caching this reference and
         // we give up the reference before returning from this function.
         let memory = unsafe { self.memory_as_slice() };
-        let range = checked_range(ptr as usize, buf.len(), memory.len())
-            .ok_or_else(|| Error::OutOfBounds)?;
+        let range =
+            checked_range(ptr as usize, buf.len(), memory.len()).ok_or(Error::OutOfBounds)?;
         buf.copy_from_slice(&memory[range]);
         Ok(())
     }
 
     fn set(&self, ptr: u32, buf: &[u8]) -> Result<(), Error> {
         let memory = unsafe { self.memory_as_slice_mut() };
-        let range = checked_range(ptr as usize, buf.len(), memory.len())
-            .ok_or_else(|| Error::OutOfBounds)?;
-        &mut memory[range].copy_from_slice(buf);
+        let range =
+            checked_range(ptr as usize, buf.len(), memory.len()).ok_or(Error::OutOfBounds)?;
+        memory[range].copy_from_slice(buf);
         Ok(())
     }
 }

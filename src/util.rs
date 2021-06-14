@@ -11,10 +11,10 @@ use crate::{Error, Result};
 /// );
 /// ```
 pub fn decode_addr(addr: &str) -> Result<[u8; 32]> {
-    let mut slice = hex::decode(if addr.starts_with("0x") {
-        &addr[2..]
+    let slice = hex::decode(if let Some(strriped) = addr.strip_prefix("0x") {
+        strriped
     } else {
-        &addr[..]
+        &addr
     })
     .map_err(|_| Error::DecodeAddressFailed(addr.into()))?;
     if slice.len() != 32 {
@@ -22,7 +22,7 @@ pub fn decode_addr(addr: &str) -> Result<[u8; 32]> {
     }
 
     let mut res: [u8; 32] = [0; 32];
-    res.copy_from_slice(&mut slice);
+    res.copy_from_slice(&slice);
     Ok(res)
 }
 

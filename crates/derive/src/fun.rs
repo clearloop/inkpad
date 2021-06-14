@@ -22,6 +22,7 @@ pub struct HostFunction {
     pub content: Expr,
 }
 
+#[allow(clippy::eval_order_dependence)]
 impl Parse for HostFunction {
     fn parse(input: ParseStream) -> Result<Self> {
         let content;
@@ -45,7 +46,7 @@ impl HostFunction {
         let name: String = self
             .name
             .to_string()
-            .split("_")
+            .split('_')
             .into_iter()
             .map(|s| {
                 s.chars()

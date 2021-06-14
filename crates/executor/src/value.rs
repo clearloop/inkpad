@@ -1,5 +1,4 @@
 //! WASM value
-use core::convert::Into;
 
 /// Value types
 #[derive(Clone)]
@@ -61,33 +60,33 @@ impl Value {
     }
 }
 
-impl Into<i32> for Value {
-    fn into(self) -> i32 {
-        self.as_i32()
+impl From<Value> for i32 {
+    fn from(v: Value) -> i32 {
+        v.as_i32()
     }
 }
 
-impl Into<i64> for Value {
-    fn into(self) -> i64 {
-        self.as_i64()
+impl From<Value> for i64 {
+    fn from(v: Value) -> i64 {
+        v.as_i64()
     }
 }
 
-impl Into<u32> for Value {
-    fn into(self) -> u32 {
-        self.as_u32()
+impl From<Value> for u32 {
+    fn from(v: Value) -> u32 {
+        v.as_u32()
     }
 }
 
-impl Into<u64> for Value {
-    fn into(self) -> u64 {
-        self.as_u64()
+impl From<Value> for u64 {
+    fn from(v: Value) -> u64 {
+        v.as_u64()
     }
 }
 
-impl Into<ReturnValue> for Value {
-    fn into(self) -> ReturnValue {
-        ReturnValue::Value(self)
+impl From<Value> for ReturnValue {
+    fn from(v: Value) -> ReturnValue {
+        ReturnValue::Value(v)
     }
 }
 

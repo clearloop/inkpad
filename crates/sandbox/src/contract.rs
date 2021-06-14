@@ -31,13 +31,12 @@ impl GasMeter {
         if self.gas_left < amount {
             f(None)
         } else {
-            self.gas_left = self.gas_left - amount;
-            let mut nested = GasMeter::new(amount);
+            self.gas_left -= amount;
 
+            let mut nested = GasMeter::new(amount);
             let r = f(Some(&mut nested));
 
-            self.gas_left = self.gas_left + nested.gas_left;
-
+            self.gas_left += nested.gas_left;
             r
         }
     }

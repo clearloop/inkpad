@@ -37,17 +37,23 @@ impl Memory {
 
     /// Read a memory area at the address `ptr` with the size of the provided slice `buf`.
     pub fn get(&self, ptr: u32, buf: &mut [u8]) -> Result<()> {
-        Ok(derive::Memory::get(&self.0, ptr, buf)?)
+        derive::Memory::get(&self.0, ptr, buf)
     }
 
     /// Write a memory area at the address `ptr` with contents of the provided slice `buf`.
     pub fn set(&self, ptr: u32, value: &[u8]) -> Result<()> {
-        Ok(derive::Memory::set(&self.0, ptr, value)?)
+        derive::Memory::set(&self.0, ptr, value)
     }
 }
 
 /// Ceres environment builder
 pub struct Builder<T>(e::Builder<T>);
+
+impl<T> Default for Builder<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl<T> ops::Deref for Builder<T> {
     type Target = e::Builder<T>;
@@ -117,11 +123,11 @@ impl<T> Instance<T> {
 
     /// invoke an exported function
     pub fn invoke(&mut self, name: &str, args: &[Value], state: &mut T) -> Result<ReturnValue> {
-        Ok(derive::Instance::invoke(&mut self.0, name, args, state)?)
+        derive::Instance::invoke(&mut self.0, name, args, state)
     }
 
     /// Get global value
     pub fn get_global_val(&self, name: &str) -> Option<Value> {
-        Some(derive::Instance::get_global_val(&self.0, name)?)
+        derive::Instance::get_global_val(&self.0, name)
     }
 }
