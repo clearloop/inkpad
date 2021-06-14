@@ -55,11 +55,11 @@ impl<T> derive::Instance<T> for Instance<T> {
             .cloned()
             .map(|v| util::to_val(v))
             .collect::<Vec<_>>();
-
         let func = self
             .instance
             .get_func(name)
             .ok_or(Error::GetFunctionNameFailed)?;
+
         match func.call(&args) {
             Ok(result) => Ok(util::to_ret_val(if result.len() != 1 {
                 return Ok(ReturnValue::Unit);

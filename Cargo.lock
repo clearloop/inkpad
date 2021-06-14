@@ -220,6 +220,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "ceres-std",
+ "log",
  "wasmi",
  "wasmtime",
 ]

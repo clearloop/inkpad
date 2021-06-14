@@ -31,7 +31,7 @@ impl<T> derive::Instance<T> for Instance<T> {
             };
             let instance = not_started_instance
                 .run_start(&mut externals)
-                .map_err(|_| Error::ExecuteFailed)?;
+                .map_err(|_| Error::UnkownError)?;
             instance
         };
 
@@ -51,10 +51,14 @@ impl<T> derive::Instance<T> for Instance<T> {
 
         match result {
             Ok(None) => Ok(ReturnValue::Unit),
-            Ok(Some(v)) => Ok(v.into()),
+            Ok(Some(v)) => Ok(match v {
+                Value::I32(0) => result[0].to_owned(),
+                Value::I32(n) => return Err(Error::ExecuteFailed(n.into())),
+                _ => return Err(Error::UnkownError),
+            }),
             Err(e) => Err(match e {
                 ::wasmi::Error::Trap(t) => Error::Trap(t.into()),
-                _ => Error::ExecuteFailed,
+                _ => Error::UnkownError,
             }),
         }
     }
