@@ -2,6 +2,8 @@
   "private": true,
   "workspaces": ["pkg/ceres", "pkg/browser"],
   "scripts": {
-    "build": "wasm-pack build --scope patract --out-dir pkg/browser && tsc -p ./pkg/ceres/tsconfig.json"
+    "build-browser": "wasm-pack build --scope patract --out-dir pkg/browser",
+    "build-ceres": "tsc -p ./pkg/ceres/tsconfig.json",
+    "build": "yarn build-browser && yarn && yarn build-ceres"
   }
 }

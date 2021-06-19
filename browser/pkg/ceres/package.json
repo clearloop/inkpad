@@ -1,6 +1,6 @@
 {
   "name": "@patract/ceres",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Run ink! contract anywhere",
   "main": "lib/index.js",
   "repository": "https://github.com/patractlabs/ceres",
