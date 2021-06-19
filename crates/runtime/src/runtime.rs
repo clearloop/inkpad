@@ -2,6 +2,7 @@
 use crate::{storage::MemoryStorage, util, Error, Metadata, Result, Storage};
 use ceres_executor::{Builder, Instance, Memory};
 use ceres_sandbox::{Sandbox, Transaction};
+use ceres_seal::RuntimeInterfaces;
 use ceres_std::{Rc, String, ToString, Vec};
 use core::cell::RefCell;
 use parity_wasm::elements::Module;
@@ -16,7 +17,7 @@ pub struct Runtime {
 
 impl Runtime {
     /// Create runtime from contract
-    pub fn from_contract(contract: &[u8]) -> Result<Runtime> {
+    pub fn from_contract(contract: &[u8], ri: Option<impl RuntimeInterfaces>) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
             .map_err(|_| Error::DecodeContractFailed)?;
 
@@ -25,6 +26,7 @@ impl Runtime {
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             Rc::new(RefCell::new(MemoryStorage::new())),
+            ri,
         )
     }
 
@@ -32,6 +34,7 @@ impl Runtime {
     pub fn from_contract_and_storage(
         contract: &[u8],
         storage: Rc<RefCell<impl Storage + 'static>>,
+        ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
             .map_err(|_| Error::DecodeContractFailed)?;
@@ -41,6 +44,7 @@ impl Runtime {
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             storage,
+            ri,
         )
     }
 
@@ -48,12 +52,14 @@ impl Runtime {
     pub fn from_metadata_and_storage(
         meta: Metadata,
         storage: Rc<RefCell<impl Storage + 'static>>,
+        ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         Self::new(
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             storage,
+            ri,
         )
     }
 
@@ -62,6 +68,7 @@ impl Runtime {
         b: &[u8],
         metadata: Metadata,
         storage: Rc<RefCell<impl Storage + 'static>>,
+        ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
@@ -88,17 +95,7 @@ impl Runtime {
         let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state)));
 
         // Construct interfaces
-        cfg_if::cfg_if! {
-            if #[cfg(not(feature = "std"))] {
-                let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts(
-                    ceres_seal::NoRuntimeInterfaces,
-                ));
-            } else {
-                let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts(
-                    ceres_ri::Instance
-                ));
-            }
-        }
+        let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts(ri));
 
         // **Note**
         //

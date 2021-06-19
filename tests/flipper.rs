@@ -1,12 +1,16 @@
 //! POC
 //!
 //! Test invoking ink! functions in wasmtime
+use ceres_ri::Instance;
 use ceres_runtime::Runtime;
 
 #[test]
 fn test_flipper() {
-    let mut rt = Runtime::from_contract(include_bytes!("../contracts/flipper.contract"))
-        .expect("Create runtime failed");
+    let mut rt = Runtime::from_contract(
+        include_bytes!("../contracts/flipper.contract"),
+        Some(Instance),
+    )
+    .expect("Create runtime failed");
 
     rt.deploy("default", &[], None).expect("Deploy failed");
     assert_eq!(

@@ -37,7 +37,8 @@ impl Storage {
         let storage = Rc::new(RefCell::new(self.clone()));
         Ok(if if_path.exists() {
             let source = fs::read(if_path)?;
-            let rt = Runtime::from_contract_and_storage(&source, storage)?;
+            let rt =
+                Runtime::from_contract_and_storage(&source, storage, Some(ceres_ri::Instance))?;
             self.0.insert(
                 &rt.metadata.contract.name,
                 bincode::serialize(&rt.metadata.clone())?,
@@ -66,6 +67,7 @@ impl Storage {
             Runtime::from_metadata_and_storage(
                 bincode::deserialize::<Metadata>(&contract)?,
                 storage,
+                Some(ceres_ri::Instance),
             )?
         } else {
             Self::quit();

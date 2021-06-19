@@ -25,7 +25,5 @@ jobs:
         with:
           path: ./target
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*/Cargo.lock') }}
-      - name: Build
-        run: cargo build --all-features
-      - name: Test
-        run: cargo test --all-features
+      - name: Build && Test
+        run: cargo test --all --all-features

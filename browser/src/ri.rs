@@ -27,11 +27,6 @@ type Ret = Result<ReturnValue>;
 pub struct Interface;
 
 impl RuntimeInterfaces for Interface {
-    /// Check if enabled
-    fn enabled(&self) -> bool {
-        true
-    }
-
     /// Println
     fn seal_println(sandbox: &mut Sandbox, args: &[Value]) -> Ret {
         if args.len() != 2 {

@@ -30,6 +30,10 @@ jobs:
       - name: Download wasm-pack
         run: |
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - name: Build web
+      - name: Build Web
         run: cd browser && yarn build
+      - name: Downlaod Firefox
+        run: sudo apt-get update && sudo apt-get install firefox xvfb
+      - name: Test browser intergration
+        run: cd browser && wasm-pack test --firefox --headless
 
