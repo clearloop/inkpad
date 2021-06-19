@@ -8,7 +8,7 @@
   "license": "MIT",
   "files": ["lib/**/*", "README", "LICENSE_MIT", "LICENSE_APACHE"],
   "dependencies": {
-    "@patract/ceres-browser": "^0"
+    "@patract/ceres-browser": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "^15.12.4",
