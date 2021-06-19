@@ -1,0 +1,23 @@
+{
+  "name": "@patract/ceres",
+  "version": "0.1.0",
+  "description": "Run ink! contract anywhere",
+  "main": "lib/index.js",
+  "repository": "https://github.com/patractlabs/ceres",
+  "author": "Patract",
+  "license": "MIT",
+  "files": ["lib/**/*", "README", "LICENSE_MIT", "LICENSE_APACHE"],
+  "dependencies": {
+    "@patract/ceres-browser": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.4",
+    "ts-node": "^10.0.0",
+    "tslint": "^6.1.3",
+    "typescript": "^4.3.4"
+  },
+  "scripts": {
+    "build": "tsc --strict",
+    "lint": "tsc --noEmit --strict && tslint --project ./tsconfig.json"
+  }
+}

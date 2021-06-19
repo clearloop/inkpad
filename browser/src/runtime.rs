@@ -1,7 +1,6 @@
 //! Ceres Runtime interfaces
-use crate::{result::err_check, BrowserStorage};
+use crate::{result::err_check, ti::Transaction, BrowserStorage};
 use ceres_runtime::{Metadata, Runtime as RuntimeInner};
-use ceres_sandbox::Transaction;
 use ceres_std::Rc;
 use core::cell::RefCell;
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -38,14 +37,14 @@ impl Runtime {
     /// Deploy contract
     pub fn deploy(&mut self, method: String, args_json: String, tx_json: String) {
         Self::parse_args_and_then(args_json, tx_json, move |args, tx| {
-            err_check(self.0.deploy(&method, &args, tx));
+            err_check(self.0.deploy(&method, &args, tx.map(|v| v.into())));
         })
     }
 
     /// Deploy contract
     pub fn call(&mut self, method: String, args_json: String, tx_json: String) {
         Self::parse_args_and_then(args_json, tx_json, move |args, tx| {
-            err_check(self.0.call(&method, &args, tx));
+            err_check(self.0.call(&method, &args, tx.map(|v| v.into())));
         });
     }
 
@@ -54,7 +53,7 @@ impl Runtime {
         err_check(self.0.flush());
     }
 
-    /// parse js arguments
+    /// Parse js arguments
     fn parse_args_and_then<F>(args_json: String, tx_json: String, mut f: F)
     where
         F: FnMut(Vec<&str>, Option<Transaction>),
@@ -62,8 +61,8 @@ impl Runtime {
         let args: Vec<String> = err_check(serde_json::from_str(&args_json));
         let tx = err_check(serde_json::from_str(&tx_json));
         let mut args_ref: Vec<&str> = Default::default();
-        args.iter().for_each(|v| args_ref.push(v.as_str()));
 
+        args.iter().for_each(|v| args_ref.push(v.as_str()));
         f(args_ref, tx)
     }
 }

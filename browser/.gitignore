@@ -2,5 +2,7 @@
 **/*.rs.bk
 Cargo.lock
 bin/
-pkg/
+pkg/browser
+pkg/ceres/lib
 wasm-pack.log
+node_modules
