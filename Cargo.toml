@@ -31,6 +31,7 @@ thiserror = "1.0.24"
 structopt = "0.3.21"
 
 # ceres deps
+ceres-ri = { path = "crates/ri", version = "^0" }
 ceres-std = { path = "crates/std", version = "^0" }
 ceres-runtime = { path = "crates/runtime", version = "^0" }
 ceres-sandbox = { path = "crates/sandbox", version = "^0" }

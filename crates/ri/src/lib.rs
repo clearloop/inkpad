@@ -13,10 +13,6 @@ use tiny_keccak::{Hasher, Keccak};
 pub struct Instance;
 
 impl RuntimeInterfaces for Instance {
-    fn enabled(&self) -> bool {
-        true
-    }
-
     fn seal_println(sandbox: &mut Sandbox, args: &[Value]) -> Result<ReturnValue> {
         if args.len() != 2 {
             return Err(Error::WrongArugmentLength);

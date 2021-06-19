@@ -1,5 +1,5 @@
 //! Ceres Runtime interfaces
-use crate::{result::err_check, ti::Transaction, BrowserStorage};
+use crate::{result::err_check, ri::Interface, ti::Transaction, BrowserStorage};
 use ceres_runtime::{Metadata, Runtime as RuntimeInner};
 use ceres_std::Rc;
 use core::cell::RefCell;
@@ -21,6 +21,7 @@ impl Runtime {
             &bytes,
             metadata,
             Rc::new(RefCell::new(storage)),
+            Some(Interface),
         )))
     }
 
@@ -31,6 +32,7 @@ impl Runtime {
         Runtime(err_check(RuntimeInner::from_contract_and_storage(
             &bytes,
             Rc::new(RefCell::new(storage)),
+            Some(Interface),
         )))
     }
 
