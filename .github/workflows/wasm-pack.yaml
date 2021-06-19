@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  wasm-pack:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the source code
