@@ -56,6 +56,8 @@ pub enum Error {
     InsertContractFailed,
     /// Get Contract failed
     GetContractFailed,
+    /// SerdeError
+    SerdeError,
 }
 
 impl PartialEq for Error {
