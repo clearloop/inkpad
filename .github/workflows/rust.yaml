@@ -31,5 +31,10 @@ jobs:
       - name: Build
         run: |
           cargo build --all-features
+      - name: Build wasm package
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+          cd crates/browser
+          wasm-pack build
       - name: Test
         run: cargo test --all-features
