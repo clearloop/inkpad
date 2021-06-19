@@ -61,15 +61,14 @@ wasmtime = [
 
 [workspace]
 members = [
+  "browser",
   "crates/ri",
   "crates/std",
   "crates/seal",
   "crates/derive",
   "crates/sandbox",
   "crates/runtime",
-  "crates/executor",
-  # browser interfaces
-  "crates/browser"
+  "crates/executor"
 ]
 
 [profile.release]

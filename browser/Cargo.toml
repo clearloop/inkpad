@@ -29,11 +29,14 @@ serde_json = { version = "1", features = ["alloc"] }
 hex = { version = "0.4", features = ["alloc"] }
 
 # ceres deps
-ceres-std = { path = "../std", version = "^0" }
-ceres-seal = { path = "../seal", version = "^0" }
-ceres-executor = { path = "../executor", version = "^0" }
-ceres-sandbox = { path = "../sandbox", version = "^0" }
-ceres-runtime = { path = "../runtime", version = "^0" }
+ceres-std = { path = "../crates/std", version = "^0" }
+ceres-seal = { path = "../crates/seal", version = "^0" }
+ceres-executor = { path = "../crates/executor", version = "^0" }
+ceres-sandbox = { path = "../crates/sandbox", version = "^0" }
+ceres-runtime = { path = "../crates/runtime", version = "^0" }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.13"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false

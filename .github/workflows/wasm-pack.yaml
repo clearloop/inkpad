@@ -28,6 +28,4 @@ jobs:
         run: |
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build wasm package
-        run: |
-          cd crates/browser
-          wasm-pack build
+        run: cd browser && wasm-pack build
