@@ -1,4 +1,5 @@
 //! runtime interfaces
+use crate::result::err_check;
 use blake2_rfc::blake2b;
 use ceres_executor::{
     derive::{ReturnValue, Value},
@@ -6,6 +7,7 @@ use ceres_executor::{
 };
 use ceres_sandbox::Sandbox;
 use ceres_seal::RuntimeInterfaces;
+use getrandom::getrandom;
 use sha2::{Digest, Sha256};
 use tiny_keccak::{Hasher, Keccak};
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -55,11 +57,12 @@ impl RuntimeInterfaces for Interface {
         let output_len: u32 = args[2].into();
 
         // random
-        let random = rand::random::<u8>();
+        let mut dest: [u8; 1] = [0];
+        err_check(getrandom(&mut dest));
         let mut subject_buf = sandbox
             .read_sandbox_memory(subject_ptr, subject_len)?
             .to_vec();
-        subject_buf.push(random);
+        subject_buf.push(dest[0]);
 
         let output = blake2b::blake2b(32, &[], &subject_buf);
         sandbox.write_sandbox_output(output_ptr, output_len, output.as_bytes())?;
