@@ -11,5 +11,6 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 pub use self::{
     result::{Error, Result},
     ri::Interface,
+    runtime::Runtime,
     storage::BrowserStorage,
 };
