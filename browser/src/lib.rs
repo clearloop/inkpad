@@ -2,6 +2,7 @@ mod result;
 mod ri;
 mod runtime;
 mod storage;
+mod ti;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -13,4 +14,5 @@ pub use self::{
     ri::Interface,
     runtime::Runtime,
     storage::BrowserStorage,
+    ti::Transaction,
 };
