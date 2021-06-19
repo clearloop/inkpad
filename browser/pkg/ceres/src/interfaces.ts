@@ -1,4 +1,4 @@
-import * as wasm from "../pkg/ceres_browser";
+import * as wasm from "@patract/ceres-browser";
 import { Transaction } from "./types";
 
 /**

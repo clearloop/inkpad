@@ -5,8 +5,9 @@
     "baseUrl": ".",
     "declaration": true,
     "esModuleInterop": true,
-    "outDir": "dist",
+    "outDir": "lib",
     "module": "commonjs",
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
     "resolveJsonModule": true,
@@ -14,6 +15,6 @@
     "skipLibCheck": true,
     "target": "es6"
   },
-  "include": ["lib/**/*", "pkg/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["index.ts", "src/**/*"],
+  "exclude": []
 }

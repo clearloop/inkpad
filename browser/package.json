@@ -1,26 +1,7 @@
 {
-  "name": "@patract/ceres",
-  "version": "1.0.0",
-  "description": "Run ink! contract anywhere",
-  "main": "dist/index.js",
-  "repository": "https://github.com/patractlabs/ceres",
-  "author": "Patract",
-  "license": "MIT",
-  "files": [
-    "pkg/**/*",
-    "dist/**/*",
-    "README",
-    "LICENSE_MIT",
-    "LICENSE_APACHE"
-  ],
-  "devDependencies": {
-    "@types/node": "^15.12.4",
-    "ts-node": "^10.0.0",
-    "tslint": "^6.1.3",
-    "typescript": "^4.3.4"
-  },
+  "private": true,
+  "workspaces": ["pkg/ceres", "pkg/browser"],
   "scripts": {
-    "build": "wasm-pack build && tsc --strict",
-    "lint": "tsc --noEmit --strict && tslint --project ./tsconfig.json"
+    "build": "wasm-pack build --scope patract --out-dir pkg/browser && tsc -p ./pkg/ceres/tsconfig.json"
   }
 }
