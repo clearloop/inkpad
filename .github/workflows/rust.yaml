@@ -8,11 +8,8 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest]
     if: "! contains(toJSON(github.event.commits.head_commit.message), 'ci(skip)')"
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v1
