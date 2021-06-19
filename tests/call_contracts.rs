@@ -11,6 +11,7 @@
 //!   - call `get`
 //!   - call `change`
 //!   - call `switch`
+use ceres_ri::Instance;
 use ceres_runtime::{MemoryStorage, Runtime};
 use std::{cell::RefCell, rc::Rc};
 
@@ -25,7 +26,8 @@ fn test_call_contracts() {
     ]
     .iter()
     .map(|contract| {
-        let mut rt = Runtime::from_contract_and_storage(contract, shared.clone()).unwrap();
+        let mut rt =
+            Runtime::from_contract_and_storage(contract, shared.clone(), Some(Instance)).unwrap();
         rt.flush().unwrap();
         rt.metadata.source.hash
     })
@@ -35,6 +37,7 @@ fn test_call_contracts() {
     let mut delegator = Runtime::from_contract_and_storage(
         include_bytes!("../contracts/delegator.contract"),
         shared.clone(),
+        Some(Instance),
     )
     .unwrap();
 
