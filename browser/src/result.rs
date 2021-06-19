@@ -1,4 +1,5 @@
 //! Browser Result
+use crate::ri::log;
 use ceres_std::fmt::Display;
 use snafu::Snafu;
 
@@ -26,6 +27,9 @@ pub type Result<T> = core::result::Result<T, Error>;
 pub fn err_check<T, E: Display>(res: core::result::Result<T, E>) -> T {
     match res {
         Ok(v) => v,
-        Err(e) => panic!("{}", e),
+        Err(e) => {
+            log(&e.to_string());
+            panic!("{}", e)
+        }
     }
 }
