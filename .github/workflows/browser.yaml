@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  ceres:
     if: "! contains(toJSON(github.event.commits.head_commit.message), 'ci(skip)')"
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +25,7 @@ jobs:
         with:
           path: ./target
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*/Cargo.lock') }}
-      - name: Build
-        run: cargo build --all --all-features
-      - name: Test
+      - name: Download Firefox
+        run:  sudo apt-get update && sudo apt-get install firefox xvfb
+      - name: Test browser intergration
         run: cargo test --all --all-features

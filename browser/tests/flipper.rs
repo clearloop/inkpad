@@ -12,23 +12,16 @@ use ceres_browser::Runtime;
 
 #[wasm_bindgen_test]
 fn test_flipper() {
-    let mut rt = Runtime::new(hex::encode(include_bytes!("../contracts/flipper.contract")));
+    let mut rt = Runtime::from_contract(&hex::encode(include_bytes!(
+        "../../contracts/flipper.contract"
+    )));
 
-    rt.deploy("default", &[], None).expect("Deploy failed");
-    assert_eq!(
-        &rt.call("get", &[], None).expect("Call contract failed"),
-        &[0]
-    );
+    rt.deploy("default", "[]", "null");
+    assert_eq!(&rt.call("get", "[]", "null"), "00");
 
-    rt.deploy("new", &["true"], None).expect("Deploy failed");
-    assert_eq!(
-        &rt.call("get", &[], None).expect("Call contract failed"),
-        &[1]
-    );
+    rt.deploy("new", r#"["true"]"#, "null");
+    assert_eq!(&rt.call("get", "[]", "null"), "01");
 
-    rt.call("flip", &[], None).expect("Call contract failed");
-    assert_eq!(
-        &rt.call("get", &[], None).expect("Call contract failed"),
-        &[0]
-    );
+    rt.call("flip", "[]", "null");
+    assert_eq!(&rt.call("get", "[]", "null"), "00");
 }
