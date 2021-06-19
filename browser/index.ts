@@ -1,3 +1,0 @@
-/**
- * Ceres browser interfaces
- */
