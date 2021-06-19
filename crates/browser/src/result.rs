@@ -1,4 +1,5 @@
 //! Browser Result
+use ceres_std::fmt::Display;
 use snafu::Snafu;
 
 /// Browser Error
@@ -20,3 +21,11 @@ pub enum Error {
 
 /// Browser Result
 pub type Result<T> = core::result::Result<T, Error>;
+
+///  check and panic error
+pub fn err_check<T, E: Display>(res: core::result::Result<T, E>) -> T {
+    match res {
+        Ok(v) => v,
+        Err(e) => panic!("{}", e),
+    }
+}

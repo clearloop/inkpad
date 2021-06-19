@@ -1,26 +1,24 @@
 //! Browser storage
-use crate::{Error, Result};
 use ceres_runtime::{Result as RuntimeResult, Storage};
 use ceres_sandbox::StorageKey;
 use ceres_std::{BTreeMap, Vec};
+use wasm_bindgen::prelude::wasm_bindgen;
 
 /// Browser storage
+#[wasm_bindgen]
 pub struct BrowserStorage(web_sys::Storage);
 
+#[wasm_bindgen]
 impl BrowserStorage {
-    pub fn new() -> Result<Self> {
-        let window = web_sys::window().ok_or(Error::WindowNotExists)?;
-        Ok(Self(
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        let window = web_sys::window().expect("Could not find window");
+        Self(
             window
                 .local_storage()
-                .map_err(|_js_value| {
-                    // TODO:
-                    //
-                    // Display js_value
-                    Error::WebSysError
-                })?
-                .ok_or(Error::LocalStorageNotExists)?,
-        ))
+                .expect("Could not find local_storage")
+                .expect("Could not find local_storage"),
+        )
     }
 }
 
