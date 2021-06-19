@@ -3,7 +3,7 @@
   "workspaces": ["pkg/ceres", "pkg/browser"],
   "scripts": {
     "wasm-pack": "wasm-pack build --scope patract --out-dir pkg/browser --target nodejs",
-    "build:web": "cd pkg/ceres && yarn && yarn build",
+    "build:web": "yarn wasm-pack && cd pkg/ceres && yarn && yarn build",
     "build:nodejs": "yarn wasm-pack && cd pkg/ceres && yarn && tsc"
   }
 }
