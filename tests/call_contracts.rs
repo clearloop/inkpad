@@ -13,6 +13,7 @@
 //!   - call `switch`
 use ceres_ri::Instance;
 use ceres_runtime::{MemoryStorage, Runtime};
+use ceres_sandbox::Transaction;
 use parity_scale_codec::Encode;
 use std::{cell::RefCell, rc::Rc};
 
@@ -36,7 +37,7 @@ fn test_call_contracts() {
 
     // init delegator
     let mut delegator = Runtime::from_contract_and_storage(
-        include_bytes!("../contracts/delegator.contract"),
+        include_bytes!("../contracts/delegator.contract.debug"),
         shared.clone(),
         Some(Instance),
     )
@@ -47,13 +48,16 @@ fn test_call_contracts() {
         .deploy(
             "new",
             vec![
-                0.encode(),
+                42.encode(),
                 0.encode(),
                 hex::decode(&hashes[0][2..]).unwrap(),
                 hex::decode(&hashes[1][2..]).unwrap(),
                 hex::decode(&hashes[2][2..]).unwrap(),
             ],
-            None,
+            Some(Transaction {
+                balance: 100_000,
+                ..Default::default()
+            }),
         )
         .is_err());
 }

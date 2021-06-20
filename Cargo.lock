@@ -296,6 +296,7 @@ dependencies = [
  "bitflags",
  "ceres-executor",
  "ceres-std",
+ "hex",
  "log",
  "parity-scale-codec",
  "serde",

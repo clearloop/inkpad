@@ -16,25 +16,30 @@ impl Sandbox {
     pub fn instantiate(
         &mut self,
         code_hash: [u8; 32],
-        endowment: u64,
+        // endowment: u64,
         gas_meter: &mut GasMeter,
         data: Vec<u8>,
         salt: &[u8],
     ) -> Result<([u8; 32], ExecReturnValue, u32)> {
-        log::debug!("instantiate");
         self.ext.instantiates.push(InstantiateEntry {
             code_hash,
-            endowment,
+            endowment: 3, // endowment
             data: data.to_vec(),
             gas_left: gas_meter.gas_left,
             salt: salt.to_vec(),
         });
 
+        // Get contract from code_hash
+        //
+        // entrypoint
+
+        // Call deploy by provided `data`
+
         Ok((
             code_hash,
             ExecReturnValue {
                 flags: crate::ReturnFlags::empty(),
-                data: Vec::new(),
+                data: Default::default(),
             },
             0,
         ))

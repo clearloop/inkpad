@@ -58,8 +58,8 @@ pub fn seal_instantiate(
     code_hash_ptr: u32,
     code_hash_len: u32,
     _gas: u64,
-    value_ptr: u32,
-    value_len: u32,
+    _value_ptr: u32,
+    _value_len: u32,
     input_data_ptr: u32,
     input_data_len: u32,
     address_ptr: u32,
@@ -70,17 +70,23 @@ pub fn seal_instantiate(
     salt_len: u32,
 ) -> Result<ReturnValue> {
     let code_hash: [u8; 32] = sandbox.read_sandbox_memory_as(code_hash_ptr, code_hash_len)?;
-    let value: u64 = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
+    log::debug!("read code_hash: {:?}", code_hash);
+    // let value = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
+    // log::debug!("read value: {}", value);
     let input_data = sandbox.read_sandbox_memory(input_data_ptr, input_data_len)?;
+    log::debug!("read input_data: {:?}", input_data);
     let salt = sandbox.read_sandbox_memory(salt_ptr, salt_len)?;
+    log::debug!("read salt: {:?}", salt);
     let (address, output, _) =
-        sandbox.instantiate(code_hash, value, &mut Default::default(), input_data, &salt)?;
+        sandbox.instantiate(code_hash, &mut Default::default(), input_data, &salt)?;
 
+    log::debug!("after instantiate");
     if !output.flags.contains(ceres_sandbox::ReturnFlags::REVERT) {
         sandbox.write_sandbox_output(address_ptr, address_len_ptr, &address.encode())?;
     }
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
+    log::debug!("complete instantiate");
     Ok(ReturnValue::Unit)
 }
 
