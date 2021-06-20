@@ -9,19 +9,20 @@ wasm_bindgen_test_configure!(run_in_browser);
 
 // tests
 use ceres_browser::Runtime;
+use ceres_runtime::Metadata;
 
 #[wasm_bindgen_test]
 fn test_flipper() {
-    let mut rt = Runtime::from_contract(&hex::encode(include_bytes!(
-        "../../contracts/flipper.contract"
-    )));
+    let contract: Metadata =
+        serde_json::from_slice(include_bytes!("../../contracts/flipper.contract")).unwrap();
+    let mut rt = Runtime::new(&serde_json::to_string(&contract).unwrap());
 
-    rt.deploy("default", "[]", "null");
-    assert_eq!(&rt.call("get", "[]", "null"), "00");
+    rt.deploy("default", "[]", None);
+    assert_eq!(&rt.call("get", "[]", None), "00");
 
-    rt.deploy("new", r#"["true"]"#, "null");
-    assert_eq!(&rt.call("get", "[]", "null"), "01");
+    rt.deploy("new", r#"["true"]"#, None);
+    assert_eq!(&rt.call("get", "[]", None), "01");
 
-    rt.call("flip", "[]", "null");
-    assert_eq!(&rt.call("get", "[]", "null"), "00");
+    rt.call("flip", "[]", None);
+    assert_eq!(&rt.call("get", "[]", None), "00");
 }

@@ -1,24 +1,23 @@
 import path from "path";
 import webpack from "webpack";
-import WasmPackPlugin from "@wasm-tool/wasm-pack-plugin";
+import HtmlPlugin from "html-webpack-plugin";
 
 const config: webpack.Configuration = {
-    entry: "./index.ts",
     mode: "production",
+    entry: path.resolve(__dirname, "./index.ts"),
     output: {
         filename: "index.js",
-        path: path.resolve(__dirname, "lib"),
+        path: path.resolve(__dirname, "dist"),
         wasmLoading: "fetch",
     },
     resolve: {
-        extensions: [".ts", ".wasm"],
+        extensions: [".ts", ".js"],
     },
     plugins: [
-        new WasmPackPlugin({
-            crateDirectory: path.resolve("../../"),
-            extraArgs: "--scope patract",
-            outDir: path.resolve("../browser"),
-        }) as any,
+        new HtmlPlugin({
+            title: "Ceres Template",
+            templateContent: "<div id='app'></div>",
+        }),
     ],
     module: {
         rules: [
