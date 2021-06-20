@@ -36,12 +36,12 @@ ceres-std = { path = "crates/std", version = "^0" }
 ceres-runtime = { path = "crates/runtime", version = "^0" }
 ceres-sandbox = { path = "crates/sandbox", version = "^0" }
 
-
 [dev-dependencies]
+env_logger = "0.8.4"
 parity-wasm = "0.41.0"
+parity-scale-codec = "2"
 serde_json = "1.0.64"
 wat = "1.0.37"
-parity-scale-codec = "2"
 
 # ceres dev
 ceres-executor = { path = "crates/executor", version = "^0" }

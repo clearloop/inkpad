@@ -45,6 +45,8 @@ pub fn parse(attr: TokenStream, item: TokenStream) -> TokenStream {
             }
 
             fn wrap(sandbox: &mut Sandbox, args: &[Value]) -> Result<ReturnValue> {
+                log::debug!("call {}::{}", #module, #name_str);
+
                 if args.len() != #arg_len {
                     return Err(Error::WrongArugmentLength);
                 }

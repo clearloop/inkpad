@@ -55,7 +55,6 @@ impl<T> derive::Instance<T> for Instance<T> {
             .instance
             .get_func(name)
             .ok_or(Error::GetFunctionNameFailed)?;
-
         match func.call(&args) {
             Ok(result) => Ok(util::to_ret_val(if result.len() != 1 {
                 return Ok(ReturnValue::Unit);

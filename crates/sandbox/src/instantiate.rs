@@ -21,6 +21,7 @@ impl Sandbox {
         data: Vec<u8>,
         salt: &[u8],
     ) -> Result<([u8; 32], ExecReturnValue, u32)> {
+        log::debug!("instantiate");
         self.ext.instantiates.push(InstantiateEntry {
             code_hash,
             endowment,
