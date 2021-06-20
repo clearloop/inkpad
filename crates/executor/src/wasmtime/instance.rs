@@ -30,7 +30,7 @@ impl<T> derive::Instance<T> for Instance<T> {
             &dummy_store
         };
         let module =
-            Module::from_binary(&store.engine(), code).map_err(|_| Error::InitModuleFailed)?;
+            Module::from_binary(store.engine(), code).map_err(|_| Error::InitModuleFailed)?;
         let imports =
             env_def_builder.resolve(store, state, module.imports().collect::<Vec<_>>())?;
         let instance =

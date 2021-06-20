@@ -13,6 +13,7 @@
 //!   - call `switch`
 use ceres_ri::Instance;
 use ceres_runtime::{MemoryStorage, Runtime};
+use parity_scale_codec::Encode;
 use std::{cell::RefCell, rc::Rc};
 
 #[test]
@@ -45,7 +46,13 @@ fn test_call_contracts() {
     assert!(delegator
         .deploy(
             "new",
-            &["00", "00", &hashes[0], &hashes[1], &hashes[2]],
+            vec![
+                0.encode(),
+                0.encode(),
+                hex::decode(&hashes[0][2..]).unwrap(),
+                hex::decode(&hashes[1][2..]).unwrap(),
+                hex::decode(&hashes[2][2..]).unwrap(),
+            ],
             None,
         )
         .is_err());

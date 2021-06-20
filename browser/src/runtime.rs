@@ -25,7 +25,7 @@ impl Runtime {
     /// Deploy contract
     pub fn deploy(&mut self, method: &str, args_json: &str, tx_json: Option<String>) {
         Self::parse_args_and_then(args_json, tx_json, move |args, tx| {
-            err_check(self.0.deploy(&method, &args, tx.map(|v| v.into())));
+            err_check(self.0.deploy(&method, args, tx.map(|v| v.into())));
         })
     }
 
@@ -34,7 +34,7 @@ impl Runtime {
         hex::encode(&Self::parse_args_and_then(
             args_json,
             tx_json,
-            move |args, tx| err_check(self.0.call(&method, &args, tx.map(|v| v.into()))),
+            move |args, tx| err_check(self.0.call(&method, args, tx.map(|v| v.into()))),
         ))
     }
 
@@ -46,13 +46,15 @@ impl Runtime {
     /// Parse js arguments
     fn parse_args_and_then<F, T>(args_json: &str, tx_json: Option<String>, mut f: F) -> T
     where
-        F: FnMut(Vec<&str>, Option<Transaction>) -> T,
+        F: FnMut(Vec<Vec<u8>>, Option<Transaction>) -> T,
     {
         let args: Vec<String> = err_check(serde_json::from_str(&args_json));
         let tx = tx_json.map(|v| err_check(serde_json::from_str(&v)));
-        let mut args_ref: Vec<&str> = Default::default();
+        let mut args_bytes: Vec<Vec<u8>> = Default::default();
 
-        args.iter().for_each(|v| args_ref.push(v.as_str()));
-        f(args_ref, tx)
+        for arg in args {
+            args_bytes.push(err_check(hex::decode(arg)));
+        }
+        f(args_bytes, tx)
     }
 }

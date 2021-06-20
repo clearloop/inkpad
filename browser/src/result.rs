@@ -18,6 +18,9 @@ pub enum Error {
     /// SerializeJson Error
     #[snafu(display("serde json error {}", error))]
     SerdeJson { error: serde_json::Error },
+    /// Decode failed
+    #[snafu(display("hex decode error {}", error))]
+    Hex { error: hex::FromHexError },
 }
 
 /// Browser Result

@@ -5,13 +5,11 @@ use ceres_std::{vec, Vec};
 pub fn al(mut b: Vec<u8>, at_least: usize) -> Vec<u8> {
     let len = b.len();
     let pad = at_least - len;
-    if pad < 1 {
-        b
-    } else {
+    if pad >= 1 {
         let mut res = vec![0; pad];
         b.append(&mut res);
-        b
     }
+    b
 }
 
 #[cfg(test)]

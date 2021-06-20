@@ -39,9 +39,15 @@ pub enum Error {
     /// Decode contract failed
     DecodeContractFailed,
     /// The length of arguments is not correct
-    InvalidArgumentLength,
-    /// Parse args failed
-    ParseArgumentFailed,
+    #[snafu(display(
+        "/// The length of arguments is not correct, expect {}, input: {}",
+        expect,
+        input
+    ))]
+    InvalidArgumentLength { expect: usize, input: usize },
+    /// Decode argument failed
+    #[snafu(display("Decode argument failed {:?}", arg))]
+    DecodeArgumentFailed { arg: Vec<u8> },
     #[snafu(display("Could not find method {}", name))]
     GetMethodFailed { name: String },
     /// Could not set Storage

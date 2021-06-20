@@ -20,7 +20,7 @@ fn test_flipper() {
     rt.deploy("default", "[]", None);
     assert_eq!(&rt.call("get", "[]", None), "00");
 
-    rt.deploy("new", r#"["true"]"#, None);
+    rt.deploy("new", r#"["01"]"#, None);
     assert_eq!(&rt.call("get", "[]", None), "01");
 
     rt.call("flip", "[]", None);
