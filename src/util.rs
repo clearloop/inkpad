@@ -30,7 +30,7 @@ pub fn decode_addr(addr: &str) -> Result<[u8; 32]> {
 pub fn pad(s: &str, spaces: usize) -> String {
     let pad = spaces - s.len();
     let mut o = String::new();
-    o.push_str(&s);
+    o.push_str(s);
     o.push_str(&" ".repeat(pad));
     o
 }

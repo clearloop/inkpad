@@ -117,7 +117,7 @@ impl<T> Instance<T> {
     /// Instantiate a module with the given env builder
     pub fn new(code: &[u8], builder: &Builder<T>, state: &mut T) -> Result<Self> {
         Ok(Instance(<e::Instance<T> as derive::Instance<T>>::new(
-            code, &builder, state,
+            code, builder, state,
         )?))
     }
 

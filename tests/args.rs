@@ -50,3 +50,84 @@ fn test_hash() {
         );
     })
 }
+
+#[test]
+fn test_boolean_and_number() {
+    t(|args: &mut Runtime| {
+        assert_eq!(
+            args.call(
+                "test_boolean_and_number",
+                vec![true.encode(), 1.encode()],
+                None
+            )
+            .unwrap(),
+            vec![1, 1, 0, 0, 0]
+        );
+    })
+}
+
+#[test]
+fn test_boolean_and_hash() {
+    t(|args: &mut Runtime| {
+        let hash = [0; 32];
+        let mut res = true.encode();
+        res.append(&mut hash.to_vec());
+        assert_eq!(
+            args.call(
+                "test_boolean_and_hash",
+                vec![true.encode(), hash.to_vec()],
+                None
+            )
+            .unwrap(),
+            res
+        );
+    })
+}
+
+#[test]
+fn test_number_and_number() {
+    t(|args: &mut Runtime| {
+        assert_eq!(
+            args.call("test_number_and_number", vec![0.encode(), 1.encode()], None)
+                .unwrap(),
+            vec![0, 0, 0, 0, 1, 0, 0, 0]
+        );
+    })
+}
+
+#[test]
+fn test_number_and_hash() {
+    t(|args: &mut Runtime| {
+        let hash = [0; 32];
+        let mut res = 0.encode();
+        res.append(&mut hash.to_vec());
+        assert_eq!(
+            args.call(
+                "test_number_and_hash",
+                vec![0.encode(), hash.to_vec()],
+                None
+            )
+            .unwrap(),
+            res,
+        );
+    })
+}
+
+#[test]
+fn test_all() {
+    t(|args: &mut Runtime| {
+        let hash = [0; 32];
+        let mut res = 0.encode();
+        res.append(&mut hash.to_vec());
+        res.append(&mut true.encode());
+        assert_eq!(
+            args.call(
+                "test_all",
+                vec![0.encode(), hash.to_vec(), true.encode()],
+                None
+            )
+            .unwrap(),
+            res,
+        );
+    })
+}
