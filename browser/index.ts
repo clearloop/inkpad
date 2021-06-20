@@ -17,5 +17,5 @@ import Flipper from "./flipper.json";
 
     // call contract
     const res = contract.call("get", "[]", null);
-    console.log(`call contract...${res}`);
+    console.log(`...call contract...${res}`);
 })();
