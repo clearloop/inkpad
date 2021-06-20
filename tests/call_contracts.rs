@@ -37,7 +37,7 @@ fn test_call_contracts() {
 
     // init delegator
     let mut delegator = Runtime::from_contract_and_storage(
-        include_bytes!("../contracts/delegator.contract.debug"),
+        include_bytes!("../contracts/delegator.contract"),
         shared.clone(),
         Some(Instance),
     )
