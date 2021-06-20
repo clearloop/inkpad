@@ -19,15 +19,20 @@ import Flipper from "./flipper.json";
 
     // load contract
     const contract = new Runtime(JSON.stringify(Flipper));
-    console.log("...init contract to storage");
+    console.log("...init contract");
 
     // deploy contract
-    (contract as any).deploy("default", "[]", null);
+    (contract as any).deploy("default", "[]");
     console.log("...deploy contract");
 
     // call contract
-    const res = contract.call("get", "[]", null);
+    const res = contract.call("get", "[]");
     console.log(`...call contract...${res}`);
+
+    // flip
+    contract.call("flip", "[]");
+    const flip = contract.call("get", "[]");
+    console.log(`...call contract...${flip}`);
 })();
 ```
 
