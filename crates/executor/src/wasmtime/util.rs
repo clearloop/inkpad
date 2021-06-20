@@ -34,7 +34,7 @@ pub fn store_with_dwarf() -> Result<Store, Error> {
 }
 
 /// Wrap host function into `Func`
-pub fn wrap_fn<T>(store: &Store, state: usize, f: usize, sig: FuncType) -> Func {
+pub fn wrap_fn<'f, T>(store: &Store, state: usize, f: usize, sig: FuncType) -> Func {
     let func = move |_: Caller<'_>, args: &[Val], results: &mut [Val]| {
         let mut inner_args = vec![];
         for arg in args {

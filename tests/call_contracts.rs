@@ -17,8 +17,8 @@ use std::{cell::RefCell, rc::Rc};
 
 #[test]
 fn test_call_contracts() {
+    env_logger::init();
     let shared = Rc::new(RefCell::new(MemoryStorage::new()));
-
     let hashes = [
         include_bytes!("../contracts/accumulator.contract").to_vec(),
         include_bytes!("../contracts/adder.contract").to_vec(),
@@ -40,6 +40,7 @@ fn test_call_contracts() {
         Some(Instance),
     )
     .unwrap();
+    delegator.flush().unwrap();
 
     assert!(delegator
         .deploy(

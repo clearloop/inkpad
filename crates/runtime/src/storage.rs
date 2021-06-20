@@ -30,12 +30,14 @@ impl MemoryStorage {
 
 impl Storage for MemoryStorage {
     fn set(&mut self, code_hash: StorageKey, data: BTreeMap<StorageKey, Vec<u8>>) -> Result<()> {
+        log::debug!("set {:?}", code_hash);
         self.0.insert(code_hash, data);
         Ok(())
     }
 
     #[allow(clippy::map_clone)]
     fn get(&self, code_hash: StorageKey) -> Option<BTreeMap<StorageKey, Vec<u8>>> {
+        log::debug!("get {:?}", code_hash);
         self.0.get(&code_hash).map(|v| v.clone())
     }
 
