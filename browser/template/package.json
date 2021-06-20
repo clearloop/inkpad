@@ -1,5 +1,5 @@
 {
-  "name": "@patract/ceres",
+  "name": "@patract/ceres-template",
   "version": "0.1.0",
   "description": "Run ink! contract anywhere",
   "main": "lib/index.js",
@@ -13,11 +13,12 @@
     "LICENSE_APACHE"
   ],
   "dependencies": {
-    "@patract/ceres-browser": "^0.1.0",
-    "@wasm-tool/wasm-pack-plugin": "^1.4.0"
+    "@patract/ceres-browser": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "^15.12.4",
+    "@wasm-tool/wasm-pack-plugin": "^1.4.0",
+    "html-webpack-plugin": "^5.3.1",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tslint": "^6.1.3",
