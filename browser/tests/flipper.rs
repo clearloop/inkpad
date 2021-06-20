@@ -12,7 +12,7 @@ use ceres_browser::Runtime;
 
 #[wasm_bindgen_test]
 fn test_flipper() {
-    let mut rt = Runtime::from_contract(&hex::encode(include_bytes!(
+    let mut rt = Runtime::new(&hex::encode(include_bytes!(
         "../../contracts/flipper.contract"
     )));
 

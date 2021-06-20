@@ -1,13 +1,3 @@
-# Ceres
-
-> Run ink! contract anywhere
-
-A browser implementation of ceres
-
-
-## Example
-
-```typescript
 import Flipper from "./flipper.json";
 
 (async () => {
@@ -29,9 +19,3 @@ import Flipper from "./flipper.json";
     const res = contract.call("get", "[]", null);
     console.log(`call contract...${res}`);
 })();
-```
-
-## LICENSE
-
-Apache-2.0
-

@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@patract/ceres-template",
   "version": "0.1.0",
   "description": "Run ink! contract anywhere",
@@ -7,27 +8,30 @@
   "author": "Patract",
   "license": "MIT",
   "files": [
+    "flipper.json",
     "lib/**/*",
     "README",
     "LICENSE_MIT",
     "LICENSE_APACHE"
   ],
   "dependencies": {
-    "@patract/ceres-browser": "^0.1.0"
+    "@patract/ceres-browser": "^0.1.4"
   },
   "devDependencies": {
     "@types/node": "^15.12.4",
-    "@wasm-tool/wasm-pack-plugin": "^1.4.0",
+    "copy-webpack-plugin": "^9.0.0",
     "html-webpack-plugin": "^5.3.1",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tslint": "^6.1.3",
     "typescript": "^4.3.4",
     "webpack": "^5.39.1",
-    "webpack-cli": "^4.7.2"
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
   },
   "scripts": {
     "build": "webpack",
+    "dev": "webpack serve",
     "lint": "tsc --noEmit --strict && tslint --project ./tsconfig.json"
   }
 }

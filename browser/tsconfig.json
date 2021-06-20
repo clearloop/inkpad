@@ -15,6 +15,6 @@
     "skipLibCheck": true,
     "target": "es6"
   },
-  "include": ["index.ts", "src/**/*"],
+  "include": ["index.ts", "pkg/**/*", "src/**/*"],
   "exclude": []
 }
