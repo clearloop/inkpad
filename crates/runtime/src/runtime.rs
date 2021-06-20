@@ -121,7 +121,12 @@ impl Runtime {
     }
 
     /// Deploy contract
-    pub fn deploy(&mut self, method: &str, args: &[&str], tx: Option<Transaction>) -> Result<()> {
+    pub fn deploy(
+        &mut self,
+        method: &str,
+        args: Vec<Vec<u8>>,
+        tx: Option<Transaction>,
+    ) -> Result<()> {
         if let Some(tx) = tx {
             self.sandbox.borrow_mut().tx = tx;
         }
@@ -148,7 +153,7 @@ impl Runtime {
     pub fn call(
         &mut self,
         method: &str,
-        args: &[&str],
+        args: Vec<Vec<u8>>,
         tx: Option<Transaction>,
     ) -> Result<Vec<u8>> {
         if let Some(tx) = tx {

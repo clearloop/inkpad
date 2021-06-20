@@ -3,6 +3,7 @@
 //! Test invoking ink! functions in wasmtime
 use ceres_ri::Instance;
 use ceres_runtime::Runtime;
+use parity_scale_codec::Encode;
 
 fn main() {
     let mut rt = Runtime::from_contract(
@@ -11,21 +12,22 @@ fn main() {
     )
     .expect("Create runtime failed");
 
-    rt.deploy("default", &[], None).expect("Deploy failed");
+    rt.deploy("default", vec![], None).expect("Deploy failed");
     assert_eq!(
-        &rt.call("get", &[], None).expect("Call contract failed"),
+        &rt.call("get", vec![], None).expect("Call contract failed"),
         &[0]
     );
 
-    rt.deploy("new", &["true"], None).expect("Deploy failed");
+    rt.deploy("new", vec![true.encode()], None)
+        .expect("Deploy failed");
     assert_eq!(
-        &rt.call("get", &[], None).expect("Call contract failed"),
+        &rt.call("get", vec![], None).expect("Call contract failed"),
         &[1]
     );
 
-    rt.call("flip", &[], None).expect("Call contract failed");
+    rt.call("flip", vec![], None).expect("Call contract failed");
     assert_eq!(
-        &rt.call("get", &[], None).expect("Call contract failed"),
+        &rt.call("get", vec![], None).expect("Call contract failed"),
         &[0]
     );
 }

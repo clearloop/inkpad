@@ -35,6 +35,7 @@ snafu = "0.6.10"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["alloc"] }
 hex = { version = "0.4", features = ["alloc"] }
+parity-scale-codec = { version = "2.1.3", features = [] }
 
 # ceres deps
 ceres-std = { path = "../crates/std", version = "^0" }

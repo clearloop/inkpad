@@ -5,29 +5,20 @@ use parity_wasm::elements::{External, Module};
 
 const IMPORT_MODULE_MEMORY: &str = "env";
 
-/// Parse `Vec<String>` to `Vec<RuntimeValue>`
-#[allow(clippy::needless_range_loop)]
-pub fn parse_args(selector: &str, args: &[&str], tys: Vec<u32>) -> Result<Vec<u8>> {
+/// Parse `Vec<u8>` to `Vec<RuntimeValue>`
+pub fn parse_args(selector: &str, args: Vec<Vec<u8>>, tys: Vec<u32>) -> Result<Vec<u8>> {
     if args.len() != tys.len() {
-        return Err(Error::InvalidArgumentLength);
+        return Err(Error::InvalidArgumentLength {
+            expect: tys.len(),
+            input: args.len(),
+        });
     }
 
-    let mut res = hex::decode(&selector[2..])
+    let mut res = step_hex(&selector)
         .map_err(|_| Error::DecodeSelectorFailed)?
         .to_vec();
-    for i in 0..args.len() {
-        match args[i] {
-            "true" => res.push(1),
-            "false" => res.push(0),
-            hex if hex.starts_with("0x") => {
-                if let Some(stripped) = hex.strip_prefix("0x") {
-                    res.append(&mut hex::decode(stripped).map_err(|_| Error::ParseArgumentFailed)?)
-                } else {
-                    return Err(Error::DecodeSelectorFailed);
-                }
-            }
-            patt => res.append(&mut hex::decode(&patt).map_err(|_| Error::ParseArgumentFailed)?),
-        }
+    for mut arg in args {
+        res.append(&mut arg);
     }
 
     Ok(res)
