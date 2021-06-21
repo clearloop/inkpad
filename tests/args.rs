@@ -134,3 +134,17 @@ fn test_all() {
         );
     })
 }
+
+// TODO:
+//
+// This test failed with `CodeNotFound` which should be `DecodeRuntimeValueFailed`
+#[test]
+fn test_number_and_hash_with_numbers() {
+    t(|args: &mut Runtime| {
+        assert_eq!(
+            args.call("test_number_and_hash", vec![0.encode(), 1.encode()], None)
+                .unwrap(),
+            ceres_runtime::Error::DecodeRuntimeValueFailed
+        );
+    })
+}
