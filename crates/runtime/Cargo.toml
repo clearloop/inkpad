@@ -28,6 +28,7 @@ ceres-ri = {path = "../ri", version = "^0", optional = true }
 ceres-std = { path = "../std", version = "^0" }
 ceres-seal = { path = "../seal", version = "^0" }
 ceres-sandbox = { path = "../sandbox", version = "^0" }
+ceres-support = { path = "../support", version = "^0" }
 ceres-executor = { path = "../executor", version = "^0" }
 
 [features]
@@ -37,5 +38,6 @@ std = [
     "ceres-std/std",
     "ceres-seal/std",
     "ceres-sandbox/std",
+    "ceres-support/std",
     "ceres-executor/std",
 ]

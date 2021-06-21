@@ -1,13 +1,16 @@
 use ceres_ri::Instance;
-use ceres_runtime::{MemoryStorage, Runtime};
+use ceres_runtime::Runtime;
+use ceres_support::types::MemoryStorage;
 use parity_scale_codec::Encode;
 use std::{cell::RefCell, rc::Rc};
 
 fn t(f: fn(rt: &mut Runtime)) {
-    let shared = Rc::new(RefCell::new(MemoryStorage::new()));
+    let cache = Rc::new(RefCell::new(MemoryStorage::default()));
+    let state = Rc::new(RefCell::new(MemoryStorage::default()));
     let mut args = Runtime::from_contract_and_storage(
         include_bytes!("../contracts/args.contract"),
-        shared.clone(),
+        cache.clone(),
+        state.clone(),
         Some(Instance),
     )
     .unwrap();

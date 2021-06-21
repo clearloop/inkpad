@@ -21,6 +21,7 @@ parity-scale-codec = { version = "2", features = ["derive"]}
 
 ceres-std = { path = "../std", version = "^0" }
 ceres-executor = { path = "../executor", version = "^0" }
+ceres-support = { path = "../support", version = "^0" }
 
 [features]
 default = [
@@ -30,4 +31,5 @@ std = [
     "serde/std",
     "ceres-std/std",
     "ceres-executor/std",
+    "ceres-support/std",
 ]

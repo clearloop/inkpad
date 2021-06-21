@@ -1,0 +1,14 @@
+[package]
+name = "ceres-support"
+version = "0.1.0"
+authors = ["clearloop <udtrokia@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+ceres-std = { path = "../std", version = "^0" }
+
+[features]
+default = [ "std" ]
+std = [
+  "ceres-std/std",
+]

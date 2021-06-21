@@ -10,6 +10,5 @@ pub fn exec(rt: &mut Runtime, tx: Tx) -> Result<()> {
     }
 
     println!("result: {:?}", rt.call(&tx.method, args, Some(tx.tx()?))?);
-    rt.flush()?;
     Ok(())
 }
