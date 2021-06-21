@@ -61,6 +61,7 @@ impl<T> derive::Instance<T> for Instance<T> {
             } else {
                 match result[0] {
                     Val::I32(0) => result[0].to_owned(),
+                    // FIXME: test_number_and_hash_with_numbers, Val::I32(7)
                     Val::I32(n) => return Err(Error::ExecuteFailed(n.into())),
                     _ => return Err(Error::UnkownError),
                 }
