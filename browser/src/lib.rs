@@ -1,8 +1,8 @@
 mod result;
 mod ri;
 mod runtime;
-mod storage;
 mod ti;
+mod tree;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -13,6 +13,6 @@ pub use self::{
     result::{Error, Result},
     ri::Interface,
     runtime::Runtime,
-    storage::BrowserStorage,
     ti::Transaction,
+    tree::Tree,
 };

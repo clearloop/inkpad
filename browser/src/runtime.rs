@@ -1,9 +1,12 @@
 //! Ceres Runtime interfaces
-use crate::{result::err_check, ri::Interface, ti::Transaction, BrowserStorage};
+use crate::{result::err_check, ri::Interface, ti::Transaction, Tree};
 use ceres_runtime::Runtime as RuntimeInner;
 use ceres_std::Rc;
 use core::cell::RefCell;
 use wasm_bindgen::prelude::wasm_bindgen;
+
+const CERES_BROWSER_CACHE: &str = "CERES_BROWSER_CACHE";
+const CERES_BROWSER_STATE: &str = "CERES_BROWSER_STATE";
 
 /// Ceres browser runtime
 #[wasm_bindgen]
@@ -14,10 +17,10 @@ impl Runtime {
     /// New runtime
     #[wasm_bindgen(constructor)]
     pub fn new(contract: &str) -> Runtime {
-        let storage = BrowserStorage::new();
         Runtime(err_check(RuntimeInner::from_metadata_and_storage(
             err_check(serde_json::from_str(contract)),
-            Rc::new(RefCell::new(storage)),
+            Rc::new(RefCell::new(Tree::new(CERES_BROWSER_CACHE))),
+            Rc::new(RefCell::new(Tree::new(CERES_BROWSER_STATE))),
             Some(Interface),
         )))
     }
@@ -36,11 +39,6 @@ impl Runtime {
             tx_json,
             move |args, tx| err_check(self.0.call(&method, args, tx.map(|v| v.into()))),
         ))
-    }
-
-    /// Flush storage
-    pub fn flush(&mut self) {
-        err_check(self.0.flush());
     }
 
     /// Parse js arguments

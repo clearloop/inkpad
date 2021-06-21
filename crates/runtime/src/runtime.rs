@@ -1,9 +1,10 @@
 //! Ceres Runtime
-use crate::{storage::MemoryStorage, util, Error, Metadata, Result, Storage};
+use crate::{util, Error, Metadata, Result};
 use ceres_executor::{Builder, Instance, Memory};
 use ceres_sandbox::{Sandbox, Transaction};
 use ceres_seal::RuntimeInterfaces;
 use ceres_std::{Rc, String, ToString, Vec};
+use ceres_support::{traits::Storage, types::MemoryStorage};
 use core::cell::RefCell;
 use parity_wasm::elements::Module;
 
@@ -12,7 +13,8 @@ pub struct Runtime {
     pub sandbox: Rc<RefCell<Sandbox>>,
     instance: Instance<Sandbox>,
     pub metadata: Metadata,
-    storage: Rc<RefCell<dyn Storage>>,
+    cache: Rc<RefCell<dyn Storage>>,
+    state: Rc<RefCell<dyn Storage>>,
 }
 
 impl Runtime {
@@ -25,7 +27,8 @@ impl Runtime {
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
-            Rc::new(RefCell::new(MemoryStorage::new())),
+            Rc::new(RefCell::new(MemoryStorage::default())),
+            Rc::new(RefCell::new(MemoryStorage::default())),
             ri,
         )
     }
@@ -33,7 +36,8 @@ impl Runtime {
     /// Create runtime from contract
     pub fn from_contract_and_storage(
         contract: &[u8],
-        storage: Rc<RefCell<impl Storage + 'static>>,
+        cache: Rc<RefCell<impl Storage + 'static>>,
+        state: Rc<RefCell<impl Storage + 'static>>,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
@@ -43,7 +47,8 @@ impl Runtime {
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
-            storage,
+            cache,
+            state,
             ri,
         )
     }
@@ -51,14 +56,16 @@ impl Runtime {
     /// Create runtime from metadata and storage
     pub fn from_metadata_and_storage(
         meta: Metadata,
-        storage: Rc<RefCell<impl Storage + 'static>>,
+        cache: Rc<RefCell<impl Storage + 'static>>,
+        state: Rc<RefCell<impl Storage + 'static>>,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         Self::new(
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
-            storage,
+            cache,
+            state,
             ri,
         )
     }
@@ -67,7 +74,8 @@ impl Runtime {
     pub fn new(
         b: &[u8],
         metadata: Metadata,
-        storage: Rc<RefCell<impl Storage + 'static>>,
+        cache: Rc<RefCell<impl Storage + 'static>>,
+        state: Rc<RefCell<impl Storage + 'static>>,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
@@ -82,17 +90,12 @@ impl Runtime {
         let limit = util::scan_imports(&el).map_err(|_| Error::CalcuateMemoryLimitFailed)?;
         let mem = Memory::new(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
 
-        // Get storage
-        let storage_mut = storage.borrow_mut();
-        let state =
-            if let Some(state) = storage_mut.get(util::parse_code_hash(&metadata.source.hash)?) {
-                state
-            } else {
-                storage_mut.new_state()
-            };
-
         // Create Sandbox and Builder
-        let sandbox = Rc::new(RefCell::new(Sandbox::new(mem, state)));
+        let sandbox = Rc::new(RefCell::new(Sandbox::new(
+            mem,
+            cache.clone(),
+            state.clone(),
+        )));
 
         // Construct interfaces
         let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts(ri));
@@ -111,12 +114,12 @@ impl Runtime {
         )
         .map_err(|error| Error::InitModuleFailed { error })?;
 
-        drop(storage_mut);
         Ok(Runtime {
             sandbox,
             instance,
             metadata,
-            storage,
+            cache,
+            state,
         })
     }
 
@@ -180,15 +183,5 @@ impl Runtime {
         }
 
         Ok(vec![])
-    }
-
-    /// Flush storage
-    pub fn flush(&mut self) -> Result<()> {
-        self.storage.borrow_mut().set(
-            util::parse_code_hash(&self.metadata.source.hash)?,
-            self.sandbox.borrow().state.clone(),
-        )?;
-
-        Ok(())
     }
 }

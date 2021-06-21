@@ -3,7 +3,9 @@
 extern crate bitflags;
 
 use ceres_executor::Memory;
-use ceres_std::{vec, BTreeMap, Vec};
+use ceres_std::{vec, Rc, Vec};
+use ceres_support::traits::Storage;
+use core::cell::RefCell;
 
 /// Custom storage key
 pub type StorageKey = [u8; 32];
@@ -60,14 +62,19 @@ pub struct Sandbox {
     pub ret: Option<Vec<u8>>,
     pub ext: Ext,
     pub tx: tx::Transaction,
-    pub state: BTreeMap<StorageKey, Vec<u8>>,
+    pub cache: Rc<RefCell<dyn Storage>>,
+    pub state: Rc<RefCell<dyn Storage>>,
     memory: Memory,
     pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
 }
 
 impl Sandbox {
     /// New sandbox
-    pub fn new(memory: Memory, state: BTreeMap<StorageKey, Vec<u8>>) -> Sandbox {
+    pub fn new(
+        memory: Memory,
+        cache: Rc<RefCell<impl Storage + 'static>>,
+        state: Rc<RefCell<impl Storage + 'static>>,
+    ) -> Sandbox {
         Sandbox {
             input: None,
             ret: None,
@@ -83,6 +90,7 @@ impl Sandbox {
             },
             events: vec![],
             tx: Default::default(),
+            cache,
             state,
             memory,
         }

@@ -197,6 +197,7 @@ dependencies = [
  "ceres-sandbox",
  "ceres-seal",
  "ceres-std",
+ "ceres-support",
  "getrandom",
  "hex",
  "parity-scale-codec",
@@ -222,6 +223,7 @@ dependencies = [
  "ceres-sandbox",
  "ceres-seal",
  "ceres-std",
+ "ceres-support",
  "dirs",
  "env_logger 0.8.4",
  "etc",
@@ -278,6 +280,7 @@ dependencies = [
  "ceres-sandbox",
  "ceres-seal",
  "ceres-std",
+ "ceres-support",
  "cfg-if 1.0.0",
  "derivative",
  "hashbrown 0.11.2",
@@ -296,6 +299,8 @@ dependencies = [
  "bitflags",
  "ceres-executor",
  "ceres-std",
+ "ceres-support",
+ "hex",
  "log",
  "parity-scale-codec",
  "serde",
@@ -316,6 +321,13 @@ dependencies = [
 [[package]]
 name = "ceres-std"
 version = "0.1.0"
+
+[[package]]
+name = "ceres-support"
+version = "0.1.0"
+dependencies = [
+ "ceres-std",
+]
 
 [[package]]
 name = "cfg-if"
