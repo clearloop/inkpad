@@ -108,7 +108,7 @@ impl Runtime {
         // Create instance
         let instance = Instance::new(
             &el.to_bytes()
-                .map_err(|error| Error::SerializeFailed { error })?,
+                .map_err(|error| Error::SerializeFailed { error: error.into() })?,
             &builder,
             &mut sandbox.borrow_mut(),
         )

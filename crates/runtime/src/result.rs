@@ -1,9 +1,37 @@
 //! Custom result
 use ceres_std::{String, Vec};
-use snafu::Snafu;
+use core::fmt::{self, Display, Formatter};
+use snafu::{Snafu, ErrorCompat};
+use parity_wasm::SerializationError;
+
+/// A thin wrapper for `SerializeFailedError`
+/// which seems does not support `PartialEq`-trait
+#[derive(Debug)]
+pub struct SerializeFailedError(SerializationError);
+impl Display for SerializeFailedError {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+impl ErrorCompat for SerializeFailedError {}
+
+impl From<SerializationError> for SerializeFailedError {
+    fn from(e: SerializationError) -> Self {
+        Self(e)
+    }
+}
+
+impl PartialEq for SerializeFailedError {
+    fn eq(&self, _other: &Self) -> bool {
+        false
+    }
+}
+
+impl Eq for SerializeFailedError {}
 
 /// Ceres Error
-#[derive(Snafu, Debug)]
+#[derive(Snafu, Debug, PartialEq, Eq)]
 pub enum Error {
     /// Memory out of bounds
     OutOfBounds,
@@ -24,7 +52,7 @@ pub enum Error {
     AllocMemoryFailed,
     #[snafu(display("Serialize failed {}", error))]
     SerializeFailed {
-        error: parity_wasm::SerializationError,
+        error: SerializeFailedError,
     },
     /// Init ModuleInstance failed
     #[snafu(display("Init module failed {}", error))]
@@ -65,17 +93,6 @@ pub enum Error {
     /// SerdeError
     SerdeError,
 }
-
-impl PartialEq for Error {
-    fn eq(&self, other: &Self) -> bool {
-        match self {
-            Error::SerializeFailed { error: _ } => false,
-            _ => self.eq(other),
-        }
-    }
-}
-
-impl Eq for Error {}
 
 /// Wrapped result
 pub type Result<T> = core::result::Result<T, Error>;
