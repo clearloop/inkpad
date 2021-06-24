@@ -142,9 +142,8 @@ fn test_all() {
 fn test_number_and_hash_with_numbers() {
     t(|args: &mut Runtime| {
         assert_eq!(
-            args.call("test_number_and_hash", vec![0.encode(), 1.encode()], None)
-                .unwrap(),
-            ceres_runtime::Error::DecodeRuntimeValueFailed
+            args.call("test_number_and_hash", vec![0.encode(), 1.encode()], None),
+            Err(ceres_runtime::Error::DecodeRuntimeValueFailed)
         );
     })
 }

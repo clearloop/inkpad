@@ -14,6 +14,8 @@ pub fn parse_args(selector: &str, args: Vec<Vec<u8>>, tys: Vec<u32>) -> Result<V
         });
     }
 
+    // TODO: Arguments Type Check
+
     let mut res = step_hex(selector)
         .map_err(|_| Error::DecodeSelectorFailed)?
         .to_vec();
