@@ -16,7 +16,7 @@ mod wasmi;
 mod wasmtime;
 
 pub use self::{
-    executor::*,
+    executor::{Builder, Instance, Memory},
     result::{Error, Result, ReturnCode},
     trap::{Trap, TrapCode},
 };

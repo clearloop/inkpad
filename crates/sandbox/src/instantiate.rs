@@ -1,5 +1,9 @@
 //! Instantiate Entry
-use crate::{ExecReturnValue, GasMeter, Sandbox};
+use crate::{
+    contract::GasMeter,
+    flag::{ExecReturnValue, ReturnFlags},
+    Sandbox,
+};
 use ceres_executor::Result;
 use ceres_std::Vec;
 
@@ -38,7 +42,7 @@ impl Sandbox {
         Ok((
             code_hash,
             ExecReturnValue {
-                flags: crate::ReturnFlags::empty(),
+                flags: ReturnFlags::empty(),
                 data: Default::default(),
             },
             0,

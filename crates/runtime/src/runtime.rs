@@ -90,20 +90,25 @@ impl Runtime {
         let limit = util::scan_imports(&el).map_err(|_| Error::CalcuateMemoryLimitFailed)?;
         let mem = Memory::new(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
 
+        // Construct seal calls
+        let seal_calls = ceres_seal::pallet_contracts(ri);
+
         // Create Sandbox and Builder
         let sandbox = Rc::new(RefCell::new(Sandbox::new(
             mem,
             cache.clone(),
             state.clone(),
+            seal_calls.clone(),
         )));
 
         // Construct executor
         let executor = Rc::new(RefCell::new(Executor::default()));
+
         executor.borrow_mut().build(
             &el.to_bytes()
                 .map_err(|error| Error::SerializeFailed { error })?,
             &mut sandbox.borrow_mut(),
-            ri,
+            seal_calls,
         )?;
 
         Ok(Runtime {

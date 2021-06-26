@@ -1,5 +1,5 @@
 //! Transfer Entry
-use crate::{ExecReturnValue, Sandbox};
+use crate::{flag::ReturnFlags, ExecReturnValue, Sandbox};
 use ceres_executor::Result;
 use ceres_std::Vec;
 
@@ -26,7 +26,7 @@ impl Sandbox {
         self.ext.transfers.push(TransferEntry { to, value, data });
 
         Ok(ExecReturnValue {
-            flags: crate::ReturnFlags::empty(),
+            flags: ReturnFlags::empty(),
             data: Vec::new(),
         })
     }

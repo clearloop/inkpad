@@ -1,8 +1,7 @@
 //! Contract executor
 use crate::result::{Error, Result};
-use ceres_executor::{Builder, Instance};
+use ceres_executor::{derive::SealCall, Builder, Instance};
 use ceres_sandbox::Sandbox;
-use ceres_seal::RuntimeInterfaces;
 use parity_wasm::elements::Module;
 
 /// Contract executor
@@ -17,7 +16,7 @@ impl Executor {
         &mut self,
         b: &[u8],
         sandbox: &mut Sandbox,
-        ri: Option<impl RuntimeInterfaces>,
+        ri: Vec<SealCall<Sandbox>>,
     ) -> Result<()> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
@@ -28,7 +27,7 @@ impl Executor {
         }
 
         // Construct interfaces
-        let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts(ri));
+        let mut builder = Builder::new().add_host_parcels(ri);
         builder.add_memory("env", "memory", sandbox.mem());
 
         let instance = Instance::new(

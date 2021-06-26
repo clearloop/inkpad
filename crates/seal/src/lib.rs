@@ -16,10 +16,12 @@ mod transfer;
 pub use self::derive::Host;
 pub use ceres_sandbox::RuntimeInterfaces;
 
+/// Seal calls
+pub type SealCall =
+    ceres_executor::derive::HostParcel<&'static str, &'static str, ceres_sandbox::Sandbox>;
+
 /// Pallet contract host functions
-pub fn pallet_contracts(
-    ri: Option<impl RuntimeInterfaces>,
-) -> Vec<ceres_executor::derive::HostParcel<&'static str, &'static str, ceres_sandbox::Sandbox>> {
+pub fn pallet_contracts(ri: Option<impl RuntimeInterfaces>) -> Vec<SealCall> {
     let mut wasm = vec![
         chain::Gas::pack(),
         chain::BlockNumber::pack(),

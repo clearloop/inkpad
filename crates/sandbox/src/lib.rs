@@ -12,6 +12,8 @@ pub type StorageKey = [u8; 32];
 
 mod chain;
 mod contract;
+mod ext;
+mod flag;
 mod instantiate;
 mod memory;
 mod restore;
@@ -23,39 +25,9 @@ mod transfer;
 mod tx;
 mod util;
 
-use self::{
-    contract::{GasMeter, RentParams},
-    schedule::Schedule,
-};
-pub use self::{ri::RuntimeInterfaces, tx::Transaction};
-use parity_scale_codec::{Decode, Encode};
-
-bitflags! {
-    /// Flags used by a contract to customize exit behaviour.
-    #[derive(Encode, Decode)]
-    pub struct ReturnFlags: u32 {
-        /// If this bit is set all changes made by the contract execution are rolled back.
-        const REVERT = 0x0000_0001;
-    }
-}
-
-/// Return flags
-pub struct ExecReturnValue {
-    pub flags: ReturnFlags,
-    pub data: Vec<u8>,
-}
-
-/// Extend data
-pub struct Ext {
-    pub instantiates: Vec<instantiate::InstantiateEntry>,
-    pub restores: Vec<restore::RestoreEntry>,
-    pub rent_allowance: [u8; 32],
-    pub terminations: Vec<termination::TerminationEntry>,
-    pub transfers: Vec<transfer::TransferEntry>,
-    pub schedule: Schedule,
-    pub rent_params: RentParams,
-    pub gas_meter: GasMeter,
-}
+use self::{ext::Ext, flag::ExecReturnValue};
+pub use self::{flag::ReturnFlags, ri::RuntimeInterfaces, tx::Transaction};
+use ceres_executor::derive::SealCall;
 
 /// The runtime of ink! machine
 pub struct Sandbox {
@@ -67,6 +39,7 @@ pub struct Sandbox {
     pub state: Rc<RefCell<dyn Storage>>,
     memory: Memory,
     pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
+    pub ri: Vec<SealCall<Self>>,
 }
 
 impl Sandbox {
@@ -75,6 +48,7 @@ impl Sandbox {
         memory: Memory,
         cache: Rc<RefCell<impl Storage + 'static>>,
         state: Rc<RefCell<impl Storage + 'static>>,
+        ri: Vec<SealCall<Self>>,
     ) -> Sandbox {
         Sandbox {
             input: None,
@@ -94,6 +68,7 @@ impl Sandbox {
             cache,
             state,
             memory,
+            ri,
         }
     }
 }
