@@ -4,7 +4,7 @@ extern crate bitflags;
 
 use ceres_executor::Memory;
 use ceres_std::{vec, Rc, Vec};
-use ceres_support::traits::Storage;
+use ceres_support::traits::{Executor, Storage};
 use core::cell::RefCell;
 
 /// Custom storage key
@@ -27,7 +27,7 @@ mod util;
 
 use self::{ext::Ext, flag::ExecReturnValue};
 pub use self::{flag::ReturnFlags, ri::RuntimeInterfaces, tx::Transaction};
-use ceres_executor::derive::SealCall;
+use ceres_executor::{derive::SealCall, Error};
 
 /// The runtime of ink! machine
 pub struct Sandbox {
@@ -40,6 +40,7 @@ pub struct Sandbox {
     memory: Memory,
     pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
     pub ri: Vec<SealCall<Self>>,
+    pub executor: Rc<RefCell<dyn Executor<Sandbox, SealCall<Sandbox>, Error>>>,
 }
 
 impl Sandbox {
@@ -49,6 +50,7 @@ impl Sandbox {
         cache: Rc<RefCell<impl Storage + 'static>>,
         state: Rc<RefCell<impl Storage + 'static>>,
         ri: Vec<SealCall<Self>>,
+        executor: Rc<RefCell<impl Executor<Sandbox, SealCall<Sandbox>, Error> + 'static>>,
     ) -> Sandbox {
         Sandbox {
             input: None,
@@ -69,6 +71,7 @@ impl Sandbox {
             state,
             memory,
             ri,
+            executor,
         }
     }
 }

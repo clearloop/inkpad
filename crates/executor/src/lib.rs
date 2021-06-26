@@ -19,4 +19,5 @@ pub use self::{
     executor::{Builder, Instance, Memory},
     result::{Error, Result, ReturnCode},
     trap::{Trap, TrapCode},
+    value::{ReturnValue, Value},
 };

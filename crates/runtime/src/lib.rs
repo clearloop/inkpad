@@ -14,7 +14,7 @@ pub mod util;
 type StorageKey = [u8; 32];
 
 pub use self::{
-    executor::Executor,
+    executor::InkExecutor,
     metadata::Metadata,
     result::{Error, Result},
     runtime::Runtime,

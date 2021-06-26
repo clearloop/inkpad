@@ -11,7 +11,7 @@ pub struct MemoryStorage(BTreeMap<StorageKey, Vec<u8>>);
 
 impl Storage for MemoryStorage {
     fn get(&self, key: StorageKey) -> Option<Vec<u8>> {
-        self.0.get(&key).map(|v| v.clone())
+        self.0.get(&key).map(|v| v.to_vec())
     }
 
     fn set(&mut self, key: StorageKey, value: Vec<u8>) -> Option<StorageKey> {

@@ -1,17 +1,20 @@
 //! Ceres Runtime
-use crate::{util, Error, Executor, Metadata, Result};
+use crate::{util, Error, InkExecutor, Metadata, Result};
 use ceres_executor::Memory;
 use ceres_sandbox::{Sandbox, Transaction};
 use ceres_seal::RuntimeInterfaces;
 use ceres_std::{Rc, String, ToString, Vec};
-use ceres_support::{traits::Storage, types::MemoryStorage};
+use ceres_support::{
+    traits::{Executor, Storage},
+    types::MemoryStorage,
+};
 use core::cell::RefCell;
 use parity_wasm::elements::Module;
 
 /// Ceres Runtime
 pub struct Runtime {
     pub sandbox: Rc<RefCell<Sandbox>>,
-    pub executor: Rc<RefCell<Executor>>,
+    pub executor: Rc<RefCell<InkExecutor>>,
     pub metadata: Metadata,
     cache: Rc<RefCell<dyn Storage>>,
     state: Rc<RefCell<dyn Storage>>,
@@ -93,23 +96,27 @@ impl Runtime {
         // Construct seal calls
         let seal_calls = ceres_seal::pallet_contracts(ri);
 
+        // Construct executor
+        let executor = Rc::new(RefCell::new(InkExecutor::default()));
+
         // Create Sandbox and Builder
         let sandbox = Rc::new(RefCell::new(Sandbox::new(
             mem,
             cache.clone(),
             state.clone(),
             seal_calls.clone(),
+            executor.clone(),
         )));
 
-        // Construct executor
-        let executor = Rc::new(RefCell::new(Executor::default()));
-
-        executor.borrow_mut().build(
-            &el.to_bytes()
-                .map_err(|error| Error::SerializeFailed { error })?,
-            &mut sandbox.borrow_mut(),
-            seal_calls,
-        )?;
+        executor
+            .borrow_mut()
+            .build(
+                &el.to_bytes()
+                    .map_err(|error| Error::SerializeFailed { error })?,
+                &mut sandbox.borrow_mut(),
+                seal_calls,
+            )
+            .map_err(|error| Error::InitModuleFailed { error })?;
 
         Ok(Runtime {
             sandbox,
@@ -131,11 +138,14 @@ impl Runtime {
             name: method.to_string(),
         })?;
 
-        self.executor.borrow_mut().invoke(
-            "deploy",
-            util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
-            &mut self.sandbox.borrow_mut(),
-        )?;
+        self.executor
+            .borrow_mut()
+            .invoke(
+                "deploy",
+                util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
+                &mut self.sandbox.borrow_mut(),
+            )
+            .map_err(|error| Error::DeployContractFailed { error })?;
 
         Ok(())
     }
@@ -156,10 +166,13 @@ impl Runtime {
             name: method.to_string(),
         })?;
 
-        Ok(self.executor.borrow_mut().invoke(
-            "call",
-            util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
-            &mut self.sandbox.borrow_mut(),
-        )?)
+        self.executor
+            .borrow_mut()
+            .invoke(
+                "call",
+                util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
+                &mut self.sandbox.borrow_mut(),
+            )
+            .map_err(|error| Error::CallContractFailed { error })
     }
 }

@@ -87,6 +87,8 @@ pub enum Error {
     AnyHow,
     /// Unexpected return value
     UnExpectedReturnValue,
+    ParseWasmModuleFailed,
+    ExecutorNotInited,
 }
 
 impl fmt::Display for Error {

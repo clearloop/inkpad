@@ -56,15 +56,13 @@ impl<T> derive::Instance<T> for Instance<T> {
             .get_func(name)
             .ok_or(Error::GetFunctionNameFailed)?;
         match func.call(&args) {
-            Ok(result) => Ok(util::to_ret_val(if result.len() != 1 {
-                return Ok(ReturnValue::Unit);
-            } else {
-                match result[0] {
-                    Val::I32(0) => result[0].to_owned(),
-                    Val::I32(n) => return Err(Error::ExecuteFailed(n.into())),
-                    _ => return Err(Error::UnkownError),
+            Ok(result) => {
+                if result.len() != 1 {
+                    return Ok(ReturnValue::Unit);
+                } else {
+                    return util::to_ret_val(result[0].clone());
                 }
-            })?),
+            }
             Err(e) => Err(if let Ok(trap) = e.downcast::<::wasmtime::Trap>() {
                 Error::from(trap)
             } else {
