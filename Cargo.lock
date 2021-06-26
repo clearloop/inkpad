@@ -253,6 +253,8 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "ceres-std",
+ "hex",
+ "parity-scale-codec",
  "patract-wasmi",
  "wasmtime",
 ]

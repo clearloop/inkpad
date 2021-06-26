@@ -166,13 +166,15 @@ impl Runtime {
             name: method.to_string(),
         })?;
 
-        self.executor
+        Ok(self
+            .executor
             .borrow_mut()
             .invoke(
                 "call",
                 util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
                 &mut self.sandbox.borrow_mut(),
             )
-            .map_err(|error| Error::CallContractFailed { error })
+            .map_err(|error| Error::CallContractFailed { error })?
+            .0)
     }
 }

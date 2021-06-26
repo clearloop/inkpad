@@ -13,6 +13,8 @@ readme = './README.md'
 keywords = ["wasm", "substrate", "runtime"]
 
 [dependencies]
+hex = { version = "0.4.3", features = ["alloc"], optional = true }
+parity-scale-codec = { version = "2", features = ["derive"], optional = true }
 wasmi = { package = "patract-wasmi", optional = true, version = "^0" }
 wasmtime = { version = "0.26.0", optional = true }
 anyhow = { version = "1", default-features = false }
@@ -23,6 +25,9 @@ ceres-std = { path = "../std", version = "^0" }
 [features]
 default = [ "wasmi" ]
 std = [
-    "ceres-std/std" ,
+    "hex",
     "wasmtime",
+    "ceres-std/std" ,
+    "parity-scale-codec",
+    
 ]

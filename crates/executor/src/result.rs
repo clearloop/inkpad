@@ -3,7 +3,7 @@ use crate::trap::Trap;
 use ceres_std::{fmt, format, String, Vec};
 
 #[repr(i32)]
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ReturnCode {
     /// API call successful.
     Success = 0,
@@ -54,6 +54,27 @@ impl From<i32> for ReturnCode {
     }
 }
 
+/// Successful Return data
+#[cfg_attr(
+    feature = "wasmtime",
+    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
+)]
+#[derive(PartialEq, Eq, Debug, Clone, Default)]
+pub struct ReturnData {
+    pub flags: u32,
+    pub data: Vec<u8>,
+}
+
+#[cfg(feature = "wasmtime")]
+impl std::error::Error for ReturnData {}
+
+impl fmt::Display for ReturnData {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> core::result::Result<(), fmt::Error> {
+        f.write_str(&format!("{:?}", &self))?;
+        Ok(())
+    }
+}
+
 /// Ceres executor errors
 #[derive(Debug, Eq, PartialEq)]
 pub enum Error {
@@ -71,10 +92,7 @@ pub enum Error {
     OutputBufferTooSmall,
     WrongArugmentLength,
     SetStorageFailed,
-    ReturnData {
-        flags: u32,
-        data: Vec<u8>,
-    },
+    Return(ReturnData),
     /// Topics
     TooManyTopics,
     DuplicateTopics,
@@ -83,24 +101,26 @@ pub enum Error {
     OutOfGas,
     /// Custom Error
     Custom(&'static str),
-    /// Downcast anyhow error failed
-    AnyHow,
     /// Unexpected return value
     UnExpectedReturnValue,
     ParseWasmModuleFailed,
     ExecutorNotInited,
 }
 
+#[cfg(feature = "wasmtime")]
+impl std::error::Error for Error {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            Error::Return(d) => d.source(),
+            _ => None,
+        }
+    }
+}
+
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> core::result::Result<(), fmt::Error> {
         f.write_str(&format!("{:?}", &self))?;
         Ok(())
-    }
-}
-
-impl From<anyhow::Error> for Error {
-    fn from(_: anyhow::Error) -> Error {
-        Error::AnyHow
     }
 }
 

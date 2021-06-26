@@ -58,9 +58,9 @@ impl<T> derive::Instance<T> for Instance<T> {
         match func.call(&args) {
             Ok(result) => {
                 if result.len() != 1 {
-                    return Ok(ReturnValue::Unit);
+                    Ok(ReturnValue::Unit)
                 } else {
-                    return util::to_ret_val(result[0].clone());
+                    util::to_ret_val(result[0].clone())
                 }
             }
             Err(e) => Err(if let Ok(trap) = e.downcast::<::wasmtime::Trap>() {

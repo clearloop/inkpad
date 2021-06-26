@@ -5,6 +5,7 @@ use crate::{
 };
 use ceres_std::vec;
 use core::mem;
+use parity_scale_codec::Encode;
 use wasmtime::{
     Caller,
     Config,
@@ -57,7 +58,10 @@ pub fn wrap_fn<T>(store: &Store, state: usize, f: usize, sig: FuncType) -> Func 
                 }
                 Ok(())
             }
-            Err(e) => Err(Trap::new(format!("{:?}", e))),
+            Err(e) => Err(match e {
+                Error::Return(data) => Trap::new(format!("0x{}", hex::encode(data.encode()))),
+                e => anyhow::Error::new(e).into(),
+            }),
         }
     };
     Func::new(store, sig, func)

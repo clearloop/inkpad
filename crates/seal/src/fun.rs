@@ -2,7 +2,7 @@ use crate::derive::Host;
 use ceres_derive::host;
 use ceres_executor::{
     derive::{ReturnValue, Value},
-    Error, Result, TrapCode,
+    Error, Result, ReturnData, TrapCode,
 };
 use ceres_sandbox::Sandbox;
 
@@ -31,7 +31,7 @@ pub fn seal_return(flags: u32, data_ptr: u32, data_len: u32) -> Result<ReturnVal
         sandbox.ret = Some(data.clone());
     }
 
-    Err(Error::ReturnData { flags, data })
+    Err(Error::Return(ReturnData { flags, data }))
 }
 
 /// Remove the calling account and transfer remaining balance.
