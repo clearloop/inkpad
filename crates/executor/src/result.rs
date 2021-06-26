@@ -1,6 +1,16 @@
 //! Ceres executor result
 use crate::trap::Trap;
 use ceres_std::{fmt, format, String, Vec};
+use parity_scale_codec::{Decode, Encode};
+
+bitflags::bitflags! {
+    /// Flags used by a contract to customize exit behaviour.
+    #[derive(Encode, Decode, Default)]
+    pub struct ReturnFlags: u32 {
+        /// If this bit is set all changes made by the contract execution are rolled back.
+        const REVERT = 0x0000_0001;
+    }
+}
 
 #[repr(i32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -55,13 +65,9 @@ impl From<i32> for ReturnCode {
 }
 
 /// Successful Return data
-#[cfg_attr(
-    feature = "wasmtime",
-    derive(parity_scale_codec::Encode, parity_scale_codec::Decode)
-)]
-#[derive(PartialEq, Eq, Debug, Clone, Default)]
+#[derive(PartialEq, Eq, Debug, Clone, Default, Encode, Decode)]
 pub struct ReturnData {
-    pub flags: u32,
+    pub flags: ReturnFlags,
     pub data: Vec<u8>,
 }
 

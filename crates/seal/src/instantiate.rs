@@ -81,7 +81,7 @@ pub fn seal_instantiate(
         sandbox.instantiate(code_hash, &mut Default::default(), input_data, &salt)?;
 
     log::debug!("after instantiate");
-    if !output.flags.contains(ceres_sandbox::ReturnFlags::REVERT) {
+    if !output.flags.contains(ceres_executor::ReturnFlags::REVERT) {
         sandbox.write_sandbox_output(address_ptr, address_len_ptr, &address.encode())?;
     }
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;

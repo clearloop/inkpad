@@ -1,7 +1,4 @@
 #![cfg_attr(not(feature = "std"), no_std)]
-#[macro_use]
-extern crate bitflags;
-
 use ceres_executor::Memory;
 use ceres_std::{vec, Rc, Vec};
 use ceres_support::traits::{Executor, Storage};
@@ -13,7 +10,6 @@ pub type StorageKey = [u8; 32];
 mod chain;
 mod contract;
 mod ext;
-mod flag;
 mod instantiate;
 mod memory;
 mod restore;
@@ -25,8 +21,8 @@ mod transfer;
 mod tx;
 mod util;
 
-use self::{ext::Ext, flag::ExecReturnValue};
-pub use self::{flag::ReturnFlags, ri::RuntimeInterfaces, tx::Transaction};
+use self::ext::Ext;
+pub use self::{ri::RuntimeInterfaces, tx::Transaction};
 use ceres_executor::{derive::SealCall, Error, ReturnData};
 
 /// The runtime of ink! machine

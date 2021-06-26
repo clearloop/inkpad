@@ -252,6 +252,7 @@ name = "ceres-executor"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bitflags",
  "ceres-std",
  "hex",
  "parity-scale-codec",
@@ -298,7 +299,6 @@ dependencies = [
 name = "ceres-sandbox"
 version = "0.1.0"
 dependencies = [
- "bitflags",
  "ceres-executor",
  "ceres-std",
  "ceres-support",

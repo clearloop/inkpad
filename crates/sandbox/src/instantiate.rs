@@ -1,10 +1,6 @@
 //! Instantiate Entry
-use crate::{
-    contract::GasMeter,
-    flag::{ExecReturnValue, ReturnFlags},
-    Sandbox,
-};
-use ceres_executor::Result;
+use crate::{contract::GasMeter, Sandbox};
+use ceres_executor::{Result, ReturnData, ReturnFlags};
 use ceres_std::Vec;
 
 /// Instantiate Entry
@@ -24,7 +20,7 @@ impl Sandbox {
         gas_meter: &mut GasMeter,
         data: Vec<u8>,
         salt: &[u8],
-    ) -> Result<([u8; 32], ExecReturnValue, u32)> {
+    ) -> Result<([u8; 32], ReturnData, u32)> {
         self.ext.instantiates.push(InstantiateEntry {
             code_hash,
             endowment: 3, // endowment
@@ -41,7 +37,7 @@ impl Sandbox {
 
         Ok((
             code_hash,
-            ExecReturnValue {
+            ReturnData {
                 flags: ReturnFlags::empty(),
                 data: Default::default(),
             },

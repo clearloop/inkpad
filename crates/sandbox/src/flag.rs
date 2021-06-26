@@ -8,9 +8,3 @@ bitflags! {
         const REVERT = 0x0000_0001;
     }
 }
-
-/// Return flags
-pub struct ExecReturnValue {
-    pub flags: ReturnFlags,
-    pub data: Vec<u8>,
-}
