@@ -5,10 +5,10 @@
 #[macro_use]
 extern crate alloc;
 
+mod cache;
 mod metadata;
 mod result;
 mod runtime;
-mod storage;
 pub mod util;
 
 type StorageKey = [u8; 32];
@@ -17,5 +17,4 @@ pub use self::{
     metadata::Metadata,
     result::{Error, Result},
     runtime::Runtime,
-    storage::{MemoryStorage, Storage},
 };

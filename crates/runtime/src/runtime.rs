@@ -4,7 +4,10 @@ use ceres_executor::{Builder, Instance, Memory};
 use ceres_sandbox::{Sandbox, Transaction};
 use ceres_seal::RuntimeInterfaces;
 use ceres_std::{Rc, String, ToString, Vec};
-use ceres_support::{traits::Storage, types::MemoryStorage};
+use ceres_support::{
+    traits::{Cache, Storage},
+    types::MemoryStorage,
+};
 use core::cell::RefCell;
 use parity_wasm::elements::Module;
 
@@ -18,20 +21,20 @@ pub struct Runtime {
 }
 
 impl Runtime {
-    /// Create runtime from contract
-    pub fn from_contract(contract: &[u8], ri: Option<impl RuntimeInterfaces>) -> Result<Runtime> {
-        let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
-            .map_err(|_| Error::DecodeContractFailed)?;
-
-        Self::new(
-            &hex::decode(&meta.source.wasm.as_bytes()[2..])
-                .map_err(|_| Error::DecodeContractFailed)?,
-            meta,
-            Rc::new(RefCell::new(MemoryStorage::default())),
-            Rc::new(RefCell::new(MemoryStorage::default())),
-            ri,
-        )
-    }
+    // /// Create runtime from contract
+    // pub fn from_contract(contract: &[u8], ri: Option<impl RuntimeInterfaces>) -> Result<Runtime> {
+    //     let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
+    //         .map_err(|_| Error::DecodeContractFailed)?;
+    //
+    //     Self::new(
+    //         &hex::decode(&meta.source.wasm.as_bytes()[2..])
+    //             .map_err(|_| Error::DecodeContractFailed)?,
+    //         meta,
+    //         Rc::new(RefCell::new(MemoryStorage::default())),
+    //         Rc::new(RefCell::new(MemoryStorage::default())),
+    //         ri,
+    //     )
+    // }
 
     /// Create runtime from contract
     pub fn from_contract_and_storage(
