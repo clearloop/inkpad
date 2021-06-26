@@ -1,6 +1,7 @@
 //! support traits
 use crate::types::StorageKey;
-use ceres_std::Vec;
+use ceres_std::{Rc, Vec};
+use core::cell::RefCell;
 
 /// Custom storage
 pub trait Storage {
@@ -12,7 +13,10 @@ pub trait Storage {
 }
 
 /// Cache with executing feature
-pub trait Cache: Storage {
-    // call methods from a contract
+pub trait Executor {
+    /// new executor
+    fn new(cache: Rc<RefCell<impl Storage + 'static>>) -> Self;
+
+    /// Call methods from a contract
     fn call(&self, code_hash: StorageKey, method: &str, data: Vec<u8>) -> Option<Vec<u8>>;
 }
