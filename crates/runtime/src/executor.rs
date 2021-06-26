@@ -1,10 +1,8 @@
 //! Contract executor
 use crate::result::{Error, Result};
-use ceres_executor::{Builder, Instance, Memory};
+use ceres_executor::{Builder, Instance};
 use ceres_sandbox::Sandbox;
 use ceres_seal::RuntimeInterfaces;
-use ceres_std::Rc;
-use core::cell::RefCell;
 use parity_wasm::elements::Module;
 
 /// Contract executor

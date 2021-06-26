@@ -1,6 +1,6 @@
 //! Ceres Runtime
 use crate::{util, Error, Executor, Metadata, Result};
-use ceres_executor::{Builder, Instance, Memory};
+use ceres_executor::Memory;
 use ceres_sandbox::{Sandbox, Transaction};
 use ceres_seal::RuntimeInterfaces;
 use ceres_std::{Rc, String, ToString, Vec};

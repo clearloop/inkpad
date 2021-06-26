@@ -50,22 +50,20 @@ fn test_call_contracts() {
     )
     .unwrap();
 
-    // assert!(
-    // delegator
-    //     .deploy(
-    //         "new",
-    //         vec![
-    //             42.encode(),
-    //             0.encode(),
-    //             hex::decode(&hashes[0][2..]).unwrap(),
-    //             hex::decode(&hashes[1][2..]).unwrap(),
-    //             hex::decode(&hashes[2][2..]).unwrap(),
-    //         ],
-    //         Some(Transaction {
-    //             balance: 100_000,
-    //             ..Default::default()
-    //         }),
-    //     )
-    //     .unwrap();
-    // .is_err());
+    assert!(delegator
+        .deploy(
+            "new",
+            vec![
+                42.encode(),
+                0.encode(),
+                hex::decode(&hashes[0][2..]).unwrap(),
+                hex::decode(&hashes[1][2..]).unwrap(),
+                hex::decode(&hashes[2][2..]).unwrap(),
+            ],
+            Some(Transaction {
+                balance: 100_000,
+                ..Default::default()
+            }),
+        )
+        .is_err());
 }

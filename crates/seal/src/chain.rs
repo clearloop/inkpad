@@ -6,7 +6,6 @@ use ceres_executor::{
     Error, Result,
 };
 use ceres_sandbox::Sandbox;
-// use log::debug;
 
 /// Define a function `fn init_env<E: Ext>() -> HostFunctionSet<E>` that returns
 /// a function set which can be imported by an executed contract.

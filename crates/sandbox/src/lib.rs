@@ -15,6 +15,7 @@ mod contract;
 mod instantiate;
 mod memory;
 mod restore;
+mod ri;
 mod schedule;
 mod storage;
 mod termination;
@@ -26,8 +27,8 @@ use self::{
     contract::{GasMeter, RentParams},
     schedule::Schedule,
 };
+pub use self::{ri::RuntimeInterfaces, tx::Transaction};
 use parity_scale_codec::{Decode, Encode};
-pub use tx::Transaction;
 
 bitflags! {
     /// Flags used by a contract to customize exit behaviour.
