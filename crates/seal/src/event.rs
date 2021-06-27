@@ -19,7 +19,7 @@ pub fn seal_deposit_event(
     topics_len: u32,
     data_ptr: u32,
     data_len: u32,
-) -> Result<Value> {
+) -> Result<Option<Value>> {
     fn has_duplicates<T: Ord>(items: &mut Vec<T>) -> bool {
         // # Warning
         //
@@ -56,5 +56,5 @@ pub fn seal_deposit_event(
 
     let event_data = sandbox.read_sandbox_memory(data_ptr, data_len)?;
     sandbox.deposit_event(topics, event_data);
-    Ok(Value::F32(0))
+    Ok(None)
 }

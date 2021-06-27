@@ -1,6 +1,6 @@
 //! WASMi externals
 use super::func::DefinedHostFunctions;
-use crate::{Error, Value};
+use crate::Error;
 use ::wasmi::{Externals, HostError, RuntimeArgs, RuntimeValue, Trap};
 use ceres_std::Vec;
 
@@ -28,10 +28,6 @@ impl<'a, T> Externals for External<'a, T> {
             .collect::<Vec<_>>();
 
         let res = (self.defined_host_functions.func(index))(self.state, &args)?;
-        Ok(if res == Value::F32(0) {
-            None
-        } else {
-            Some(res.into())
-        })
+        Ok(res.map(|v| v.into()))
     }
 }

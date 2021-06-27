@@ -65,26 +65,27 @@ pub fn seal_instantiate(
     output_len_ptr: u32,
     salt_ptr: u32,
     salt_len: u32,
-) -> Result<Value> {
+) -> Result<Option<Value>> {
     let code_hash: [u8; 32] = sandbox.read_sandbox_memory_as(code_hash_ptr, code_hash_len)?;
-    log::debug!("read code_hash: {:?}", code_hash);
+
+    // # Safty
+    //
+    // placeholder: endowment
+    //
     // let value = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
     // log::debug!("read value: {}", value);
+
     let input_data = sandbox.read_sandbox_memory(input_data_ptr, input_data_len)?;
-    log::debug!("read input_data: {:?}", input_data);
     let salt = sandbox.read_sandbox_memory(salt_ptr, salt_len)?;
-    log::debug!("read salt: {:?}", salt);
-    let (address, output, _) =
+    let (address, output) =
         sandbox.instantiate(code_hash, &mut Default::default(), input_data, &salt)?;
 
-    log::debug!("after instantiate");
     if !output.flags.contains(ceres_executor::ReturnFlags::REVERT) {
         sandbox.write_sandbox_output(address_ptr, address_len_ptr, &address.encode())?;
     }
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
-    log::debug!("complete instantiate");
-    Ok(Value::F32(0))
+    Err(Error::Return(output))
 }
 
 /// Make a call to another contract.
@@ -129,12 +130,12 @@ pub fn seal_call(
     input_data_len: u32,
     output_ptr: u32,
     output_len_ptr: u32,
-) -> Result<Value> {
+) -> Result<Option<Value>> {
     let callee: [u8; 32] = sandbox.read_sandbox_memory_as(callee_ptr, callee_len)?;
     let value: u64 = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
     let input_data = sandbox.read_sandbox_memory(input_data_ptr, input_data_len)?;
     let output = sandbox.call(callee, value, input_data)?;
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
-    Ok(Value::F32(0))
+    Ok(None)
 }

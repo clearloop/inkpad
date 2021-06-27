@@ -50,7 +50,8 @@ fn test_call_contracts() {
     )
     .unwrap();
 
-    assert!(delegator
+    // assert!(
+    delegator
         .deploy(
             "new",
             vec![
@@ -65,5 +66,6 @@ fn test_call_contracts() {
                 ..Default::default()
             }),
         )
-        .is_err());
+        .unwrap()
+    // .is_err());
 }

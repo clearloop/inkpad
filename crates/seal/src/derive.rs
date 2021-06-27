@@ -14,7 +14,7 @@ pub trait Host: Sized {
     fn name() -> &'static str;
 
     /// Wrap host function
-    fn wrap(sandbox: &mut Sandbox, args: &[Value]) -> Result<Value>;
+    fn wrap(sandbox: &mut Sandbox, args: &[Value]) -> Result<Option<Value>>;
 
     /// Pack instance
     fn pack() -> HostParcel<&'static str, &'static str, Sandbox> {

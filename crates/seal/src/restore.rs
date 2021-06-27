@@ -46,7 +46,7 @@ pub fn restore(
     rent_allowance_len: u32,
     delta_ptr: u32,
     delta_count: u32,
-) -> Result<Value> {
+) -> Result<Option<Value>> {
     let dest: [u8; 32] = sandbox.read_sandbox_memory_as(dest_ptr, dest_len)?;
     let code_hash: [u8; 32] = sandbox.read_sandbox_memory_as(code_hash_ptr, code_hash_len)?;
     let rent_allowance: u64 =
