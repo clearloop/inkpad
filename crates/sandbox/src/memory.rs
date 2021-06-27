@@ -45,6 +45,7 @@ impl Sandbox {
     ) -> Result<()> {
         let buf_len = buf.len() as u32;
         let len: u32 = self.read_sandbox_memory_as(out_len_ptr, 4)?;
+
         if len < buf_len {
             return Err(Error::OutputBufferTooSmall);
         }

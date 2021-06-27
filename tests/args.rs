@@ -134,3 +134,17 @@ fn test_all() {
         );
     })
 }
+
+// TODO:
+//
+// Currently this kind of error could not be catched since
+// both numebr and hash are bytes.
+#[test]
+fn test_number_and_hash_with_numbers() {
+    t(|args: &mut Runtime| {
+        assert_eq!(
+            args.call("test_number_and_hash", vec![0.encode(), 1.encode()], None),
+            Ok(vec![])
+        );
+    })
+}
