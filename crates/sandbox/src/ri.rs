@@ -1,12 +1,9 @@
 //! std runtime interfaces
 use crate::Sandbox;
-use ceres_executor::{
-    derive::{ReturnValue, Value},
-    Result,
-};
+use ceres_executor::{derive::Value, Result};
 use ceres_std::{vec, Vec};
 
-type ParcelResult = Result<ReturnValue>;
+type ParcelResult = Result<Value>;
 
 /// std runtime interfaces
 pub trait RuntimeInterfaces: Sized {

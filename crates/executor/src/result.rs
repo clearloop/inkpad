@@ -1,5 +1,5 @@
 //! Ceres executor result
-use crate::trap::Trap;
+use crate::{trap::Trap, Value};
 use ceres_std::{fmt, format, String, Vec};
 use parity_scale_codec::{Decode, Encode};
 
@@ -10,6 +10,15 @@ bitflags::bitflags! {
         /// If this bit is set all changes made by the contract execution are rolled back.
         const REVERT = 0x0000_0001;
     }
+}
+
+/// Successful Return data
+#[derive(PartialEq, Eq, Debug, Clone, Default, Encode, Decode)]
+pub struct ReturnData {
+    /// Flags passed along by `seal_return`. Empty when `seal_return` was never called.
+    pub flags: ReturnFlags,
+    /// Buffer passed along by `seal_return`. Empty when `seal_return` was never called.
+    pub data: Vec<u8>,
 }
 
 #[repr(i32)]
@@ -64,23 +73,6 @@ impl From<i32> for ReturnCode {
     }
 }
 
-/// Successful Return data
-#[derive(PartialEq, Eq, Debug, Clone, Default, Encode, Decode)]
-pub struct ReturnData {
-    pub flags: ReturnFlags,
-    pub data: Vec<u8>,
-}
-
-#[cfg(feature = "wasmtime")]
-impl std::error::Error for ReturnData {}
-
-impl fmt::Display for ReturnData {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> core::result::Result<(), fmt::Error> {
-        f.write_str(&format!("{:?}", &self))?;
-        Ok(())
-    }
-}
-
 /// Ceres executor errors
 #[derive(Debug, Eq, PartialEq)]
 pub enum Error {
@@ -111,17 +103,11 @@ pub enum Error {
     UnExpectedReturnValue,
     ParseWasmModuleFailed,
     ExecutorNotInited,
+    CodeNotFound,
 }
 
 #[cfg(feature = "wasmtime")]
-impl std::error::Error for Error {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Error::Return(d) => d.source(),
-            _ => None,
-        }
-    }
-}
+impl std::error::Error for Error {}
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> core::result::Result<(), fmt::Error> {
@@ -132,3 +118,27 @@ impl fmt::Display for Error {
 
 /// Ceres executor result
 pub type Result<T> = core::result::Result<T, Error>;
+
+/// Wasm function execution result
+#[derive(Default)]
+pub struct ExecResult {
+    pub data: ReturnData,
+    pub value: Value,
+}
+
+impl ExecResult {
+    /// from execution result
+    pub fn from_res(v: Result<Value>) -> Result<ExecResult> {
+        Ok(match v {
+            Ok(value) => ExecResult {
+                value,
+                ..Default::default()
+            },
+            Err(Error::Return(data)) => ExecResult {
+                data,
+                ..Default::default()
+            },
+            Err(e) => return Err(e),
+        })
+    }
+}

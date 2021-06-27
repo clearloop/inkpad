@@ -1,5 +1,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
+use self::ext::Ext;
 use ceres_executor::Memory;
+use ceres_executor::{derive::SealCall, Error, ExecResult};
 use ceres_std::{vec, Rc, Vec};
 use ceres_support::traits::{Executor, Storage};
 use core::cell::RefCell;
@@ -21,9 +23,7 @@ mod transfer;
 mod tx;
 mod util;
 
-use self::ext::Ext;
 pub use self::{ri::RuntimeInterfaces, tx::Transaction};
-use ceres_executor::{derive::SealCall, Error, ReturnData};
 
 /// The runtime of ink! machine
 pub struct Sandbox {
@@ -36,7 +36,7 @@ pub struct Sandbox {
     memory: Memory,
     pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
     pub ri: Vec<SealCall<Self>>,
-    pub executor: Rc<RefCell<dyn Executor<Sandbox, SealCall<Sandbox>, ReturnData, Error>>>,
+    pub executor: Rc<RefCell<dyn Executor<Sandbox, SealCall<Sandbox>, ExecResult, Error>>>,
 }
 
 impl Sandbox {
@@ -47,7 +47,7 @@ impl Sandbox {
         state: Rc<RefCell<impl Storage + 'static>>,
         ri: Vec<SealCall<Self>>,
         executor: Rc<
-            RefCell<impl Executor<Sandbox, SealCall<Sandbox>, ReturnData, Error> + 'static>,
+            RefCell<impl Executor<Sandbox, SealCall<Sandbox>, ExecResult, Error> + 'static>,
         >,
     ) -> Sandbox {
         Sandbox {

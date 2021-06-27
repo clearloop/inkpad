@@ -1,10 +1,7 @@
 //! Instantiate interface
 use crate::derive::Host;
 use ceres_derive::host;
-use ceres_executor::{
-    derive::{ReturnValue, Value},
-    Error, Result,
-};
+use ceres_executor::{derive::Value, Error, Result};
 use ceres_sandbox::Sandbox;
 use parity_scale_codec::Encode;
 
@@ -68,7 +65,7 @@ pub fn seal_instantiate(
     output_len_ptr: u32,
     salt_ptr: u32,
     salt_len: u32,
-) -> Result<ReturnValue> {
+) -> Result<Value> {
     let code_hash: [u8; 32] = sandbox.read_sandbox_memory_as(code_hash_ptr, code_hash_len)?;
     log::debug!("read code_hash: {:?}", code_hash);
     // let value = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
@@ -87,7 +84,7 @@ pub fn seal_instantiate(
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
     log::debug!("complete instantiate");
-    Ok(ReturnValue::Unit)
+    Ok(Value::F32(0))
 }
 
 /// Make a call to another contract.
@@ -132,12 +129,12 @@ pub fn seal_call(
     input_data_len: u32,
     output_ptr: u32,
     output_len_ptr: u32,
-) -> Result<ReturnValue> {
+) -> Result<Value> {
     let callee: [u8; 32] = sandbox.read_sandbox_memory_as(callee_ptr, callee_len)?;
     let value: u64 = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
     let input_data = sandbox.read_sandbox_memory(input_data_ptr, input_data_len)?;
     let output = sandbox.call(callee, value, input_data)?;
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
-    Ok(ReturnValue::Unit)
+    Ok(Value::F32(0))
 }

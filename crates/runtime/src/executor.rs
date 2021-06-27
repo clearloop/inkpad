@@ -1,6 +1,6 @@
 //! Contract executor
 use ceres_executor::{
-    derive::SealCall, Builder, Error, Instance, Result, ReturnData, ReturnValue, Value,
+    derive::SealCall, Builder, Error, ExecResult, Instance, Result, ReturnData, Value,
 };
 use ceres_sandbox::Sandbox;
 use ceres_support::traits::Executor;
@@ -12,7 +12,7 @@ pub struct InkExecutor {
     pub instance: Option<Instance<Sandbox>>,
 }
 
-impl Executor<Sandbox, SealCall<Sandbox>, ReturnData, Error> for InkExecutor {
+impl Executor<Sandbox, SealCall<Sandbox>, ExecResult, Error> for InkExecutor {
     fn build(&mut self, b: &[u8], sandbox: &mut Sandbox, ri: Vec<SealCall<Sandbox>>) -> Result<()> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
@@ -41,22 +41,13 @@ impl Executor<Sandbox, SealCall<Sandbox>, ReturnData, Error> for InkExecutor {
         method: &str,
         data: Vec<u8>,
         sandbox: &mut Sandbox,
-    ) -> Result<(Vec<u8>, ReturnData)> {
+    ) -> Result<(Vec<u8>, ExecResult)> {
         if let Some(instance) = self.instance.as_mut() {
             sandbox.input = Some(data);
 
             // check return value
-            let data = match instance.invoke(method, &[], sandbox) {
-                Ok(res) => match res {
-                    ReturnValue::Unit | ReturnValue::Value(Value::I32(0)) => {
-                        Ok(ReturnData::default())
-                    }
-                    ReturnValue::Value(Value::I32(n)) => Err(Error::ExecuteFailed(n.into())),
-                    ReturnValue::Value(_) => Err(Error::UnExpectedReturnValue),
-                }?,
-                Err(Error::Return(ret)) => ret,
-                Err(e) => return Err(e),
-            };
+            let mut ret = ExecResult::default();
+            let data = ExecResult::from_res(instance.invoke(method, &[], sandbox))?;
 
             // set return data
             if let Some(ret) = sandbox.ret.take() {

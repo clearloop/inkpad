@@ -18,6 +18,12 @@ pub enum Value {
     F64(u64),
 }
 
+impl Default for Value {
+    fn default() -> Value {
+        Value::I32(0)
+    }
+}
+
 impl Value {
     /// try convert to i32
     pub fn as_i32(self) -> i32 {
@@ -82,17 +88,4 @@ impl From<Value> for u64 {
     fn from(v: Value) -> u64 {
         v.as_u64()
     }
-}
-
-impl From<Value> for ReturnValue {
-    fn from(v: Value) -> ReturnValue {
-        ReturnValue::Value(v)
-    }
-}
-
-/// Value for return
-#[derive(Clone)]
-pub enum ReturnValue {
-    Unit,
-    Value(Value),
 }

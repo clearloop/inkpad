@@ -4,7 +4,7 @@ pub use crate::{
     func::HostFuncType,
     instance::Instance,
     memory::Memory,
-    value::{ReturnValue, Type, Value},
+    value::{Type, Value},
 };
 
 /// Host function parcel

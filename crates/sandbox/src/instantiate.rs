@@ -1,6 +1,6 @@
 //! Instantiate Entry
 use crate::{contract::GasMeter, Sandbox};
-use ceres_executor::{Result, ReturnData, ReturnFlags};
+use ceres_executor::{Error, Result, ReturnData};
 use ceres_std::Vec;
 
 /// Instantiate Entry
@@ -32,16 +32,19 @@ impl Sandbox {
         // Get contract from code_hash
         //
         // entrypoint
+        let contract = &mut self
+            .cache
+            .borrow()
+            .get(code_hash)
+            .ok_or(Error::ExecuteFailed(7.into()))?;
 
         // Call deploy by provided `data`
+        let executor = self.executor.clone();
+        let mut executor_mut = executor.borrow_mut();
+        executor_mut.build(&contract, self, self.ri.clone())?;
+        let ret = executor_mut.invoke("deploy", data, self)?;
 
-        Ok((
-            code_hash,
-            ReturnData {
-                flags: ReturnFlags::empty(),
-                data: Default::default(),
-            },
-            0,
-        ))
+        // return data
+        Ok((code_hash, ret.1.data, ret.1.value.as_u32()))
     }
 }
