@@ -1,7 +1,5 @@
 //! Contract executor
-use ceres_executor::{
-    derive::SealCall, Builder, Error, ExecResult, Instance, Result, ReturnData, Value,
-};
+use ceres_executor::{derive::SealCall, Builder, Error, ExecResult, Instance, Result};
 use ceres_sandbox::Sandbox;
 use ceres_support::traits::Executor;
 use parity_wasm::elements::Module;
@@ -46,7 +44,6 @@ impl Executor<Sandbox, SealCall<Sandbox>, ExecResult, Error> for InkExecutor {
             sandbox.input = Some(data);
 
             // check return value
-            let mut ret = ExecResult::default();
             let data = ExecResult::from_res(instance.invoke(method, &[], sandbox))?;
 
             // set return data

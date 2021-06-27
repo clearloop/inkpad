@@ -1,6 +1,6 @@
 //! Instantiate Entry
 use crate::{contract::GasMeter, Sandbox};
-use ceres_executor::{Error, Result, ReturnData};
+use ceres_executor::{Error, Result, ReturnCode, ReturnData};
 use ceres_std::Vec;
 
 /// Instantiate Entry
@@ -36,7 +36,7 @@ impl Sandbox {
             .cache
             .borrow()
             .get(code_hash)
-            .ok_or(Error::ExecuteFailed(7.into()))?;
+            .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?;
 
         // Call deploy by provided `data`
         let executor = self.executor.clone();

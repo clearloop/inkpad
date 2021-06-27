@@ -134,10 +134,15 @@ impl ExecResult {
                 value,
                 ..Default::default()
             },
-            Err(Error::Return(data)) => ExecResult {
-                data,
-                ..Default::default()
-            },
+            Err(Error::Return(data)) => {
+                if data.flags.contains(ReturnFlags::REVERT) {
+                    return Err(Error::ExecuteFailed(ReturnCode::CalleeReverted));
+                }
+                ExecResult {
+                    data,
+                    ..Default::default()
+                }
+            }
             Err(e) => return Err(e),
         })
     }

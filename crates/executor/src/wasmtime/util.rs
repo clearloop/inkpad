@@ -48,7 +48,18 @@ pub fn wrap_fn<T>(store: &Store, state: usize, f: usize, sig: FuncType) -> Func 
         let state: &mut T = unsafe { mem::transmute(state) };
         let func: HostFuncType<T> = unsafe { mem::transmute(f) };
         match func(state, &inner_args) {
-            Ok(ret) => Ok(()),
+            Ok(ret) => {
+                // # Safty
+                //
+                // This `result.len()` should always <= 1 since the length of
+                // the result of `HostFuncType` is 1
+                if results.len() == 1 {
+                    results[0] = to_val(ret);
+                } else if results.len() > 1 {
+                    return Err(anyhow::Error::new(Error::UnExpectedReturnValue).into());
+                }
+                Ok(())
+            }
             Err(e) => Err(match e {
                 Error::Return(data) => Trap::new(format!("0x{}", hex::encode(data.encode()))),
                 e => anyhow::Error::new(e).into(),
