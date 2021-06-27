@@ -1,10 +1,7 @@
 //! runtime interfaces
 use crate::result::err_check;
 use blake2_rfc::blake2b;
-use ceres_executor::{
-    derive::{ReturnValue, Value},
-    Error, Result,
-};
+use ceres_executor::{derive::Value, Error, Result};
 use ceres_sandbox::Sandbox;
 use ceres_seal::RuntimeInterfaces;
 use getrandom::getrandom;
@@ -21,7 +18,7 @@ extern "C" {
 }
 
 /// Return type
-type Ret = Result<ReturnValue>;
+type Ret = Result<Value>;
 
 /// Browser interface
 pub struct Interface;
@@ -38,7 +35,7 @@ impl RuntimeInterfaces for Interface {
             log(utf8);
         }
 
-        Ok(ReturnValue::Unit)
+        Ok(Value::F32(0))
     }
 
     /// Generate random value
@@ -61,7 +58,7 @@ impl RuntimeInterfaces for Interface {
 
         let output = blake2b::blake2b(32, &[], &subject_buf);
         sandbox.write_sandbox_output(output_ptr, output_len, output.as_bytes())?;
-        Ok(ReturnValue::Unit)
+        Ok(Value::F32(0))
     }
 
     /// sha2 256
@@ -82,7 +79,7 @@ impl RuntimeInterfaces for Interface {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(ReturnValue::Unit)
+        Ok(Value::F32(0))
     }
 
     /// keccak 256
@@ -103,7 +100,7 @@ impl RuntimeInterfaces for Interface {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(ReturnValue::Unit)
+        Ok(Value::F32(0))
     }
 
     /// blake2 256
@@ -122,7 +119,7 @@ impl RuntimeInterfaces for Interface {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(ReturnValue::Unit)
+        Ok(Value::F32(0))
     }
 
     /// blake2 128
@@ -141,6 +138,6 @@ impl RuntimeInterfaces for Interface {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(ReturnValue::Unit)
+        Ok(Value::F32(0))
     }
 }
