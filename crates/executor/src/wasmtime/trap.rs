@@ -10,10 +10,11 @@ use parity_scale_codec::Decode;
 impl From<Trap> for Error {
     fn from(trap: Trap) -> Error {
         let fmt = format!("{}", trap);
-        if let Some(Ok(Ok(data))) = fmt
-            .strip_prefix("0x")
-            .map(|s| hex::decode(s).map(|ret| ReturnData::decode(&mut ret.as_ref())))
-        {
+        if let Some(Some(Ok(Ok(data)))) = fmt.strip_prefix("0x").map(|l| {
+            l.lines()
+                .next()
+                .map(|s| hex::decode(s).map(|ret| ReturnData::decode(&mut ret.as_ref())))
+        }) {
             return Error::Return(data);
         }
 
