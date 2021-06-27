@@ -195,7 +195,6 @@ dependencies = [
  "ceres-executor",
  "ceres-runtime",
  "ceres-sandbox",
- "ceres-seal",
  "ceres-std",
  "ceres-support",
  "getrandom",

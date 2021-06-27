@@ -14,7 +14,7 @@ mod storage;
 mod transfer;
 
 pub use self::derive::Host;
-pub use ceres_sandbox::RuntimeInterfaces;
+use ceres_sandbox::RuntimeInterfaces;
 
 /// Seal calls
 pub type SealCall =

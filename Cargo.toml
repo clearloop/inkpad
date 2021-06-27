@@ -50,7 +50,7 @@ ceres-seal = { path = "crates/seal", version = "^0" }
 ceres-ri = { path = "crates/ri", version = "^0" }
 
 [features]
-default = [ "wasmtime" ]
+default = [ ]
 wasmtime = [
     "ceres-std/std",
     "ceres-runtime/std",
