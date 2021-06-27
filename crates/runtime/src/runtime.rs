@@ -95,26 +95,32 @@ impl Runtime {
         // Construct seal calls
         let seal_calls = ceres_seal::pallet_contracts(ri);
 
-        // Construct executor
-        let executor = Rc::new(RefCell::new(InkExecutor::default()));
-
         // Create Sandbox and Builder
         let sandbox = Rc::new(RefCell::new(Sandbox::new(
             mem,
             cache.clone(),
             state.clone(),
             seal_calls.clone(),
-            executor.clone(),
+            Rc::new(RefCell::new(InkExecutor::default())),
         )));
 
+        // Store contract
+        let contract = &el
+            .to_bytes()
+            .map_err(|error| Error::SerializeFailed { error })?;
+        cache
+            .borrow_mut()
+            .set(
+                util::parse_code_hash(&metadata.source.hash)?,
+                contract.to_vec(),
+            )
+            .ok_or(Error::CouldNotSetStorage)?;
+
+        // Construct executor
+        let executor = Rc::new(RefCell::new(InkExecutor::default()));
         executor
             .borrow_mut()
-            .build(
-                &el.to_bytes()
-                    .map_err(|error| Error::SerializeFailed { error })?,
-                &mut sandbox.borrow_mut(),
-                seal_calls,
-            )
+            .build(&contract, &mut sandbox.borrow_mut(), seal_calls)
             .map_err(|error| Error::InitModuleFailed { error })?;
 
         Ok(Runtime {

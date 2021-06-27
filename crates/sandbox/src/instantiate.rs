@@ -20,7 +20,7 @@ impl Sandbox {
         gas_meter: &mut GasMeter,
         data: Vec<u8>,
         salt: &[u8],
-    ) -> Result<([u8; 32], ReturnData, u32)> {
+    ) -> Result<([u8; 32], ReturnData)> {
         self.ext.instantiates.push(InstantiateEntry {
             code_hash,
             endowment: 3, // endowment
@@ -45,6 +45,6 @@ impl Sandbox {
         let ret = executor_mut.invoke("deploy", data, self)?;
 
         // return data
-        Ok((code_hash, ret.1.data, ret.1.value.as_u32()))
+        Ok((code_hash, ret.1.data))
     }
 }

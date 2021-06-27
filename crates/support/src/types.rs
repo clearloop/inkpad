@@ -15,6 +15,7 @@ impl Storage for MemoryStorage {
     }
 
     fn set(&mut self, key: StorageKey, value: Vec<u8>) -> Option<StorageKey> {
-        self.0.insert(key, value).map(|_| key)
+        self.0.insert(key, value);
+        Some(key)
     }
 }

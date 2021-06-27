@@ -44,7 +44,7 @@ pub fn parse(attr: TokenStream, item: TokenStream) -> TokenStream {
                 #name_str
             }
 
-            fn wrap(sandbox: &mut Sandbox, args: &[Value]) -> Result<Value> {
+            fn wrap(sandbox: &mut Sandbox, args: &[Value]) -> Result<Option<Value>> {
                 log::debug!("call {}::{}", #module, #name_str);
 
                 if args.len() != #arg_len {

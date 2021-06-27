@@ -48,7 +48,7 @@ pub fn wrap_fn<T>(store: &Store, state: usize, f: usize, sig: FuncType) -> Func 
         let state: &mut T = unsafe { mem::transmute(state) };
         let func: HostFuncType<T> = unsafe { mem::transmute(f) };
         match func(state, &inner_args) {
-            Ok(ret) => {
+            Ok(Some(ret)) => {
                 // # Safty
                 //
                 // This `result.len()` should always <= 1 since the length of
@@ -60,6 +60,7 @@ pub fn wrap_fn<T>(store: &Store, state: usize, f: usize, sig: FuncType) -> Func 
                 }
                 Ok(())
             }
+            Ok(None) => Ok(()),
             Err(e) => Err(match e {
                 Error::Return(data) => Trap::new(format!("0x{}", hex::encode(data.encode()))),
                 e => anyhow::Error::new(e).into(),

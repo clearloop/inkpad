@@ -3,7 +3,7 @@ use crate::Sandbox;
 use ceres_executor::{derive::Value, Result};
 use ceres_std::{vec, Vec};
 
-type ParcelResult = Result<Value>;
+type ParcelResult = Result<Option<Value>>;
 
 /// std runtime interfaces
 pub trait RuntimeInterfaces: Sized {

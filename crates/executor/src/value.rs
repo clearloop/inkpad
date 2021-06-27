@@ -20,7 +20,7 @@ pub enum Value {
 
 impl Default for Value {
     fn default() -> Value {
-        Value::I32(0)
+        Value::F32(0)
     }
 }
 

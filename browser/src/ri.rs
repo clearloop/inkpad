@@ -17,7 +17,7 @@ extern "C" {
 }
 
 /// Return type
-type Ret = Result<Value>;
+type Ret = Result<Option<Value>>;
 
 /// Browser interface
 pub struct Interface;
@@ -34,7 +34,7 @@ impl RuntimeInterfaces for Interface {
             log(utf8);
         }
 
-        Ok(Value::F32(0))
+        Ok(None)
     }
 
     /// Generate random value
@@ -57,7 +57,7 @@ impl RuntimeInterfaces for Interface {
 
         let output = blake2b::blake2b(32, &[], &subject_buf);
         sandbox.write_sandbox_output(output_ptr, output_len, output.as_bytes())?;
-        Ok(Value::F32(0))
+        Ok(None)
     }
 
     /// sha2 256
@@ -78,7 +78,7 @@ impl RuntimeInterfaces for Interface {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(Value::F32(0))
+        Ok(None)
     }
 
     /// keccak 256
@@ -99,7 +99,7 @@ impl RuntimeInterfaces for Interface {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(Value::F32(0))
+        Ok(None)
     }
 
     /// blake2 256
@@ -118,7 +118,7 @@ impl RuntimeInterfaces for Interface {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(Value::F32(0))
+        Ok(None)
     }
 
     /// blake2 128
@@ -137,6 +137,6 @@ impl RuntimeInterfaces for Interface {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(Value::F32(0))
+        Ok(None)
     }
 }

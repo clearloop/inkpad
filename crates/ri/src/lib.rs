@@ -9,7 +9,7 @@ use tiny_keccak::{Hasher, Keccak};
 pub struct Instance;
 
 impl RuntimeInterfaces for Instance {
-    fn seal_println(sandbox: &mut Sandbox, args: &[Value]) -> Result<Value> {
+    fn seal_println(sandbox: &mut Sandbox, args: &[Value]) -> Result<Option<Value>> {
         if args.len() != 2 {
             return Err(Error::WrongArugmentLength);
         }
@@ -19,10 +19,10 @@ impl RuntimeInterfaces for Instance {
             println!("{}", utf8);
         }
 
-        Ok(Value::F32(0))
+        Ok(None)
     }
 
-    fn seal_random(sandbox: &mut Sandbox, args: &[Value]) -> Result<Value> {
+    fn seal_random(sandbox: &mut Sandbox, args: &[Value]) -> Result<Option<Value>> {
         if args.len() != 4 {
             return Err(Error::WrongArugmentLength);
         }
@@ -40,10 +40,10 @@ impl RuntimeInterfaces for Instance {
 
         let output = blake2b::blake2b(32, &[], &subject_buf);
         sandbox.write_sandbox_output(output_ptr, output_len, output.as_bytes())?;
-        Ok(Value::F32(0))
+        Ok(None)
     }
 
-    fn seal_hash_sha2_256(sandbox: &mut Sandbox, args: &[Value]) -> Result<Value> {
+    fn seal_hash_sha2_256(sandbox: &mut Sandbox, args: &[Value]) -> Result<Option<Value>> {
         if args.len() != 3 {
             return Err(Error::WrongArugmentLength);
         }
@@ -60,10 +60,10 @@ impl RuntimeInterfaces for Instance {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(Value::F32(0))
+        Ok(None)
     }
 
-    fn seal_hash_keccak_256(sandbox: &mut Sandbox, args: &[Value]) -> Result<Value> {
+    fn seal_hash_keccak_256(sandbox: &mut Sandbox, args: &[Value]) -> Result<Option<Value>> {
         if args.len() != 3 {
             return Err(Error::WrongArugmentLength);
         }
@@ -80,10 +80,10 @@ impl RuntimeInterfaces for Instance {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(Value::F32(0))
+        Ok(None)
     }
 
-    fn seal_hash_blake2_256(sandbox: &mut Sandbox, args: &[Value]) -> Result<Value> {
+    fn seal_hash_blake2_256(sandbox: &mut Sandbox, args: &[Value]) -> Result<Option<Value>> {
         if args.len() != 3 {
             return Err(Error::WrongArugmentLength);
         }
@@ -98,10 +98,10 @@ impl RuntimeInterfaces for Instance {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(Value::F32(0))
+        Ok(None)
     }
 
-    fn seal_hash_blake2_128(sandbox: &mut Sandbox, args: &[Value]) -> Result<Value> {
+    fn seal_hash_blake2_128(sandbox: &mut Sandbox, args: &[Value]) -> Result<Option<Value>> {
         if args.len() != 3 {
             return Err(Error::WrongArugmentLength);
         }
@@ -116,6 +116,6 @@ impl RuntimeInterfaces for Instance {
         sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
 
         // result
-        Ok(Value::F32(0))
+        Ok(None)
     }
 }
