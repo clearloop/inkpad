@@ -10,12 +10,18 @@ pub enum Type {
 }
 
 /// Custom value
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Value {
     I32(i32),
     I64(i64),
     F32(u32),
     F64(u64),
+}
+
+impl Default for Value {
+    fn default() -> Value {
+        Value::I32(0)
+    }
 }
 
 impl Value {
@@ -82,17 +88,4 @@ impl From<Value> for u64 {
     fn from(v: Value) -> u64 {
         v.as_u64()
     }
-}
-
-impl From<Value> for ReturnValue {
-    fn from(v: Value) -> ReturnValue {
-        ReturnValue::Value(v)
-    }
-}
-
-/// Value for return
-#[derive(Clone)]
-pub enum ReturnValue {
-    Unit,
-    Value(Value),
 }

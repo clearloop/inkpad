@@ -1,7 +1,7 @@
 //! Wasmtime Instance
 use super::{builder::Builder, util};
 use crate::{
-    derive::{self, ReturnValue, Value},
+    derive::{self, Value},
     Error,
 };
 use wasmtime::{Extern, Global, Instance as InstanceRef, Module, Val};
@@ -49,22 +49,20 @@ impl<T> derive::Instance<T> for Instance<T> {
         // The ptr of this state(Runtime in pallet contract) has been packed
         // into closures while generating the WASM module.
         _state: &mut T,
-    ) -> Result<ReturnValue, Error> {
+    ) -> Result<Value, Error> {
         let args = args.iter().cloned().map(util::to_val).collect::<Vec<_>>();
         let func = self
             .instance
             .get_func(name)
             .ok_or(Error::GetFunctionNameFailed)?;
         match func.call(&args) {
-            Ok(result) => Ok(util::to_ret_val(if result.len() != 1 {
-                return Ok(ReturnValue::Unit);
-            } else {
-                match result[0] {
-                    Val::I32(0) => result[0].to_owned(),
-                    Val::I32(n) => return Err(Error::ExecuteFailed(n.into())),
-                    _ => return Err(Error::UnkownError),
+            Ok(result) => {
+                if result.len() != 1 {
+                    return Err(Error::UnExpectedReturnValue);
+                } else {
+                    Ok(util::from_val(result[0].clone()))
                 }
-            })?),
+            }
             Err(e) => Err(if let Ok(trap) = e.downcast::<::wasmtime::Trap>() {
                 Error::from(trap)
             } else {

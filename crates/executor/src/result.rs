@@ -1,9 +1,31 @@
 //! Ceres executor result
-use crate::trap::Trap;
+use crate::{
+    trap::{Trap, TrapCode},
+    Value,
+};
 use ceres_std::{fmt, format, String, Vec};
+use parity_scale_codec::{Decode, Encode};
+
+bitflags::bitflags! {
+    /// Flags used by a contract to customize exit behaviour.
+    #[derive(Encode, Decode, Default)]
+    pub struct ReturnFlags: u32 {
+        /// If this bit is set all changes made by the contract execution are rolled back.
+        const REVERT = 0x0000_0001;
+    }
+}
+
+/// Successful Return data
+#[derive(PartialEq, Eq, Debug, Clone, Default, Encode, Decode)]
+pub struct ReturnData {
+    /// Flags passed along by `seal_return`. Empty when `seal_return` was never called.
+    pub flags: ReturnFlags,
+    /// Buffer passed along by `seal_return`. Empty when `seal_return` was never called.
+    pub data: Vec<u8>,
+}
 
 #[repr(i32)]
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ReturnCode {
     /// API call successful.
     Success = 0,
@@ -55,7 +77,7 @@ impl From<i32> for ReturnCode {
 }
 
 /// Ceres executor errors
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub enum Error {
     InitMemoryFailed,
     /// Memory outof bounds
@@ -71,10 +93,7 @@ pub enum Error {
     OutputBufferTooSmall,
     WrongArugmentLength,
     SetStorageFailed,
-    ReturnData {
-        flags: u32,
-        data: Vec<u8>,
-    },
+    Return(ReturnData),
     /// Topics
     TooManyTopics,
     DuplicateTopics,
@@ -83,11 +102,15 @@ pub enum Error {
     OutOfGas,
     /// Custom Error
     Custom(&'static str),
-    /// Downcast anyhow error failed
-    AnyHow,
     /// Unexpected return value
     UnExpectedReturnValue,
+    ParseWasmModuleFailed,
+    ExecutorNotInited,
+    CodeNotFound,
 }
+
+#[cfg(feature = "wasmtime")]
+impl std::error::Error for Error {}
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> core::result::Result<(), fmt::Error> {
@@ -96,11 +119,38 @@ impl fmt::Display for Error {
     }
 }
 
-impl From<anyhow::Error> for Error {
-    fn from(_: anyhow::Error) -> Error {
-        Error::AnyHow
-    }
-}
-
 /// Ceres executor result
 pub type Result<T> = core::result::Result<T, Error>;
+
+/// Wasm function execution result
+#[derive(Default)]
+pub struct ExecResult {
+    pub data: ReturnData,
+    pub value: Value,
+}
+
+impl ExecResult {
+    /// from execution result
+    pub fn from_res(v: Result<Value>) -> Result<ExecResult> {
+        Ok(match v {
+            Ok(value) => ExecResult {
+                value,
+                ..Default::default()
+            },
+            Err(Error::Trap(Trap {
+                code: TrapCode::HostError(e),
+                trace: _,
+            })) => Self::from_res(Err(*e))?,
+            Err(Error::Return(data)) => {
+                if data.flags.contains(ReturnFlags::REVERT) {
+                    return Err(Error::ExecuteFailed(ReturnCode::CalleeReverted));
+                }
+                ExecResult {
+                    data,
+                    ..Default::default()
+                }
+            }
+            Err(e) => return Err(e),
+        })
+    }
+}

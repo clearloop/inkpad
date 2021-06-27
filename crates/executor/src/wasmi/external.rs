@@ -1,19 +1,10 @@
 //! WASMi externals
 use super::func::DefinedHostFunctions;
-use crate::derive::ReturnValue;
-use ::wasmi::{Externals, HostError, RuntimeArgs, RuntimeValue, Trap, TrapKind};
-use ceres_std::{fmt, Box, Vec};
+use crate::{Error, Value};
+use ::wasmi::{Externals, HostError, RuntimeArgs, RuntimeValue, Trap};
+use ceres_std::Vec;
 
-#[derive(Debug)]
-struct DummyHostError;
-
-impl HostError for DummyHostError {}
-
-impl fmt::Display for DummyHostError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "DummyHostError")
-    }
-}
+impl HostError for Error {}
 
 /// WASMi externals
 pub struct External<'a, T> {
@@ -36,14 +27,11 @@ impl<'a, T> Externals for External<'a, T> {
             .map(|v| v.into())
             .collect::<Vec<_>>();
 
-        let result = (self.defined_host_functions.func(index))(self.state, &args);
-        match result {
-            Ok(value) => Ok(match value {
-                ReturnValue::Value(v) => Some(v.into()),
-                ReturnValue::Unit => None,
-            }),
-            // TODO: specified error
-            Err(_) => Err(TrapKind::Host(Box::new(DummyHostError)).into()),
-        }
+        let res = (self.defined_host_functions.func(index))(self.state, &args)?;
+        Ok(if res == Value::F32(0) {
+            None
+        } else {
+            Some(res.into())
+        })
     }
 }

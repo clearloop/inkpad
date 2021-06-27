@@ -6,7 +6,7 @@
 //!
 //! Which have seem methods like the matching trait.
 use crate::{
-    derive::{self, HostFuncType, HostParcel, ReturnValue, Value},
+    derive::{self, HostFuncType, HostParcel, Value},
     Result,
 };
 use ceres_std::Vec;
@@ -122,7 +122,7 @@ impl<T> Instance<T> {
     }
 
     /// invoke an exported function
-    pub fn invoke(&mut self, name: &str, args: &[Value], state: &mut T) -> Result<ReturnValue> {
+    pub fn invoke(&mut self, name: &str, args: &[Value], state: &mut T) -> Result<Value> {
         derive::Instance::invoke(&mut self.0, name, args, state)
     }
 

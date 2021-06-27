@@ -8,7 +8,7 @@ use parity_scale_codec::Encode;
 
 #[test]
 fn test_flipper() {
-    let mut rt = Runtime::from_contract(
+    let rt = Runtime::from_contract(
         include_bytes!("../contracts/flipper.contract"),
         Some(Instance),
     )
@@ -36,7 +36,7 @@ fn test_flipper() {
 
 #[test]
 fn test_flipper_trap() {
-    let mut rt = Runtime::from_contract(
+    let rt = Runtime::from_contract(
         include_bytes!("../contracts/flipper_trap.contract"),
         Some(Instance),
     )

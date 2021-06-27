@@ -1,17 +1,19 @@
 //! Ceres Runtime
-use crate::{util, Error, Metadata, Result};
-use ceres_executor::{Builder, Instance, Memory};
-use ceres_sandbox::{Sandbox, Transaction};
-use ceres_seal::RuntimeInterfaces;
+use crate::{util, Error, InkExecutor, Metadata, Result};
+use ceres_executor::Memory;
+use ceres_sandbox::{RuntimeInterfaces, Sandbox, Transaction};
 use ceres_std::{Rc, String, ToString, Vec};
-use ceres_support::{traits::Storage, types::MemoryStorage};
+use ceres_support::{
+    traits::{Executor, Storage},
+    types::MemoryStorage,
+};
 use core::cell::RefCell;
 use parity_wasm::elements::Module;
 
 /// Ceres Runtime
 pub struct Runtime {
     pub sandbox: Rc<RefCell<Sandbox>>,
-    instance: Instance<Sandbox>,
+    pub executor: Rc<RefCell<InkExecutor>>,
     pub metadata: Metadata,
     cache: Rc<RefCell<dyn Storage>>,
     state: Rc<RefCell<dyn Storage>>,
@@ -90,33 +92,34 @@ impl Runtime {
         let limit = util::scan_imports(&el).map_err(|_| Error::CalcuateMemoryLimitFailed)?;
         let mem = Memory::new(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
 
+        // Construct seal calls
+        let seal_calls = ceres_seal::pallet_contracts(ri);
+
+        // Construct executor
+        let executor = Rc::new(RefCell::new(InkExecutor::default()));
+
         // Create Sandbox and Builder
         let sandbox = Rc::new(RefCell::new(Sandbox::new(
             mem,
             cache.clone(),
             state.clone(),
+            seal_calls.clone(),
+            executor.clone(),
         )));
 
-        // Construct interfaces
-        let mut builder = Builder::new().add_host_parcels(ceres_seal::pallet_contracts(ri));
-
-        // **Note**
-        //
-        // The memory is `cloned()`, trying using one memory.
-        builder.add_memory("env", "memory", sandbox.borrow().mem());
-
-        // Create instance
-        let instance = Instance::new(
-            &el.to_bytes()
-                .map_err(|error| Error::SerializeFailed { error })?,
-            &builder,
-            &mut sandbox.borrow_mut(),
-        )
-        .map_err(|error| Error::InitModuleFailed { error })?;
+        executor
+            .borrow_mut()
+            .build(
+                &el.to_bytes()
+                    .map_err(|error| Error::SerializeFailed { error })?,
+                &mut sandbox.borrow_mut(),
+                seal_calls,
+            )
+            .map_err(|error| Error::InitModuleFailed { error })?;
 
         Ok(Runtime {
             sandbox,
-            instance,
+            executor,
             metadata,
             cache,
             state,
@@ -124,12 +127,7 @@ impl Runtime {
     }
 
     /// Deploy contract
-    pub fn deploy(
-        &mut self,
-        method: &str,
-        args: Vec<Vec<u8>>,
-        tx: Option<Transaction>,
-    ) -> Result<()> {
+    pub fn deploy(&self, method: &str, args: Vec<Vec<u8>>, tx: Option<Transaction>) -> Result<()> {
         if let Some(tx) = tx {
             self.sandbox.borrow_mut().tx = tx;
         }
@@ -139,14 +137,13 @@ impl Runtime {
             name: method.to_string(),
         })?;
 
-        let mut bm = self.sandbox.borrow_mut();
-        bm.input = Some(util::parse_args(
-            selector,
-            args,
-            tys.iter().map(|ty| ty.1).collect(),
-        )?);
-        self.instance
-            .invoke("deploy", &[], &mut bm)
+        self.executor
+            .borrow_mut()
+            .invoke(
+                "deploy",
+                util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
+                &mut self.sandbox.borrow_mut(),
+            )
             .map_err(|error| Error::DeployContractFailed { error })?;
 
         Ok(())
@@ -154,7 +151,7 @@ impl Runtime {
 
     /// Call contract
     pub fn call(
-        &mut self,
+        &self,
         method: &str,
         args: Vec<Vec<u8>>,
         tx: Option<Transaction>,
@@ -168,20 +165,15 @@ impl Runtime {
             name: method.to_string(),
         })?;
 
-        let mut bm = self.sandbox.borrow_mut();
-        bm.input = Some(util::parse_args(
-            selector,
-            args,
-            tys.iter().map(|ty| ty.1).collect(),
-        )?);
-
-        let res = self.instance.invoke("call", &[], &mut bm);
-        if let Some(ret) = bm.ret.take() {
-            return Ok(ret);
-        } else {
-            res.map_err(|error| Error::CallContractFailed { error })?;
-        }
-
-        Ok(vec![])
+        Ok(self
+            .executor
+            .borrow_mut()
+            .invoke(
+                "call",
+                util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
+                &mut self.sandbox.borrow_mut(),
+            )
+            .map_err(|error| Error::CallContractFailed { error })?
+            .0)
     }
 }

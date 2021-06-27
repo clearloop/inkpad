@@ -4,10 +4,9 @@ use ceres_std::Vec;
 
 impl Sandbox {
     /// Get storage
-    #[allow(clippy::map_clone)]
     pub fn get_storage(&self, key: &StorageKey) -> Result<Option<Vec<u8>>> {
         log::debug!("sandbox get storage {:?}", key);
-        Ok(self.state.borrow().get(*key).map(|v| v.clone()))
+        Ok(self.state.borrow().get(*key).map(|v| v.to_vec()))
     }
 
     /// Get storage

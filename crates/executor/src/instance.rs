@@ -1,9 +1,5 @@
 //! Ceres executor instance
-use crate::{
-    builder::Builder,
-    value::{ReturnValue, Value},
-    Result,
-};
+use crate::{builder::Builder, value::Value, Result};
 
 /// Ceres executor instance
 pub trait Instance<T>: Sized {
@@ -13,7 +9,7 @@ pub trait Instance<T>: Sized {
     fn new(code: &[u8], builder: &Self::Builder, state: &mut T) -> Result<Self>;
 
     /// invoke an exported function
-    fn invoke(&mut self, name: &str, args: &[Value], state: &mut T) -> Result<ReturnValue>;
+    fn invoke(&mut self, name: &str, args: &[Value], state: &mut T) -> Result<Value>;
 
     /// Get global value
     fn get_global_val(&self, name: &str) -> Option<Value>;

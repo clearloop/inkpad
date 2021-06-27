@@ -1,10 +1,7 @@
 //! Event interface
 use crate::derive::Host;
 use ceres_derive::host;
-use ceres_executor::{
-    derive::{ReturnValue, Value},
-    Error, Result,
-};
+use ceres_executor::{derive::Value, Error, Result};
 use ceres_sandbox::Sandbox;
 use ceres_std::Vec;
 
@@ -22,7 +19,7 @@ pub fn seal_deposit_event(
     topics_len: u32,
     data_ptr: u32,
     data_len: u32,
-) -> Result<ReturnValue> {
+) -> Result<Value> {
     fn has_duplicates<T: Ord>(items: &mut Vec<T>) -> bool {
         // # Warning
         //
@@ -59,5 +56,5 @@ pub fn seal_deposit_event(
 
     let event_data = sandbox.read_sandbox_memory(data_ptr, data_len)?;
     sandbox.deposit_event(topics, event_data);
-    Ok(ReturnValue::Unit)
+    Ok(Value::F32(0))
 }

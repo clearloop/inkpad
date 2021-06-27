@@ -9,16 +9,19 @@ mod event;
 mod fun;
 mod instantiate;
 mod restore;
-mod ri;
+// mod ri;
 mod storage;
 mod transfer;
 
-pub use self::{derive::Host, ri::RuntimeInterfaces};
+pub use self::derive::Host;
+use ceres_sandbox::RuntimeInterfaces;
+
+/// Seal calls
+pub type SealCall =
+    ceres_executor::derive::HostParcel<&'static str, &'static str, ceres_sandbox::Sandbox>;
 
 /// Pallet contract host functions
-pub fn pallet_contracts(
-    ri: Option<impl ri::RuntimeInterfaces>,
-) -> Vec<ceres_executor::derive::HostParcel<&'static str, &'static str, ceres_sandbox::Sandbox>> {
+pub fn pallet_contracts(ri: Option<impl RuntimeInterfaces>) -> Vec<SealCall> {
     let mut wasm = vec![
         chain::Gas::pack(),
         chain::BlockNumber::pack(),
@@ -43,7 +46,7 @@ pub fn pallet_contracts(
     ];
 
     if let Some(interfaces) = ri {
-        wasm.append(&mut ri::RuntimeInterfaces::pack(&interfaces))
+        wasm.append(&mut RuntimeInterfaces::pack(&interfaces))
     }
 
     wasm

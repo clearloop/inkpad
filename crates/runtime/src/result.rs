@@ -12,12 +12,17 @@ pub enum Error {
     /// Output buffer too small
     OutputBufferTooSmall,
     #[snafu(display("flags: {}, data: {:?}", flags, data))]
-    ReturnData { flags: u32, data: Vec<u8> },
+    ReturnData {
+        flags: u32,
+        data: Vec<u8>,
+    },
     /// Failed to parse wasm module
     ParseWasmModuleFailed,
     /// Failed to parse name section
     #[snafu(display("Failed to parse name section {}", error))]
-    ParseNameSectionFailed { error: String },
+    ParseNameSectionFailed {
+        error: String,
+    },
     /// Failed to calcuate memory limit
     CalcuateMemoryLimitFailed,
     /// Failed to alloc memory
@@ -28,12 +33,18 @@ pub enum Error {
     },
     /// Init ModuleInstance failed
     #[snafu(display("Init module failed {}", error))]
-    InitModuleFailed { error: ceres_executor::Error },
+    InitModuleFailed {
+        error: ceres_executor::Error,
+    },
     /// Deploy contract failed
     #[snafu(display("Deploy contract failed {}", error))]
-    DeployContractFailed { error: ceres_executor::Error },
+    DeployContractFailed {
+        error: ceres_executor::Error,
+    },
     #[snafu(display("Call contract failed {}", error))]
-    CallContractFailed { error: ceres_executor::Error },
+    CallContractFailed {
+        error: ceres_executor::Error,
+    },
     /// Decode selector failed
     DecodeSelectorFailed,
     /// Decode contract failed
@@ -44,12 +55,19 @@ pub enum Error {
         expect,
         input
     ))]
-    InvalidArgumentLength { expect: usize, input: usize },
+    InvalidArgumentLength {
+        expect: usize,
+        input: usize,
+    },
     /// Decode argument failed
     #[snafu(display("Decode argument failed {:?}", arg))]
-    DecodeArgumentFailed { arg: Vec<u8> },
+    DecodeArgumentFailed {
+        arg: Vec<u8>,
+    },
     #[snafu(display("Could not find method {}", name))]
-    GetMethodFailed { name: String },
+    GetMethodFailed {
+        name: String,
+    },
     /// Could not set Storage
     CouldNotSetStorage,
     /// Get Storage failed
@@ -57,13 +75,16 @@ pub enum Error {
     /// Invalid code hash
     InvalidCodeHash,
     #[snafu(display("{}", err))]
-    Custom { err: &'static str },
+    Custom {
+        err: &'static str,
+    },
     /// Insert Contract failed
     InsertContractFailed,
     /// Get Contract failed
     GetContractFailed,
     /// SerdeError
     SerdeError,
+    ExecutorNotInited,
 }
 
 impl PartialEq for Error {

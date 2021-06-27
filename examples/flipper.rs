@@ -6,7 +6,7 @@ use ceres_runtime::Runtime;
 use parity_scale_codec::Encode;
 
 fn main() {
-    let mut rt = Runtime::from_contract(
+    let rt = Runtime::from_contract(
         include_bytes!("../contracts/flipper.contract"),
         Some(Instance),
     )

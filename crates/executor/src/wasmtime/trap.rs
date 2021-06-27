@@ -1,13 +1,24 @@
 //! Trap conversion
 use crate::{
     trap::{Trap as OutterTrap, TrapCode as OutterTrapCode},
-    Error,
+    Error, ReturnData,
 };
+use ::wasmtime::{Trap, TrapCode};
 use ceres_std::fmt;
-use wasmtime::{Trap, TrapCode};
+use parity_scale_codec::Decode;
 
 impl From<Trap> for Error {
     fn from(trap: Trap) -> Error {
+        let fmt = format!("{}", trap);
+        if let Some(Some(Ok(Ok(data)))) = fmt.strip_prefix("0x").map(|l| {
+            l.lines()
+                .next()
+                .map(|s| hex::decode(s).map(|ret| ReturnData::decode(&mut ret.as_ref())))
+        }) {
+            return Error::Return(data);
+        }
+
+        // parse code
         let mut code = OutterTrapCode::Unknown;
         if let Some(cc) = trap.trap_code() {
             code = match cc {
@@ -28,8 +39,9 @@ impl From<Trap> for Error {
 
         Error::Trap(OutterTrap {
             code,
-            trace: format!("{:?}", trap)
+            trace: fmt
                 .split('\n')
+                .filter(|s| !s.is_empty() && !s.contains("<unknown>"))
                 .map(|s| s.to_string())
                 .collect::<Vec<_>>(),
         })

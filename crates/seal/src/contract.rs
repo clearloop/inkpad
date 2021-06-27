@@ -1,10 +1,7 @@
 //! Contract interfaces
 use crate::derive::Host;
 use ceres_derive::host;
-use ceres_executor::{
-    derive::{ReturnValue, Value},
-    Error, Result,
-};
+use ceres_executor::{derive::Value, Error, Result};
 use ceres_sandbox::Sandbox;
 
 /// Stores the tombstone deposit into the supplied buffer.
@@ -23,9 +20,9 @@ use ceres_sandbox::Sandbox;
 /// below the sum of existential deposit and the tombstone deposit. The sum
 /// is commonly referred as subsistence threshold in code.
 #[host(seal0)]
-pub fn seal_tombstone_deposit(out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue> {
+pub fn seal_tombstone_deposit(out_ptr: u32, out_len_ptr: u32) -> Result<Value> {
     sandbox.write_sandbox_output(out_ptr, out_len_ptr, &sandbox.tombstone_deposit())?;
-    Ok(ReturnValue::Unit)
+    Ok(Value::F32(0))
 }
 
 /// Set rent allowance of the contract
@@ -34,10 +31,10 @@ pub fn seal_tombstone_deposit(out_ptr: u32, out_len_ptr: u32) -> Result<ReturnVa
 ///   Should be decodable as a `T::Balance`. Traps otherwise.
 /// - value_len: length of the value buffer.
 #[host(seal0)]
-pub fn seal_set_rent_allowance(value_ptr: u32, value_len: u32) -> Result<ReturnValue> {
+pub fn seal_set_rent_allowance(value_ptr: u32, value_len: u32) -> Result<Value> {
     let value = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
     sandbox.set_rent_allowance(value);
-    Ok(ReturnValue::Unit)
+    Ok(Value::F32(0))
 }
 
 /// Stores the rent allowance into the supplied buffer.
@@ -49,9 +46,9 @@ pub fn seal_set_rent_allowance(value_ptr: u32, value_len: u32) -> Result<ReturnV
 ///
 /// The data is encoded as T::Balance.
 #[host(seal0)]
-pub fn seal_rent_allowance(out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue> {
+pub fn seal_rent_allowance(out_ptr: u32, out_len_ptr: u32) -> Result<Value> {
     sandbox.write_sandbox_output(out_ptr, out_len_ptr, &sandbox.rent_allowance())?;
-    Ok(ReturnValue::Unit)
+    Ok(Value::F32(0))
 }
 
 /// Stores the rent params into the supplied buffer.
@@ -69,7 +66,7 @@ pub fn seal_rent_allowance(out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue
 /// started execution. Any change to those values that happens due to actions of the
 /// current call or contracts that are called by this contract are not considered.
 #[host(seal0)]
-pub fn seal_rent_params(out_ptr: u32, out_len_ptr: u32) -> Result<ReturnValue> {
+pub fn seal_rent_params(out_ptr: u32, out_len_ptr: u32) -> Result<Value> {
     sandbox.write_sandbox_output(out_ptr, out_len_ptr, &sandbox.rent_params())?;
-    Ok(ReturnValue::Unit)
+    Ok(Value::F32(0))
 }
