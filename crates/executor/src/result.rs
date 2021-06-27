@@ -1,5 +1,8 @@
 //! Ceres executor result
-use crate::{trap::Trap, Value};
+use crate::{
+    trap::{Trap, TrapCode},
+    Value,
+};
 use ceres_std::{fmt, format, String, Vec};
 use parity_scale_codec::{Decode, Encode};
 
@@ -74,7 +77,7 @@ impl From<i32> for ReturnCode {
 }
 
 /// Ceres executor errors
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub enum Error {
     InitMemoryFailed,
     /// Memory outof bounds
@@ -134,6 +137,10 @@ impl ExecResult {
                 value,
                 ..Default::default()
             },
+            Err(Error::Trap(Trap {
+                code: TrapCode::HostError(e),
+                trace: _,
+            })) => Self::from_res(Err(*e))?,
             Err(Error::Return(data)) => {
                 if data.flags.contains(ReturnFlags::REVERT) {
                     return Err(Error::ExecuteFailed(ReturnCode::CalleeReverted));

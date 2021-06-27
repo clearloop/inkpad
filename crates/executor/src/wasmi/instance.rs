@@ -1,10 +1,10 @@
 //! WASMi instance
 use super::{builder::Builder, external::External, func::DefinedHostFunctions};
 use crate::{
-    derive::{self, ReturnValue, Value},
+    derive::{self, Value},
     Error, Result,
 };
-use ::wasmi::{Module, ModuleInstance, ModuleRef, RuntimeValue};
+use ::wasmi::{Module, ModuleInstance, ModuleRef};
 use ceres_std::Vec;
 
 /// WASMi instance
@@ -41,7 +41,7 @@ impl<T> derive::Instance<T> for Instance<T> {
         })
     }
 
-    fn invoke(&mut self, name: &str, args: &[Value], state: &mut T) -> Result<ReturnValue> {
+    fn invoke(&mut self, name: &str, args: &[Value], state: &mut T) -> Result<Value> {
         let args = args.iter().cloned().map(|v| v.into()).collect::<Vec<_>>();
         let mut externals = External {
             state,
@@ -50,11 +50,9 @@ impl<T> derive::Instance<T> for Instance<T> {
         let result = self.instance.invoke_export(&name, &args, &mut externals);
 
         match result {
-            Ok(None) => Ok(ReturnValue::Unit),
-            Ok(Some(v)) => Ok(match v {
-                RuntimeValue::I32(0) => ReturnValue::from(Value::I32(0)),
-                RuntimeValue::I32(n) => return Err(Error::ExecuteFailed(n.into())),
-                _ => return Err(Error::UnkownError),
+            Ok(value) => Ok(match value {
+                Some(v) => v.into(),
+                None => Value::default().into(),
             }),
             Err(e) => Err(match e {
                 ::wasmi::Error::Trap(t) => Error::Trap(t.into()),

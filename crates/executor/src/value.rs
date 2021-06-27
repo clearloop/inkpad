@@ -10,7 +10,7 @@ pub enum Type {
 }
 
 /// Custom value
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Value {
     I32(i32),
     I64(i64),

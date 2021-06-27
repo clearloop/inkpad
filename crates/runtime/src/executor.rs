@@ -1,6 +1,7 @@
 //! Contract executor
 use ceres_executor::{derive::SealCall, Builder, Error, ExecResult, Instance, Result};
 use ceres_sandbox::Sandbox;
+use ceres_std::Vec;
 use ceres_support::traits::Executor;
 use parity_wasm::elements::Module;
 

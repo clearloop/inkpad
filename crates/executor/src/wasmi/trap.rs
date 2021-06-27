@@ -1,6 +1,9 @@
 //! WASMi traps
-use crate::trap::{self, TrapCode};
-use ceres_std::fmt;
+use crate::{
+    trap::{self, TrapCode},
+    Error,
+};
+use ceres_std::{fmt, Box};
 use wasmi::{Trap, TrapKind};
 
 impl From<Trap> for trap::Trap {
@@ -15,7 +18,13 @@ impl From<Trap> for trap::Trap {
                 TrapKind::TableAccessOutOfBounds => TrapCode::TableOutOfBounds,
                 TrapKind::UnexpectedSignature => TrapCode::BadSignature,
                 TrapKind::Unreachable => TrapCode::UnreachableCodeReached,
-                TrapKind::Host(_) => TrapCode::HostError,
+                TrapKind::Host(e) => {
+                    if let Some(e) = e.downcast_ref::<Error>() {
+                        return TrapCode::HostError(Box::new(e.clone())).into();
+                    } else {
+                        TrapCode::Unknown
+                    }
+                }
             },
             trace: trap.wasm_trace().to_vec(),
         }

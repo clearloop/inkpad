@@ -1,5 +1,6 @@
 //! wasm traps
-use ceres_std::{String, Vec};
+use crate::Error;
+use ceres_std::{Box, String, Vec};
 
 /// A trap code describing the reason for a trap.
 ///
@@ -41,7 +42,7 @@ pub enum TrapCode {
     Interrupt,
 
     /// HostError
-    HostError,
+    HostError(Box<Error>),
 
     // Unknown Error
     Unknown,
