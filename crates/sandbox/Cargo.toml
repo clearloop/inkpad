@@ -15,7 +15,6 @@ keywords = ["wasm", "substrate", "runtime"]
 [dependencies]
 hex = "0.4.3"
 log = "0.4.14"
-serde = { version = "1", default-features = false, features = ["derive"] }
 parity-scale-codec = { version = "2", features = ["derive"]}
 
 # ceres deps
@@ -25,11 +24,8 @@ ceres-executor = { path = "../executor", version = "^0" }
 
 
 [features]
-default = [
-    "serde/alloc",
-]
+default = []
 std = [
-    "serde/std",
     "ceres-std/std",
     "ceres-executor/std",
     "ceres-support/std",

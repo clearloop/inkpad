@@ -2,10 +2,9 @@
 use crate::util::al;
 use ceres_std::Vec;
 use parity_scale_codec::{Decode, Encode};
-use serde::{Deserialize, Serialize};
 
 /// Chain State
-#[derive(Clone, Encode, Decode, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Encode, Decode, PartialEq, Eq)]
 pub struct Transaction {
     pub caller: [u8; 32],
     pub address: [u8; 32],

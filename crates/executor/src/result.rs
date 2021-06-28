@@ -107,6 +107,8 @@ pub enum Error {
     ParseWasmModuleFailed,
     ExecutorNotInited,
     CodeNotFound,
+    ExitedAllFrames,
+    DecodeBucketFailed([u8; 32]),
 }
 
 #[cfg(feature = "wasmtime")]

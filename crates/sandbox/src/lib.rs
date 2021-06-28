@@ -2,7 +2,7 @@
 use self::ext::Ext;
 use ceres_executor::Memory;
 use ceres_executor::{derive::SealCall, Error, ExecResult};
-use ceres_std::{vec, Rc, Vec};
+use ceres_std::{vec, BTreeMap, Rc, Vec};
 use ceres_support::traits::{Executor, Storage};
 use core::cell::RefCell;
 
@@ -17,6 +17,7 @@ mod memory;
 mod restore;
 mod ri;
 mod schedule;
+mod stack;
 mod storage;
 mod termination;
 mod transfer;
@@ -31,8 +32,10 @@ pub struct Sandbox {
     pub ret: Option<Vec<u8>>,
     pub ext: Ext,
     pub tx: tx::Transaction,
+    pub bucket: Rc<RefCell<BTreeMap<StorageKey, Vec<u8>>>>,
     pub cache: Rc<RefCell<dyn Storage>>,
     pub state: Rc<RefCell<dyn Storage>>,
+    pub stack: Vec<StorageKey>,
     memory: Memory,
     pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
     pub ri: Vec<SealCall<Self>>,
@@ -42,6 +45,7 @@ pub struct Sandbox {
 impl Sandbox {
     /// New sandbox
     pub fn new(
+        frame: StorageKey,
         memory: Memory,
         cache: Rc<RefCell<impl Storage + 'static>>,
         state: Rc<RefCell<impl Storage + 'static>>,
@@ -53,17 +57,10 @@ impl Sandbox {
         Sandbox {
             input: None,
             ret: None,
-            ext: Ext {
-                instantiates: vec![],
-                restores: vec![],
-                rent_allowance: [0; 32],
-                terminations: vec![],
-                transfers: vec![],
-                schedule: Default::default(),
-                rent_params: Default::default(),
-                gas_meter: Default::default(),
-            },
+            ext: Default::default(),
+            bucket: Default::default(),
             events: vec![],
+            stack: vec![frame],
             tx: Default::default(),
             cache,
             state,

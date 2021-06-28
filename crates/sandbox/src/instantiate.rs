@@ -4,6 +4,7 @@ use ceres_executor::{Error, Result, ReturnCode, ReturnData};
 use ceres_std::Vec;
 
 /// Instantiate Entry
+#[derive(Default)]
 pub struct InstantiateEntry {
     pub code_hash: [u8; 32],
     pub endowment: u64,
@@ -71,6 +72,7 @@ impl Sandbox {
         executor_mut.build(&contract, self, self.ri.clone())?;
         let ret = executor_mut.invoke("call", data, self)?;
 
+        // return data
         Ok(ret.1.data)
     }
 }

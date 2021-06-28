@@ -2,10 +2,9 @@
 use crate::Sandbox;
 use ceres_std::Vec;
 use parity_scale_codec::{Decode, Encode};
-use serde::{Deserialize, Serialize};
 
 /// Describes the upper limits on various metrics.
-#[derive(Default, Clone, Encode, Decode, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Default, Clone, Encode, Decode, PartialEq, Eq)]
 pub struct Limits {
     pub event_topics: u32,
     pub stack_height: u32,
@@ -94,7 +93,7 @@ pub struct InstructionWeights {
 }
 
 /// Definition of the cost schedule and other parameterizations for wasm vm.
-#[derive(Default, Clone, Encode, Decode, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Default, Clone, Encode, Decode, PartialEq, Eq)]
 pub struct Schedule {
     pub version: u32,
     pub enable_println: bool,

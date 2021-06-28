@@ -67,6 +67,7 @@ pub fn seal_instantiate(
     salt_len: u32,
 ) -> Result<Option<Value>> {
     let code_hash: [u8; 32] = sandbox.read_sandbox_memory_as(code_hash_ptr, code_hash_len)?;
+    sandbox.active(code_hash)?;
 
     // # Safty
     //
@@ -85,7 +86,8 @@ pub fn seal_instantiate(
     }
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
-    Err(Error::Return(output))
+    sandbox.exit()?;
+    Ok(Some(Value::I32(0)))
 }
 
 /// Make a call to another contract.

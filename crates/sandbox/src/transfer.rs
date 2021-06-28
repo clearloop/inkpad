@@ -4,6 +4,7 @@ use ceres_executor::Result;
 use ceres_std::Vec;
 
 /// Transfer Entry
+#[derive(Default)]
 pub struct TransferEntry {
     pub to: [u8; 32],
     pub value: u64,

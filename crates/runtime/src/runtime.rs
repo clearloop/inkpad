@@ -88,6 +88,9 @@ impl Runtime {
             }
         }
 
+        // get code hash
+        let code_hash = util::parse_code_hash(&metadata.source.hash)?;
+
         // Set memory
         let limit = util::scan_imports(&el).map_err(|_| Error::CalcuateMemoryLimitFailed)?;
         let mem = Memory::new(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
@@ -97,6 +100,7 @@ impl Runtime {
 
         // Create Sandbox and Builder
         let sandbox = Rc::new(RefCell::new(Sandbox::new(
+            code_hash,
             mem,
             cache.clone(),
             state.clone(),
@@ -110,10 +114,7 @@ impl Runtime {
             .map_err(|error| Error::SerializeFailed { error })?;
         cache
             .borrow_mut()
-            .set(
-                util::parse_code_hash(&metadata.source.hash)?,
-                contract.to_vec(),
-            )
+            .set(code_hash, contract.to_vec())
             .ok_or(Error::CouldNotSetStorage)?;
 
         // Construct executor

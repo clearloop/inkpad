@@ -254,6 +254,7 @@ dependencies = [
  "bitflags",
  "ceres-std",
  "hex",
+ "log",
  "parity-scale-codec",
  "patract-wasmi",
  "wasmtime",
@@ -304,7 +305,6 @@ dependencies = [
  "hex",
  "log",
  "parity-scale-codec",
- "serde",
 ]
 
 [[package]]
