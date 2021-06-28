@@ -24,9 +24,9 @@ fn test_call_contracts() {
     let cache = Rc::new(RefCell::new(MemoryStorage::default()));
     let state = Rc::new(RefCell::new(MemoryStorage::default()));
     let hashes = [
-        include_bytes!("../contracts/accumulator.contract").to_vec(),
-        include_bytes!("../contracts/adder.contract").to_vec(),
-        include_bytes!("../contracts/subber.contract").to_vec(),
+        include_bytes!("../contracts/accumulator.contract.debug").to_vec(),
+        include_bytes!("../contracts/adder.contract.debug").to_vec(),
+        include_bytes!("../contracts/subber.contract.debug").to_vec(),
     ]
     .iter()
     .map(|contract| {
@@ -43,14 +43,14 @@ fn test_call_contracts() {
 
     // init delegator
     let delegator = Runtime::from_contract_and_storage(
-        include_bytes!("../contracts/delegator.contract"),
+        include_bytes!("../contracts/delegator.contract.debug"),
         cache,
         state,
         Some(Instance),
     )
     .unwrap();
 
-    // assert!(
+    // deploy delegator
     delegator
         .deploy(
             "new",
@@ -66,6 +66,7 @@ fn test_call_contracts() {
                 ..Default::default()
             }),
         )
-        .unwrap()
-    // .is_err());
+        .unwrap();
+
+    delegator.call("get", vec![], None).unwrap();
 }

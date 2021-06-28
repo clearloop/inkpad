@@ -39,11 +39,7 @@ impl From<Trap> for Error {
 
         Error::Trap(OutterTrap {
             code,
-            trace: fmt
-                .split('\n')
-                .filter(|s| !s.is_empty() && !s.contains("<unknown>"))
-                .map(|s| s.to_string())
-                .collect::<Vec<_>>(),
+            trace: fmt.split('\n').map(|s| s.to_string()).collect::<Vec<_>>(),
         })
     }
 }

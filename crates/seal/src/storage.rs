@@ -11,9 +11,11 @@ pub fn seal_get_storage(key_ptr: u32, out_ptr: u32, out_len_ptr: u32) -> Result<
     let mut key: StorageKey = [0; 32];
     sandbox.read_sandbox_memory_into_buf(key_ptr, &mut key)?;
     if let Some(value) = sandbox.get_storage(&key)? {
+        log::debug!("got {:?}", value);
         sandbox.write_sandbox_output(out_ptr, out_len_ptr, &value)?;
         Ok(Some(Value::I32(ReturnCode::Success as i32)))
     } else {
+        log::debug!("Key not found???");
         Err(Error::ExecuteFailed(ReturnCode::KeyNotFound))
     }
 }

@@ -6,16 +6,7 @@ use crate::{
 use ceres_std::vec;
 use core::mem;
 use parity_scale_codec::Encode;
-use wasmtime::{
-    Caller,
-    Config,
-    Engine,
-    Func,
-    FuncType,
-    Store,
-    Trap,
-    Val, // WasmBacktraceDetails,
-};
+use wasmtime::{Caller, Config, Engine, Func, FuncType, Store, Trap, Val, WasmBacktraceDetails};
 
 /// Create store with DWARF enabled
 ///
@@ -24,10 +15,10 @@ use wasmtime::{
 pub fn store_with_dwarf() -> Result<Store, Error> {
     Ok(Store::new(
         &Engine::new(
-		&Config::new()
-			// .debug_info(true)
-			// .wasm_backtrace_details(WasmBacktraceDetails::Enable),
-	)
+            &Config::new()
+                // .debug_info(true)
+                .wasm_backtrace_details(WasmBacktraceDetails::Enable),
+        )
         .map_err(|_| Error::CreateWasmtimeConfigFailed)?,
     ))
 }
