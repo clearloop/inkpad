@@ -137,5 +137,5 @@ pub fn seal_call(
     let output = sandbox.call(callee, value, input_data)?;
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
-    Ok(None)
+    Ok(Some(Value::I32(0)))
 }

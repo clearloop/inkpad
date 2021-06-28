@@ -8,6 +8,19 @@ use wasmi::{Trap, TrapKind};
 
 impl From<Trap> for trap::Trap {
     fn from(trap: Trap) -> trap::Trap {
+        match trap.kind() {
+            TrapKind::Host(e) => {
+                if let Some(e) = e.downcast_ref::<Error>() {
+                    return TrapCode::HostError(Box::new(e.clone())).into();
+                } else {
+                    ()
+                }
+            }
+            _ => {
+                panic!("{:#?}", trap);
+            }
+        };
+
         trap::Trap {
             code: match trap.kind() {
                 TrapKind::StackOverflow => TrapCode::StackOverflow,
