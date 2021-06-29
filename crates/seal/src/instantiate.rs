@@ -134,10 +134,13 @@ pub fn seal_call(
     output_len_ptr: u32,
 ) -> Result<Option<Value>> {
     let callee: [u8; 32] = sandbox.read_sandbox_memory_as(callee_ptr, callee_len)?;
+    sandbox.active(callee)?;
+
     let value: u64 = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
     let input_data = sandbox.read_sandbox_memory(input_data_ptr, input_data_len)?;
     let output = sandbox.call(callee, value, input_data)?;
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
+    sandbox.exit()?;
     Ok(Some(Value::I32(0)))
 }

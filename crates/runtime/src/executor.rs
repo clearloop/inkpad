@@ -46,6 +46,7 @@ impl Executor<Sandbox, SealCall<Sandbox>, ExecResult, Error> for InkExecutor {
 
             // check return value
             let data = ExecResult::from_res(instance.invoke(method, &[], sandbox))?;
+            sandbox.flush_bucket()?;
 
             // set return data
             if let Some(ret) = sandbox.ret.take() {

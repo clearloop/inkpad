@@ -13,7 +13,6 @@
 //!   - call `switch`
 use ceres_ri::Instance;
 use ceres_runtime::Runtime;
-use ceres_sandbox::Transaction;
 use ceres_support::types::MemoryStorage;
 use parity_scale_codec::Encode;
 use std::{cell::RefCell, rc::Rc};
@@ -44,8 +43,8 @@ fn test_call_contracts() {
     // init delegator
     let delegator = Runtime::from_contract_and_storage(
         include_bytes!("../contracts/delegator.contract.debug"),
-        cache,
-        state,
+        cache.clone(),
+        state.clone(),
         Some(Instance),
     )
     .unwrap();
@@ -61,10 +60,7 @@ fn test_call_contracts() {
                 hex::decode(&hashes[1][2..]).unwrap(),
                 hex::decode(&hashes[2][2..]).unwrap(),
             ],
-            Some(Transaction {
-                balance: 100_000,
-                ..Default::default()
-            }),
+            None,
         )
         .unwrap();
 

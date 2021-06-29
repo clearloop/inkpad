@@ -21,7 +21,7 @@ impl Sandbox {
     // Set new bucket
     pub fn set_bucket(&mut self) -> Result<()> {
         let active = self.stack.last().ok_or(Error::ExitedAllFrames)?;
-        log::debug!("active bucket: {:?}", active);
+        log::debug!("active bucket: 0x{}", hex::encode(active));
 
         // Set new bucket
         if let Some(bucket) = self.state.borrow().get(*active) {
@@ -36,13 +36,11 @@ impl Sandbox {
     /// Get storage
     pub fn get_storage(&self, key: &StorageKey) -> Result<Option<Vec<u8>>> {
         let v = self.bucket.borrow().get(key).map(|v| v.to_vec());
-        log::debug!("sandbox get storage {:?}, {:?}", key, v);
         Ok(v)
     }
 
     /// Get storage
     pub fn set_storage(&mut self, key: &StorageKey, value: Vec<u8>) -> Result<()> {
-        log::debug!("sandbox set storage {:?}, {:?}", key, value);
         self.bucket.borrow_mut().insert(*key, value);
         Ok(())
     }
