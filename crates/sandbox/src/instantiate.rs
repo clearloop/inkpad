@@ -43,7 +43,9 @@ impl Sandbox {
         let executor = self.executor.clone();
         let mut executor_mut = executor.borrow_mut();
         executor_mut.build(&contract, self, self.ri.clone())?;
-        let ret = executor_mut.invoke("deploy", data, self)?;
+
+        self.input = Some(data);
+        let ret = executor_mut.invoke("deploy", self)?;
 
         // return data
         Ok((code_hash, ret.1.data))
@@ -70,7 +72,9 @@ impl Sandbox {
         let executor = self.executor.clone();
         let mut executor_mut = executor.borrow_mut();
         executor_mut.build(&contract, self, self.ri.clone())?;
-        let ret = executor_mut.invoke("call", data, self)?;
+
+        self.input = Some(data);
+        let ret = executor_mut.invoke("call", self)?;
 
         // return data
         Ok(ret.1.data)

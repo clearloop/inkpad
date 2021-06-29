@@ -1,5 +1,5 @@
 //! Ceres Runtime
-use crate::{util, Error, InkExecutor, Metadata, Result};
+use crate::{method::InkMethod, util, Error, InkExecutor, Metadata, Result};
 use ceres_executor::Memory;
 use ceres_sandbox::{RuntimeInterfaces, Sandbox, Transaction};
 use ceres_std::{Rc, String, ToString, Vec};
@@ -12,7 +12,7 @@ use parity_wasm::elements::Module;
 
 /// Ceres Runtime
 pub struct Runtime {
-    pub sandbox: Rc<RefCell<Sandbox>>,
+    pub sandbox: Sandbox,
     pub executor: Rc<RefCell<InkExecutor>>,
     pub metadata: Metadata,
     cache: Rc<RefCell<dyn Storage>>,
@@ -99,14 +99,14 @@ impl Runtime {
         let seal_calls = ceres_seal::pallet_contracts(ri);
 
         // Create Sandbox and Builder
-        let sandbox = Rc::new(RefCell::new(Sandbox::new(
+        let mut sandbox = Sandbox::new(
             code_hash,
             mem,
             cache.clone(),
             state.clone(),
             seal_calls.clone(),
             Rc::new(RefCell::new(InkExecutor::default())),
-        )));
+        );
 
         // Store contract
         let contract = &el
@@ -121,7 +121,7 @@ impl Runtime {
         let executor = Rc::new(RefCell::new(InkExecutor::default()));
         executor
             .borrow_mut()
-            .build(&contract, &mut sandbox.borrow_mut(), seal_calls)
+            .build(&contract, &mut sandbox, seal_calls)
             .map_err(|error| Error::InitModuleFailed { error })?;
 
         Ok(Runtime {
@@ -134,53 +134,45 @@ impl Runtime {
     }
 
     /// Deploy contract
-    pub fn deploy(&self, method: &str, args: Vec<Vec<u8>>, tx: Option<Transaction>) -> Result<()> {
-        if let Some(tx) = tx {
-            self.sandbox.borrow_mut().tx = tx;
-        }
-
-        let constructors = self.metadata.constructors();
-        let (selector, tys) = constructors.get(method).ok_or(Error::GetMethodFailed {
-            name: method.to_string(),
-        })?;
-
-        self.executor
-            .borrow_mut()
-            .invoke(
-                "deploy",
-                util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
-                &mut self.sandbox.borrow_mut(),
-            )
-            .map_err(|error| Error::DeployContractFailed { error })?;
-
-        Ok(())
+    pub fn deploy(
+        &mut self,
+        method: &str,
+        args: Vec<Vec<u8>>,
+        tx: Option<Transaction>,
+    ) -> Result<Option<Vec<u8>>> {
+        self.invoke(InkMethod::Deploy, method, args, tx)
     }
 
     /// Call contract
     pub fn call(
-        &self,
+        &mut self,
         method: &str,
         args: Vec<Vec<u8>>,
         tx: Option<Transaction>,
-    ) -> Result<Vec<u8>> {
+    ) -> Result<Option<Vec<u8>>> {
+        self.invoke(InkMethod::Call, method, args, tx)
+    }
+
+    // Invoke (ink) method
+    pub fn invoke(
+        &mut self,
+        method: InkMethod,
+        inner_method: &str,
+        args: Vec<Vec<u8>>,
+        tx: Option<Transaction>,
+    ) -> Result<Option<Vec<u8>>> {
         if let Some(tx) = tx {
-            self.sandbox.borrow_mut().tx = tx;
+            self.sandbox.tx = tx;
         }
 
-        let messages = self.metadata.messages();
-        let (selector, tys) = messages.get(method).ok_or(Error::GetMethodFailed {
-            name: method.to_string(),
-        })?;
+        // set input
+        self.sandbox.input = Some(method.parse(&self.metadata, inner_method, args)?);
 
-        Ok(self
-            .executor
+        self.executor
             .borrow_mut()
-            .invoke(
-                "call",
-                util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
-                &mut self.sandbox.borrow_mut(),
-            )
-            .map_err(|error| Error::CallContractFailed { error })?
-            .0)
+            .invoke(&method.to_string(), &mut self.sandbox)
+            .map_err(|error| Error::CallContractFailed { error })?;
+
+        Ok(self.sandbox.ret.clone())
     }
 }

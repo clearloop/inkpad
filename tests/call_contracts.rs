@@ -41,7 +41,7 @@ fn test_call_contracts() {
     .collect::<Vec<String>>();
 
     // init delegator
-    let delegator = Runtime::from_contract_and_storage(
+    let mut delegator = Runtime::from_contract_and_storage(
         include_bytes!("../contracts/delegator.contract"),
         cache.clone(),
         state.clone(),

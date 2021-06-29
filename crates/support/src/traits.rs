@@ -17,5 +17,5 @@ pub trait Executor<T, S, R, E> {
     fn build(&mut self, b: &[u8], sandbox: &mut T, ri: Vec<S>) -> Result<(), E>;
 
     /// Invoke contract method
-    fn invoke(&mut self, method: &str, data: Vec<u8>, sandbox: &mut T) -> Result<(Vec<u8>, R), E>;
+    fn invoke(&mut self, method: &str, sandbox: &mut T) -> Result<(Vec<u8>, R), E>;
 }

@@ -7,6 +7,7 @@ extern crate alloc;
 
 mod executor;
 mod metadata;
+mod method;
 mod result;
 mod runtime;
 pub mod util;

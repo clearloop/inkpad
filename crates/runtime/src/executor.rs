@@ -35,25 +35,21 @@ impl Executor<Sandbox, SealCall<Sandbox>, ExecResult, Error> for InkExecutor {
         Ok(())
     }
 
-    fn invoke(
-        &mut self,
-        method: &str,
-        data: Vec<u8>,
-        sandbox: &mut Sandbox,
-    ) -> Result<(Vec<u8>, ExecResult)> {
+    fn invoke(&mut self, method: &str, sandbox: &mut Sandbox) -> Result<(Vec<u8>, ExecResult)> {
         if let Some(instance) = self.instance.as_mut() {
-            sandbox.input = Some(data);
+            // sandbox.input = Some(data);
 
             // check return value
             let data = ExecResult::from_res(instance.invoke(method, &[], sandbox))?;
             sandbox.flush_bucket()?;
 
-            // set return data
-            if let Some(ret) = sandbox.ret.take() {
-                Ok((ret, data))
-            } else {
-                Ok((vec![], data))
-            }
+            // // set return data
+            // if let Some(ret) = sandbox.ret.take() {
+            //     Ok((ret, data))
+            // } else {
+            //     Ok((vec![], data))
+            // }
+            Ok((vec![], data))
         } else {
             Err(Error::ExecutorNotInited)
         }

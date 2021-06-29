@@ -16,7 +16,7 @@ fn t(f: fn(rt: &mut Runtime)) {
     .unwrap();
 
     // deploy
-    assert!(args.deploy("default", vec![], None).is_ok());
+    args.deploy("default", vec![], None).unwrap();
 
     // run test
     f(&mut args);
@@ -26,9 +26,8 @@ fn t(f: fn(rt: &mut Runtime)) {
 fn test_boolean() {
     t(|args: &mut Runtime| {
         assert_eq!(
-            args.call("test_boolean", vec![true.encode()], None)
-                .unwrap(),
-            vec![1]
+            args.call("test_boolean", vec![true.encode()], None),
+            Ok(Some(vec![1]))
         );
     })
 }
@@ -37,8 +36,8 @@ fn test_boolean() {
 fn test_number() {
     t(|args: &mut Runtime| {
         assert_eq!(
-            args.call("test_number", vec![0.encode()], None).unwrap(),
-            vec![0, 0, 0, 0]
+            args.call("test_number", vec![0.encode()], None),
+            Ok(Some(vec![0, 0, 0, 0]))
         );
     })
 }
@@ -48,8 +47,8 @@ fn test_hash() {
     t(|args: &mut Runtime| {
         let hash = [0; 32];
         assert_eq!(
-            args.call("test_hash", vec![hash.to_vec()], None).unwrap(),
-            vec![0; 32]
+            args.call("test_hash", vec![hash.to_vec()], None),
+            Ok(Some(vec![0; 32]))
         );
     })
 }
@@ -62,9 +61,8 @@ fn test_boolean_and_number() {
                 "test_boolean_and_number",
                 vec![true.encode(), 1.encode()],
                 None
-            )
-            .unwrap(),
-            vec![1, 1, 0, 0, 0]
+            ),
+            Ok(Some(vec![1, 1, 0, 0, 0]))
         );
     })
 }
@@ -80,9 +78,8 @@ fn test_boolean_and_hash() {
                 "test_boolean_and_hash",
                 vec![true.encode(), hash.to_vec()],
                 None
-            )
-            .unwrap(),
-            res
+            ),
+            Ok(Some(res))
         );
     })
 }
@@ -91,9 +88,8 @@ fn test_boolean_and_hash() {
 fn test_number_and_number() {
     t(|args: &mut Runtime| {
         assert_eq!(
-            args.call("test_number_and_number", vec![0.encode(), 1.encode()], None)
-                .unwrap(),
-            vec![0, 0, 0, 0, 1, 0, 0, 0]
+            args.call("test_number_and_number", vec![0.encode(), 1.encode()], None),
+            Ok(Some(vec![0, 0, 0, 0, 1, 0, 0, 0]))
         );
     })
 }
@@ -109,9 +105,8 @@ fn test_number_and_hash() {
                 "test_number_and_hash",
                 vec![0.encode(), hash.to_vec()],
                 None
-            )
-            .unwrap(),
-            res,
+            ),
+            Ok(Some(res)),
         );
     })
 }
@@ -128,23 +123,18 @@ fn test_all() {
                 "test_all",
                 vec![0.encode(), hash.to_vec(), true.encode()],
                 None
-            )
-            .unwrap(),
-            res,
+            ),
+            Ok(Some(res)),
         );
     })
 }
 
-// TODO:
-//
-// Currently this kind of error could not be catched since
-// both numebr and hash are bytes.
 #[test]
 fn test_number_and_hash_with_numbers() {
     t(|args: &mut Runtime| {
         assert_eq!(
             args.call("test_number_and_hash", vec![0.encode(), 1.encode()], None),
-            Ok(vec![])
+            Ok(None)
         );
     })
 }
