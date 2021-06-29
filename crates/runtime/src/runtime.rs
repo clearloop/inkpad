@@ -21,7 +21,7 @@ pub struct Runtime {
 
 impl Runtime {
     /// Create runtime from contract
-    pub fn from_contract(contract: &[u8], ri: Option<impl RuntimeInterfaces>) -> Result<Runtime> {
+    pub fn contract(contract: &[u8], ri: Option<impl RuntimeInterfaces>) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
             .map_err(|_| Error::DecodeContractFailed)?;
 
@@ -36,7 +36,7 @@ impl Runtime {
     }
 
     /// Create runtime from contract
-    pub fn from_contract_and_storage(
+    pub fn from_contract(
         contract: &[u8],
         cache: Rc<RefCell<impl Storage + 'static>>,
         state: Rc<RefCell<impl Storage + 'static>>,
@@ -56,7 +56,7 @@ impl Runtime {
     }
 
     /// Create runtime from metadata and storage
-    pub fn from_metadata_and_storage(
+    pub fn from_metadata(
         meta: Metadata,
         cache: Rc<RefCell<impl Storage + 'static>>,
         state: Rc<RefCell<impl Storage + 'static>>,

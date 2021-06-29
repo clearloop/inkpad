@@ -17,7 +17,7 @@ impl Runtime {
     /// New runtime
     #[wasm_bindgen(constructor)]
     pub fn new(contract: &str) -> Runtime {
-        Runtime(err_check(RuntimeInner::from_metadata_and_storage(
+        Runtime(err_check(RuntimeInner::from_metadata(
             err_check(serde_json::from_str(contract)),
             Rc::new(RefCell::new(Tree::new(CERES_BROWSER_CACHE))),
             Rc::new(RefCell::new(Tree::new(CERES_BROWSER_STATE))),

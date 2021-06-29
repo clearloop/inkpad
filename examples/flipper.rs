@@ -7,7 +7,7 @@ use parity_scale_codec::Encode;
 
 fn main() {
     env_logger::init();
-    let mut rt = Runtime::from_contract(
+    let mut rt = Runtime::contract(
         include_bytes!("../contracts/flipper.contract"),
         Some(Instance),
     )

@@ -65,12 +65,7 @@ impl Storage {
         let state = Rc::new(RefCell::new(Tree(self.0.open_tree(CERES_STATE_TREE)?)));
         Ok(if if_path.exists() {
             let source = fs::read(if_path)?;
-            let rt = Runtime::from_contract_and_storage(
-                &source,
-                cache,
-                state,
-                Some(ceres_ri::Instance),
-            )?;
+            let rt = Runtime::from_contract(&source, cache, state, Some(ceres_ri::Instance))?;
             self.0.insert(
                 &rt.metadata.contract.name,
                 bincode::serialize(&rt.metadata.clone())?,
@@ -96,7 +91,7 @@ impl Storage {
         } else {
             self.0.get(contract.as_bytes())
         } {
-            Runtime::from_metadata_and_storage(
+            Runtime::from_metadata(
                 bincode::deserialize::<Metadata>(&contract)?,
                 cache,
                 state,

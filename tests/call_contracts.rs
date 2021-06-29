@@ -29,19 +29,14 @@ fn test_call_contracts() {
     ]
     .iter()
     .map(|contract| {
-        let rt = Runtime::from_contract_and_storage(
-            contract,
-            cache.clone(),
-            state.clone(),
-            Some(Instance),
-        )
-        .unwrap();
+        let rt =
+            Runtime::from_contract(contract, cache.clone(), state.clone(), Some(Instance)).unwrap();
         rt.metadata.source.hash
     })
     .collect::<Vec<String>>();
 
     // init delegator
-    let mut delegator = Runtime::from_contract_and_storage(
+    let mut delegator = Runtime::from_contract(
         include_bytes!("../contracts/delegator.contract"),
         cache.clone(),
         state.clone(),
