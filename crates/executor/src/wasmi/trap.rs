@@ -17,7 +17,7 @@ impl From<Trap> for trap::Trap {
                 }
             }
             _ => {
-                panic!("{:#?}", trap);
+                log::info!("{:#?}", trap);
             }
         };
 

@@ -18,7 +18,7 @@ use ceres_sandbox::RuntimeInterfaces;
 
 /// Seal calls
 pub type SealCall =
-    ceres_executor::derive::HostParcel<&'static str, &'static str, ceres_sandbox::Sandbox>;
+    ceres_executor::derive::HostCall<&'static str, &'static str, ceres_sandbox::Sandbox>;
 
 /// Pallet contract host functions
 pub fn pallet_contracts(ri: Option<impl RuntimeInterfaces>) -> Vec<SealCall> {

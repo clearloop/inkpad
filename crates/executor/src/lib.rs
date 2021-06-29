@@ -16,7 +16,10 @@ mod wasmi;
 mod wasmtime;
 
 pub use self::{
-    executor::{Builder, Instance, Memory},
+    builder::Builder,
+    executor::Executor,
+    instance::Instance,
+    memory::Memory,
     result::{Error, ExecResult, Result, ReturnCode, ReturnData, ReturnFlags},
     trap::{Trap, TrapCode},
     value::Value,
