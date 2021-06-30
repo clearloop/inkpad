@@ -91,13 +91,11 @@ impl Runtime {
         // Create Sandbox and Builder
         let mut sandbox = Sandbox::new(cache.clone(), seal_calls.clone());
 
-        // set up initial frame
+        // set up initial frame and memory
         let mut cache_mut = cache.borrow_mut();
-        cache_mut.push_frame(&code_hash);
-
-        // set up initial memory
         let limit = ceres_executor::scan_imports(&el)?;
-        cache_mut.push_memory(Memory::new(limit.0, limit.1)?);
+        let memory = Memory::new(limit.0, limit.1)?;
+        cache_mut.enter(&code_hash, memory.clone());
 
         // Store contract
         let contract = &el
@@ -109,7 +107,7 @@ impl Runtime {
         drop(cache_mut);
 
         // Init executor
-        let executor = Executor::new(contract, &mut sandbox, seal_calls.clone())
+        let executor = Executor::new(contract, memory, seal_calls.clone(), &mut sandbox)
             .map_err(|_| Error::InitExecutorFailed)?;
 
         Ok(Runtime {

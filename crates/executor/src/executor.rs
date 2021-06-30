@@ -1,7 +1,6 @@
 //! WASM executor wrapper
 use crate::{
-    derive::SealCall, memory::scan_imports, result::ExecResult, Builder, Error, Instance, Memory,
-    Result, Value,
+    derive::SealCall, result::ExecResult, Builder, Error, Instance, Memory, Result, Value,
 };
 use ceres_std::Vec;
 use parity_wasm::elements::Module;
@@ -13,7 +12,7 @@ pub struct Executor<T> {
 
 impl<T> Executor<T> {
     /// New executor
-    pub fn new(b: &[u8], sandbox: &mut T, ri: Vec<SealCall<T>>) -> Result<Self> {
+    pub fn new(b: &[u8], memory: Memory, ri: Vec<SealCall<T>>, sandbox: &mut T) -> Result<Self> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
             el = match el.parse_names() {
@@ -22,13 +21,9 @@ impl<T> Executor<T> {
             }
         }
 
-        // construct interfaces
+        // construct builder
         let mut builder = Builder::new().add_host_parcels(ri);
-        let limit = scan_imports(&el).map_err(|_| Error::CalcuateMemoryLimitFailed)?;
-
-        // construct memory
-        let memory = Memory::new(limit.0, limit.1)?;
-        builder.add_memory("env", "memory", memory.clone());
+        builder.add_memory("env", "memory", memory);
 
         // new executor
         Ok(Self {

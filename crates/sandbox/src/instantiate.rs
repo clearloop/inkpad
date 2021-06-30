@@ -32,11 +32,14 @@ impl Sandbox {
             .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?
             .to_vec();
 
+        // Get memory
+        let memory = cache.memory().ok_or(Error::CouldNotFindMemory)?.clone();
+
         // drop borrow
         drop(cache);
 
         // invoke with provided `data`
-        let mut executor = Executor::new(&contract, self, self.ri.clone())?;
+        let mut executor = Executor::new(&contract, memory, self.ri.clone(), self)?;
         let ret = executor.invoke(method, &[], self)?;
 
         // return vals

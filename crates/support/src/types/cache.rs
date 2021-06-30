@@ -3,21 +3,21 @@ use crate::traits;
 use ceres_std::{BTreeMap, Vec};
 
 /// Memory cache implementation
-pub struct Cache<Memory> {
+pub struct Cache<Memory: Clone> {
     storage: BTreeMap<Vec<u8>, Vec<u8>>,
-    memory: BTreeMap<Vec<u8>, Memory>,
+    memory: Vec<Memory>,
 }
 
-impl<Memory> Default for Cache<Memory> {
+impl<Memory: Clone> Default for Cache<Memory> {
     fn default() -> Self {
         Self {
             storage: BTreeMap::new(),
-            memory: BTreeMap::new(),
+            memory: Vec::new(),
         }
     }
 }
 
-impl<Memory> traits::Storage for Cache<Memory> {
+impl<Memory: Clone> traits::Storage for Cache<Memory> {
     fn set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
         self.storage.insert(key, value)
     }
@@ -31,28 +31,31 @@ impl<Memory> traits::Storage for Cache<Memory> {
     }
 }
 
-impl<Memory> traits::Frame for Cache<Memory> {
+impl<Memory: Clone> traits::Frame for Cache<Memory> {
     // const PREFIX: [u8; 4] = [0; 4];
     fn frame_prefix(&self) -> &[u8] {
         &[0, 0, 0, 0]
     }
 }
 
-impl<Memory> traits::State<Memory> for Cache<Memory> {
+impl<Memory: Clone> traits::State<Memory> for Cache<Memory> {
+    fn memory(&self) -> Option<Memory> {
+        Some(self.memory[self.memory.len() - 1].clone())
+    }
+
     fn memory_mut(&mut self) -> Option<&mut Memory> {
-        self.memory.get_mut(&traits::Frame::active(self)?.to_vec())
+        self.memory.last_mut()
     }
     /// Get memory mut
     fn pop_memory(&mut self) -> Option<Memory> {
-        self.memory.remove(&traits::Frame::active(self)?.to_vec())
+        self.memory.pop()
     }
 
     /// Get memory mut
     fn push_memory(&mut self, memory: Memory) -> Option<()> {
-        self.memory
-            .insert(traits::Frame::active(self)?.to_vec(), memory);
+        self.memory.push(memory);
         Some(())
     }
 }
 
-impl<Memory> traits::Cache<Memory> for Cache<Memory> {}
+impl<Memory: Clone> traits::Cache<Memory> for Cache<Memory> {}

@@ -4,7 +4,7 @@ use ceres_runtime::{Metadata, Runtime};
 use ceres_support::traits;
 use etc::{Etc, FileSystem, Meta};
 use sled::Db;
-use std::{collections::BTreeMap, fs, path::PathBuf, process};
+use std::{fs, path::PathBuf, process};
 
 const CERES_FRAME_TREE: &str = "CERES_CACHE_TREE";
 
@@ -12,7 +12,7 @@ const CERES_FRAME_TREE: &str = "CERES_CACHE_TREE";
 #[derive(Clone)]
 pub struct Storage {
     pub db: Db,
-    memory: BTreeMap<Vec<u8>, Memory>,
+    memory: Vec<Memory>,
 }
 
 impl traits::Storage for Storage {
@@ -36,18 +36,21 @@ impl traits::Frame for Storage {
 }
 
 impl traits::State<Memory> for Storage {
+    fn memory(&self) -> Option<Memory> {
+        Some(self.memory[self.memory.len() - 1].clone())
+    }
+
     fn memory_mut(&mut self) -> Option<&mut Memory> {
-        self.memory.get_mut(&traits::Frame::active(self)?.to_vec())
+        self.memory.last_mut()
     }
     /// Get memory mut
     fn pop_memory(&mut self) -> Option<Memory> {
-        self.memory.remove(&traits::Frame::active(self)?.to_vec())
+        self.memory.pop()
     }
 
     /// Get memory mut
     fn push_memory(&mut self, memory: Memory) -> Option<()> {
-        self.memory
-            .insert(traits::Frame::active(self)?.to_vec(), memory);
+        self.memory.push(memory);
         Some(())
     }
 }
@@ -69,7 +72,7 @@ impl Storage {
 
         Ok(Self {
             db: sled::open(etc.open(".ceres/contracts")?.real_path()?)?,
-            memory: <BTreeMap<Vec<u8>, Memory>>::new(),
+            memory: Vec::new(),
         })
     }
 
