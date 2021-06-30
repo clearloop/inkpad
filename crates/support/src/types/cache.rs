@@ -29,7 +29,7 @@ impl<Memory: Clone> traits::Storage for Cache<Memory> {
     }
 
     fn get(&self, key: &[u8]) -> Option<Vec<u8>> {
-        self.storage.get(key).map(|key| key.to_vec())
+        self.storage.get(key).cloned()
     }
 }
 

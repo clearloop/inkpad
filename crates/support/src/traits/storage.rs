@@ -16,7 +16,7 @@ pub trait Storage {
 
     /// get V by K with prefix
     fn prefix_get(&self, prefix: &[u8], key: &[u8]) -> Option<Vec<u8>> {
-        <Self as Storage>::get(self, &[&prefix, key].concat())
+        <Self as Storage>::get(self, &[prefix, key].concat())
     }
 
     /// Remove a key
@@ -24,6 +24,6 @@ pub trait Storage {
 
     /// Remove a key with prefix
     fn prefix_remove(&mut self, prefix: &[u8], key: &[u8]) -> Option<Vec<u8>> {
-        <Self as Storage>::remove(self, &[&prefix, key].concat())
+        <Self as Storage>::remove(self, &[prefix, key].concat())
     }
 }
