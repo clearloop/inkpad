@@ -5,6 +5,7 @@ use ceres_std::{BTreeMap, Vec};
 /// Memory cache implementation
 pub struct Cache<Memory: Clone> {
     storage: BTreeMap<Vec<u8>, Vec<u8>>,
+    frame: Vec<Vec<u8>>,
     memory: Vec<Memory>,
 }
 
@@ -13,6 +14,7 @@ impl<Memory: Clone> Default for Cache<Memory> {
         Self {
             storage: BTreeMap::new(),
             memory: Vec::new(),
+            frame: Vec::new(),
         }
     }
 }
@@ -32,9 +34,25 @@ impl<Memory: Clone> traits::Storage for Cache<Memory> {
 }
 
 impl<Memory: Clone> traits::Frame for Cache<Memory> {
-    // const PREFIX: [u8; 4] = [0; 4];
-    fn frame_prefix(&self) -> &[u8] {
-        &[0, 0, 0, 0]
+    /// Current id
+    fn id(&self) -> usize {
+        self.frame.len()
+    }
+
+    /// active frame
+    fn active(&self) -> Option<Vec<u8>> {
+        self.frame.last().map(|v| v.clone())
+    }
+
+    /// Pop frame
+    fn pop_frame(&mut self) -> Option<Vec<u8>> {
+        self.frame.pop()
+    }
+
+    /// Push frame
+    fn push_frame(&mut self, key: &[u8]) -> Option<Vec<u8>> {
+        self.frame.push(key.to_vec());
+        Some(key.to_vec())
     }
 }
 

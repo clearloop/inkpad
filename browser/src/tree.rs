@@ -10,6 +10,7 @@ pub struct Tree {
     name: String,
     storage: web_sys::Storage,
     memory: Vec<Memory>,
+    frame: Vec<Vec<u8>>,
 }
 
 #[wasm_bindgen]
@@ -24,6 +25,7 @@ impl Tree {
                 .expect("Could not find local_storage")
                 .expect("Could not find local_storage"),
             memory: Vec::new(),
+            frame: Vec::new(),
         }
     }
 }
@@ -32,8 +34,6 @@ fn browser_key(mut name: String, code_hash: Vec<u8>) -> String {
     name.push_str(&hex::encode(code_hash));
     name
 }
-
-impl traits::Frame for Tree {}
 
 impl traits::Storage for Tree {
     fn set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
@@ -61,6 +61,29 @@ impl traits::Storage for Tree {
         } else {
             None
         }
+    }
+}
+
+impl traits::Frame for Tree {
+    /// Current id
+    fn id(&self) -> usize {
+        self.frame.len()
+    }
+
+    /// active frame
+    fn active(&self) -> Option<Vec<u8>> {
+        self.frame.last().map(|v| v.clone())
+    }
+
+    /// Pop frame
+    fn pop_frame(&mut self) -> Option<Vec<u8>> {
+        self.frame.pop()
+    }
+
+    /// Push frame
+    fn push_frame(&mut self, key: &[u8]) -> Option<Vec<u8>> {
+        self.frame.push(key.to_vec());
+        Some(key.to_vec())
     }
 }
 

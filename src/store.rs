@@ -6,13 +6,12 @@ use etc::{Etc, FileSystem, Meta};
 use sled::Db;
 use std::{fs, path::PathBuf, process};
 
-const CERES_FRAME_TREE: &str = "CERES_CACHE_TREE";
-
 /// A ceres storage implementation using sled
 #[derive(Clone)]
 pub struct Storage {
     pub db: Db,
     memory: Vec<Memory>,
+    frame: Vec<Vec<u8>>,
 }
 
 impl traits::Storage for Storage {
@@ -30,8 +29,25 @@ impl traits::Storage for Storage {
 }
 
 impl traits::Frame for Storage {
-    fn frame_prefix(&self) -> &[u8] {
-        CERES_FRAME_TREE.as_bytes()
+    /// Current id
+    fn id(&self) -> usize {
+        self.frame.len()
+    }
+
+    /// active frame
+    fn active(&self) -> Option<Vec<u8>> {
+        self.frame.last().map(|v| v.clone())
+    }
+
+    /// Pop frame
+    fn pop_frame(&mut self) -> Option<Vec<u8>> {
+        self.frame.pop()
+    }
+
+    /// Push frame
+    fn push_frame(&mut self, key: &[u8]) -> Option<Vec<u8>> {
+        self.frame.push(key.to_vec());
+        Some(key.to_vec())
     }
 }
 
@@ -73,6 +89,7 @@ impl Storage {
         Ok(Self {
             db: sled::open(etc.open(".ceres/contracts")?.real_path()?)?,
             memory: Vec::new(),
+            frame: Vec::new(),
         })
     }
 
