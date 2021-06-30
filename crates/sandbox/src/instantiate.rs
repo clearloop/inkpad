@@ -1,6 +1,6 @@
 //! Instantiate Entry
 use crate::{contract::GasMeter, transfer::TransferEntry, Sandbox};
-use ceres_executor::{Error, Result, ReturnCode, ReturnData};
+use ceres_executor::{Error, Executor, Result, ReturnCode, ReturnData};
 use ceres_std::Vec;
 
 /// Instantiate Entry
@@ -36,19 +36,17 @@ impl Sandbox {
         let contract = &mut self
             .cache
             .borrow()
-            .get(code_hash)
+            .get(&code_hash)
             .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?;
 
         // Call deploy by provided `data`
-        let executor = self.executor.clone();
-        let mut executor_mut = executor.borrow_mut();
-        executor_mut.build(&contract, self, self.ri.clone())?;
+        let executor = Executor::new(&contract, &mut self, self.ri.clone())?;
 
         self.input = Some(data);
-        let ret = executor_mut.invoke("deploy", self)?;
+        let ret = executor.invoke("deploy", &[], &mut self)?;
 
         // return data
-        Ok((code_hash, ret.1.data))
+        Ok((code_hash, ret.data))
     }
 
     /// Call other contract
@@ -65,7 +63,7 @@ impl Sandbox {
         let contract = &mut self
             .cache
             .borrow()
-            .get(code_hash)
+            .get(&code_hash)
             .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?;
 
         // Call deploy by provided `data`

@@ -1,8 +1,8 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 use self::ext::Ext;
+use ceres_executor::derive::SealCall;
 use ceres_executor::Memory;
-use ceres_executor::{derive::SealCall, Error, ExecResult};
-use ceres_std::{vec, BTreeMap, Rc, Vec};
+use ceres_std::{vec, Rc, Vec};
 use ceres_support::traits::Cache;
 use core::cell::RefCell;
 
@@ -27,12 +27,12 @@ mod util;
 pub use self::{ri::RuntimeInterfaces, tx::Transaction};
 
 /// The runtime of ink! machine
-pub struct Sandbox<'s> {
+pub struct Sandbox {
     pub input: Option<Vec<u8>>,
     pub ret: Option<Vec<u8>>,
     pub ext: Ext,
     pub tx: tx::Transaction,
-    pub cache: &'s dyn Cache<Memory, Item = (Vec<u8>, Vec<u8>)>,
+    pub cache: Rc<RefCell<dyn Cache<Memory>>>,
     pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
     pub ri: Vec<SealCall<Self>>,
 }

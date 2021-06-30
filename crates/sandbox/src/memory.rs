@@ -1,14 +1,9 @@
 use crate::Sandbox;
-use ceres_executor::{Error, Memory, Result};
+use ceres_executor::{Error, Result};
 use ceres_std::{vec, Vec};
 use parity_scale_codec::{Decode, DecodeAll, Encode};
 
 impl Sandbox {
-    /// Get memory ref
-    pub fn mem(&self) -> Memory {
-        self.memory.clone()
-    }
-
     /// Read designated chunk from the sandbox memory.
     pub fn read_sandbox_memory(&self, ptr: u32, len: u32) -> Result<Vec<u8>> {
         let mut buf = vec![0u8; len as usize];
@@ -18,7 +13,12 @@ impl Sandbox {
 
     /// Read designated chunk from the sandbox into the supplied buffer
     pub fn read_sandbox_memory_into_buf(&self, ptr: u32, buf: &mut [u8]) -> Result<()> {
-        self.memory.get(ptr, buf).map_err(|_| Error::OutOfBounds)?;
+        self.cache
+            .borrow_mut()
+            .memory_mut()
+            .ok_or(Error::CouldNotFindMemory)?
+            .get(ptr, buf)
+            .map_err(|_| Error::OutOfBounds)?;
         Ok(())
     }
 
@@ -31,7 +31,12 @@ impl Sandbox {
 
     /// Write the given buffer to the designated location in the sandbox memory.
     pub fn write_sandbox_memory(&mut self, ptr: u32, buf: &[u8]) -> Result<()> {
-        self.memory.set(ptr, buf).map_err(|_| Error::OutOfBounds)
+        self.cache
+            .borrow_mut()
+            .memory_mut()
+            .ok_or(Error::CouldNotFindMemory)?
+            .set(ptr, buf)
+            .map_err(|_| Error::OutOfBounds)
     }
 
     /// Write the given buffer and its length to the designated locations in sandbox memory
@@ -50,9 +55,15 @@ impl Sandbox {
             return Err(Error::OutputBufferTooSmall);
         }
 
-        self.memory
+        let mem_mut = self
+            .cache
+            .borrow_mut()
+            .memory_mut()
+            .ok_or(Error::CouldNotFindMemory)?;
+
+        mem_mut
             .set(out_ptr, buf)
-            .and_then(|_| self.memory.set(out_len_ptr, &buf_len.encode()))
+            .and_then(|_| mem_mut.set(out_len_ptr, &buf_len.encode()))
             .map_err(|_| Error::OutOfBounds)?;
 
         Ok(())

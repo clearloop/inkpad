@@ -111,6 +111,7 @@ pub enum Error {
     CalcuateMemoryLimitFailed,
     InitExecutorFailed,
     DecodeBucketFailed([u8; 32]),
+    CouldNotFindMemory,
 }
 
 #[cfg(feature = "wasmtime")]
