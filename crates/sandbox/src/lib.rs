@@ -17,7 +17,6 @@ mod memory;
 mod restore;
 mod ri;
 mod schedule;
-mod stack;
 mod storage;
 mod termination;
 mod transfer;
@@ -40,7 +39,6 @@ pub struct Sandbox {
 impl Sandbox {
     /// New sandbox
     pub fn new(
-        frame: StorageKey,
         cache: Rc<RefCell<impl Cache<Memory> + 'static>>,
         ri: Vec<SealCall<Self>>,
     ) -> Sandbox {

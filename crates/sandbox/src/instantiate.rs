@@ -33,17 +33,20 @@ impl Sandbox {
         // Get contract from code_hash
         //
         // entrypoint
-        let contract = &mut self
-            .cache
-            .borrow()
+        let cache = self.cache.borrow();
+        let contract = cache
             .get(&code_hash)
-            .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?;
+            .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?
+            .to_vec();
+
+        // drop borrow
+        drop(cache);
 
         // Call deploy by provided `data`
-        let executor = Executor::new(&contract, &mut self, self.ri.clone())?;
+        let mut executor = Executor::new(&contract, self.ri.clone())?;
 
         self.input = Some(data);
-        let ret = executor.invoke("deploy", &[], &mut self)?;
+        let ret = executor.invoke("deploy", &[], self)?;
 
         // return data
         Ok((code_hash, ret.data))
@@ -64,17 +67,17 @@ impl Sandbox {
             .cache
             .borrow()
             .get(&code_hash)
-            .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?;
+            .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?
+            .to_vec();
+
+        // set input
+        self.input = Some(data);
 
         // Call deploy by provided `data`
-        let executor = self.executor.clone();
-        let mut executor_mut = executor.borrow_mut();
-        executor_mut.build(&contract, self, self.ri.clone())?;
-
-        self.input = Some(data);
-        let ret = executor_mut.invoke("call", self)?;
+        let mut executor = Executor::new(&contract, self.ri.clone())?;
+        let ret = executor.invoke("call", &[], self)?;
 
         // return data
-        Ok(ret.1.data)
+        Ok(ret.data)
     }
 }

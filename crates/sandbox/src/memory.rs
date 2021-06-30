@@ -31,8 +31,8 @@ impl Sandbox {
 
     /// Write the given buffer to the designated location in the sandbox memory.
     pub fn write_sandbox_memory(&mut self, ptr: u32, buf: &[u8]) -> Result<()> {
-        self.cache
-            .borrow_mut()
+        let mut cache = self.cache.borrow_mut();
+        cache
             .memory_mut()
             .ok_or(Error::CouldNotFindMemory)?
             .set(ptr, buf)
@@ -55,11 +55,8 @@ impl Sandbox {
             return Err(Error::OutputBufferTooSmall);
         }
 
-        let mem_mut = self
-            .cache
-            .borrow_mut()
-            .memory_mut()
-            .ok_or(Error::CouldNotFindMemory)?;
+        let mut cache = self.cache.borrow_mut();
+        let mem_mut = cache.memory_mut().ok_or(Error::CouldNotFindMemory)?;
 
         mem_mut
             .set(out_ptr, buf)

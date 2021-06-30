@@ -8,13 +8,13 @@ use parity_wasm::elements::Module;
 
 /// Ceres WASM executor
 pub struct Executor<T> {
-    pub memory: Memory,
-    instance: Instance<T>,
+    wasm: Vec<u8>,
+    builder: Builder<T>,
 }
 
 impl<T> Executor<T> {
     /// New executor
-    pub fn new(b: &[u8], sandbox: &mut T, ri: Vec<SealCall<T>>) -> Result<Self> {
+    pub fn new(b: &[u8], ri: Vec<SealCall<T>>) -> Result<Self> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
         if el.has_names_section() {
             el = match el.parse_names() {
@@ -33,17 +33,16 @@ impl<T> Executor<T> {
 
         // new executor
         Ok(Self {
-            memory,
-            instance: Instance::new(
-                &el.to_bytes().map_err(|_| Error::ParseWasmModuleFailed)?,
-                &builder,
-                sandbox,
-            )?,
+            wasm: el.to_bytes().map_err(|_| Error::ParseWasmModuleFailed)?,
+            builder,
         })
     }
 
     // invoke method
     pub fn invoke(&mut self, method: &str, data: &[Value], sandbox: &mut T) -> Result<ExecResult> {
-        ExecResult::from_res(self.instance.invoke(method, data, sandbox))
+        ExecResult::from_res(
+            Instance::new(&self.wasm.to_vec(), &self.builder, sandbox)?
+                .invoke(method, data, sandbox),
+        )
     }
 }
