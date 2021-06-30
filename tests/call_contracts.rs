@@ -13,15 +13,12 @@
 //!   - call `switch`
 use ceres_ri::Instance;
 use ceres_runtime::Runtime;
-use ceres_support::types::MemoryStorage;
+use ceres_support::types::Cache;
 use parity_scale_codec::Encode;
-use std::{cell::RefCell, rc::Rc};
 
 #[test]
 fn test_call_contracts() {
     env_logger::init();
-    let cache = Rc::new(RefCell::new(MemoryStorage::default()));
-    let state = Rc::new(RefCell::new(MemoryStorage::default()));
     let hashes = [
         include_bytes!("../contracts/accumulator.contract").to_vec(),
         include_bytes!("../contracts/adder.contract").to_vec(),
@@ -29,8 +26,7 @@ fn test_call_contracts() {
     ]
     .iter()
     .map(|contract| {
-        let rt =
-            Runtime::from_contract(contract, cache.clone(), state.clone(), Some(Instance)).unwrap();
+        let rt = Runtime::from_contract(contract, Cache::default(), Some(Instance)).unwrap();
         rt.metadata.source.hash
     })
     .collect::<Vec<String>>();
@@ -38,8 +34,7 @@ fn test_call_contracts() {
     // init delegator
     let mut delegator = Runtime::from_contract(
         include_bytes!("../contracts/delegator.contract"),
-        cache.clone(),
-        state.clone(),
+        Cache::default(),
         Some(Instance),
     )
     .unwrap();

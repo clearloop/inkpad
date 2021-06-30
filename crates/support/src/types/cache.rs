@@ -8,6 +8,15 @@ pub struct Cache<Memory> {
     memory: BTreeMap<Vec<u8>, Memory>,
 }
 
+impl<Memory> Default for Cache<Memory> {
+    fn default() -> Self {
+        Self {
+            storage: BTreeMap::new(),
+            memory: BTreeMap::new(),
+        }
+    }
+}
+
 impl<Memory> traits::Storage for Cache<Memory> {
     fn set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
         self.storage.insert(key, value)
@@ -17,8 +26,8 @@ impl<Memory> traits::Storage for Cache<Memory> {
         self.storage.remove(key)
     }
 
-    fn get(&self, key: &[u8]) -> Option<&[u8]> {
-        self.storage.get(key).map(|v| v.as_ref())
+    fn get(&self, key: &[u8]) -> Option<Vec<u8>> {
+        self.storage.get(key).map(|v| v.clone())
     }
 }
 

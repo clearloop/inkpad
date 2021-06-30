@@ -1,26 +1,40 @@
-use thiserror::Error;
+//! Ceres CLI Error
+use bincode::Error as Bincode;
+use ceres_runtime::Error as Runtime;
+use ceres_support::errors;
+use etc::Error as Etc;
+use sled::Error as Sled;
+use std::{
+    error::Error as ErrorTrait,
+    fmt::{Display, Formatter, Result as FmtResult},
+    io::Error as Io,
+};
 
-/// Ceres CLI Error
-#[derive(Error, Debug)]
-pub enum Error {
-    #[error("Could not parse command `{0}`")]
-    CouldNotParseCommand(String),
-    #[error("Decode ss58 address `{0}`")]
-    DecodeAddressFailed(String),
-    #[error("FileSystem Error")]
-    FileSystemError(#[from] etc::Error),
-    #[error("Sled Error")]
-    SledError(#[from] sled::Error),
-    #[error("`{0}`")]
-    Custom(&'static str),
-    #[error("`{0}`")]
-    IoError(#[from] std::io::Error),
-    #[error("`{0}`")]
-    RuntimeError(#[from] ceres_runtime::Error),
-    #[error("`{0}`")]
-    ParseContractFailed(String),
-    #[error("`{0}`")]
-    SerializeFailed(#[from] bincode::Error),
+#[derive(Debug)]
+pub struct CouldNotParseCommand(String);
+#[derive(Debug)]
+pub struct ParseContractFailed(String);
+#[derive(Debug)]
+pub struct DecodeAddressFailed(String);
+#[derive(Debug)]
+pub struct Custom(String);
+
+errors! {
+    Bincode,
+    Runtime,
+    Etc,
+    Sled,
+    Io,
+    CouldNotParseCommand,
+    DecodeAddressFailed,
+    ParseContractFailed,
+    Custom
+}
+
+impl From<&'static str> for Error {
+    fn from(s: &'static str) -> Error {
+        Error::Custom(s.into())
+    }
 }
 
 /// Ceres result

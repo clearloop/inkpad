@@ -12,10 +12,10 @@ pub trait Storage {
     }
 
     /// get V by K
-    fn get(&self, key: &[u8]) -> Option<&[u8]>;
+    fn get(&self, key: &[u8]) -> Option<Vec<u8>>;
 
     /// get V by K with prefix
-    fn prefix_get(&self, prefix: &[u8], key: &[u8]) -> Option<&[u8]> {
+    fn prefix_get(&self, prefix: &[u8], key: &[u8]) -> Option<Vec<u8>> {
         <Self as Storage>::get(self, &[&prefix, key].concat())
     }
 

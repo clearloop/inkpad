@@ -34,6 +34,7 @@ thiserror = "1.0.24"
 ceres-ri = { path = "crates/ri", version = "^0" }
 ceres-std = { path = "crates/std", version = "^0" }
 ceres-runtime = { path = "crates/runtime", version = "^0" }
+ceres-executor = { path = "crates/executor", version = "^0" }
 ceres-sandbox = { path = "crates/sandbox", version = "^0" }
 ceres-support = { path = "crates/support", version = "^0" }
 

@@ -9,8 +9,8 @@ pub trait Cache<Memory>: State<Memory> + Frame {
     }
 
     /// Active get
-    fn active_get(&self, key: &[u8]) -> Option<&[u8]> {
-        self.prefix_get(self.active()?, key)
+    fn active_get(&self, key: &[u8]) -> Option<Vec<u8>> {
+        self.prefix_get(&self.active()?, key)
     }
 
     /// Enter frame

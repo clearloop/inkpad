@@ -2,19 +2,16 @@
 use crate::{method::InkMethod, util, Error, Metadata, Result};
 use ceres_executor::{derive::SealCall, Executor, Memory};
 use ceres_sandbox::{RuntimeInterfaces, Sandbox, Transaction};
-use ceres_std::{Box, Rc, String, ToString, Vec};
+use ceres_std::{Rc, String, ToString, Vec};
 use ceres_support::{traits, types};
 use core::cell::RefCell;
 use parity_wasm::elements::Module;
-
-/// Runtime cache
-pub type Cache = traits::Cache<Memory>;
 
 /// Ceres Runtime
 pub struct Runtime {
     pub sandbox: Sandbox,
     pub metadata: Metadata,
-    cache: Rc<RefCell<Cache>>,
+    cache: Rc<RefCell<dyn traits::Cache<Memory>>>,
     executor: Executor<Sandbox>,
     ri: Vec<SealCall<Sandbox>>,
 }
@@ -29,8 +26,7 @@ impl Runtime {
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
-            MemoryStorage::default(),
-            MemoryStorage::default(),
+            types::Cache::default(),
             ri,
         )
     }
@@ -38,7 +34,7 @@ impl Runtime {
     /// Create runtime from contract
     pub fn from_contract(
         contract: &[u8],
-        cache: impl Cache + 'static,
+        cache: impl traits::Cache<Memory> + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
@@ -49,7 +45,6 @@ impl Runtime {
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             cache,
-            state,
             ri,
         )
     }
@@ -57,7 +52,7 @@ impl Runtime {
     /// Create runtime from metadata and storage
     pub fn from_metadata(
         meta: Metadata,
-        cache: impl Cache + 'static,
+        cache: impl traits::Cache<Memory> + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         Self::new(
@@ -65,7 +60,6 @@ impl Runtime {
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             cache,
-            state,
             ri,
         )
     }
@@ -74,8 +68,7 @@ impl Runtime {
     pub fn new(
         b: &[u8],
         metadata: Metadata,
-        cache: impl Storage + 'static,
-        state: impl Storage + 'static,
+        cache: impl traits::Cache<Memory> + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
@@ -92,28 +85,39 @@ impl Runtime {
         // generate seal calls
         let seal_calls = ceres_seal::pallet_contracts(ri);
 
+        // reset cache
+        let cache = Rc::new(RefCell::new(cache));
+
         // Create Sandbox and Builder
-        let mut sandbox = Sandbox::new(code_hash, cache, seal_calls.clone());
+        let mut sandbox = Sandbox::new(cache.clone(), seal_calls.clone());
+
+        // set up initial frame
+        let mut cache_mut = cache.borrow_mut();
+        cache_mut.push_frame(&code_hash);
+
+        // set up initial memory
+        let limit = ceres_executor::scan_imports(&el)?;
+        cache_mut.push_memory(Memory::new(limit.0, limit.1)?);
 
         // Store contract
         let contract = &el
             .to_bytes()
             .map_err(|error| Error::SerializeFailed { error })?;
-        cache
-            .set(code_hash, contract.to_vec())
-            .ok_or(Error::CouldNotSetStorage)?;
+        cache_mut.set(code_hash.to_vec(), contract.to_vec());
+
+        // drop borrowed
+        drop(cache_mut);
 
         // Init executor
-        let executor = Executor::new(contract, &mut sandbox, seal_calls)
+        let executor = Executor::new(contract, &mut sandbox, seal_calls.clone())
             .map_err(|_| Error::InitExecutorFailed)?;
 
         Ok(Runtime {
             sandbox,
             metadata,
-            cache: Box::new(cache),
-            state: Box::new(MemoryStorage::default()),
+            cache,
             executor,
-            ri: ceres_seal::pallet_contracts(ri),
+            ri: seal_calls,
         })
     }
 

@@ -19,7 +19,7 @@ pub use self::{
     builder::Builder,
     executor::Executor,
     instance::Instance,
-    memory::Memory,
+    memory::{scan_imports, Memory},
     result::{Error, ExecResult, Result, ReturnCode, ReturnData, ReturnFlags},
     trap::{Trap, TrapCode},
     value::Value,

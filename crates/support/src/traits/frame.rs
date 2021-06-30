@@ -13,8 +13,8 @@ pub trait Frame: Storage {
     }
 
     /// active frame
-    fn active(&self) -> Option<&[u8]> {
-        self.prefix_get(self.frame_prefix(), self.get(self.frame_prefix())?)
+    fn active(&self) -> Option<Vec<u8>> {
+        self.prefix_get(self.frame_prefix(), &self.get(self.frame_prefix())?)
     }
 
     /// Pop frame
