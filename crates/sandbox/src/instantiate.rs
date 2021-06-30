@@ -14,6 +14,35 @@ pub struct InstantiateEntry {
 }
 
 impl Sandbox {
+    // Invoke (ink) method
+    pub fn invoke(
+        &mut self,
+        code_hash: [u8; 32],
+        method: &str,
+        data: Vec<u8>,
+    ) -> Result<([u8; 32], ReturnData)> {
+        self.input = Some(data);
+
+        // Get contract from code_hash
+        //
+        // entrypoint
+        let cache = self.cache.borrow();
+        let contract = cache
+            .get(&code_hash)
+            .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?
+            .to_vec();
+
+        // drop borrow
+        drop(cache);
+
+        // invoke with provided `data`
+        let mut executor = Executor::new(&contract, self, self.ri.clone())?;
+        let ret = executor.invoke(method, &[], self)?;
+
+        // return vals
+        Ok((code_hash, ret.data))
+    }
+
     pub fn instantiate(
         &mut self,
         code_hash: [u8; 32],
@@ -30,26 +59,7 @@ impl Sandbox {
             salt: salt.to_vec(),
         });
 
-        // Get contract from code_hash
-        //
-        // entrypoint
-        let cache = self.cache.borrow();
-        let contract = cache
-            .get(&code_hash)
-            .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?
-            .to_vec();
-
-        // drop borrow
-        drop(cache);
-
-        // Call deploy by provided `data`
-        let mut executor = Executor::new(&contract, self.ri.clone())?;
-
-        self.input = Some(data);
-        let ret = executor.invoke("deploy", &[], self)?;
-
-        // return data
-        Ok((code_hash, ret.data))
+        self.invoke(code_hash, "deploy", data)
     }
 
     /// Call other contract
@@ -60,24 +70,6 @@ impl Sandbox {
             data: data.clone(),
         });
 
-        // Get contract from code_hash
-        //
-        // entrypoint
-        let contract = &mut self
-            .cache
-            .borrow()
-            .get(&code_hash)
-            .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?
-            .to_vec();
-
-        // set input
-        self.input = Some(data);
-
-        // Call deploy by provided `data`
-        let mut executor = Executor::new(&contract, self.ri.clone())?;
-        let ret = executor.invoke("call", &[], self)?;
-
-        // return data
-        Ok(ret.data)
+        self.invoke(code_hash, "deploy", data).map(|v| v.1)
     }
 }
