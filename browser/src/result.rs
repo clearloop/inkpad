@@ -1,13 +1,11 @@
 //! Browser Result
 use crate::ri::log;
-use ceres_std::fmt::Display;
-use snafu::Snafu;
+use ceres_std::fmt::Debug;
 
 /// Browser Error
-#[derive(Snafu, Debug)]
+#[derive(Debug)]
 pub enum Error {
     /// RuntimeError
-    #[snafu(display("runtime error {}", error))]
     Runtime { error: ceres_runtime::Error },
     /// Window not exists
     WindowNotExists,
@@ -16,10 +14,8 @@ pub enum Error {
     /// WebSys Error
     WebSysError,
     /// SerializeJson Error
-    #[snafu(display("serde json error {}", error))]
     SerdeJson { error: serde_json::Error },
     /// Decode failed
-    #[snafu(display("hex decode error {}", error))]
     Hex { error: hex::FromHexError },
 }
 
@@ -27,12 +23,12 @@ pub enum Error {
 pub type Result<T> = core::result::Result<T, Error>;
 
 ///  check and panic error
-pub fn err_check<T, E: Display>(res: core::result::Result<T, E>) -> T {
+pub fn err_check<T, E: Debug>(res: core::result::Result<T, E>) -> T {
     match res {
         Ok(v) => v,
         Err(e) => {
-            log(&e.to_string());
-            panic!("{}", e)
+            log(&format!("{:?}", e));
+            panic!("{:?}", e)
         }
     }
 }

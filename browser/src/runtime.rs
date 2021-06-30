@@ -1,12 +1,9 @@
 //! Ceres Runtime interfaces
 use crate::{result::err_check, ri::Interface, ti::Transaction, Tree};
 use ceres_runtime::Runtime as RuntimeInner;
-use ceres_std::Rc;
-use core::cell::RefCell;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 const CERES_BROWSER_CACHE: &str = "CERES_BROWSER_CACHE";
-const CERES_BROWSER_STATE: &str = "CERES_BROWSER_STATE";
 
 /// Ceres browser runtime
 #[wasm_bindgen]
@@ -19,8 +16,7 @@ impl Runtime {
     pub fn new(contract: &str) -> Runtime {
         Runtime(err_check(RuntimeInner::from_metadata(
             err_check(serde_json::from_str(contract)),
-            Rc::new(RefCell::new(Tree::new(CERES_BROWSER_CACHE))),
-            Rc::new(RefCell::new(Tree::new(CERES_BROWSER_STATE))),
+            Tree::new(CERES_BROWSER_CACHE),
             Some(Interface),
         )))
     }
