@@ -3,7 +3,7 @@ use self::ext::Ext;
 use ceres_executor::Memory;
 use ceres_executor::{derive::SealCall, Error, ExecResult};
 use ceres_std::{vec, BTreeMap, Rc, Vec};
-use ceres_support::traits::{Executor, Storage};
+use ceres_support::traits::Cache;
 use core::cell::RefCell;
 
 /// Custom storage key
@@ -27,46 +27,31 @@ mod util;
 pub use self::{ri::RuntimeInterfaces, tx::Transaction};
 
 /// The runtime of ink! machine
-pub struct Sandbox {
+pub struct Sandbox<'s> {
     pub input: Option<Vec<u8>>,
     pub ret: Option<Vec<u8>>,
     pub ext: Ext,
     pub tx: tx::Transaction,
-    pub bucket: Rc<RefCell<BTreeMap<StorageKey, Vec<u8>>>>,
-    pub cache: Rc<RefCell<dyn Storage>>,
-    pub state: Rc<RefCell<dyn Storage>>,
-    pub stack: Vec<StorageKey>,
-    memory: Memory,
+    pub cache: &'s dyn Cache<Memory, Item = (Vec<u8>, Vec<u8>)>,
     pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
     pub ri: Vec<SealCall<Self>>,
-    pub executor: Rc<RefCell<dyn Executor<Sandbox, SealCall<Sandbox>, ExecResult, Error>>>,
 }
 
 impl Sandbox {
     /// New sandbox
     pub fn new(
         frame: StorageKey,
-        memory: Memory,
-        cache: Rc<RefCell<impl Storage + 'static>>,
-        state: Rc<RefCell<impl Storage + 'static>>,
+        cache: Rc<RefCell<impl Cache<Memory> + 'static>>,
         ri: Vec<SealCall<Self>>,
-        executor: Rc<
-            RefCell<impl Executor<Sandbox, SealCall<Sandbox>, ExecResult, Error> + 'static>,
-        >,
     ) -> Sandbox {
         Sandbox {
             input: None,
             ret: None,
             ext: Default::default(),
-            bucket: Default::default(),
             events: vec![],
-            stack: vec![frame],
             tx: Default::default(),
             cache,
-            state,
-            memory,
             ri,
-            executor,
         }
     }
 }

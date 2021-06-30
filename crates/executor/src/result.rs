@@ -109,6 +109,7 @@ pub enum Error {
     CodeNotFound,
     ExitedAllFrames,
     CalcuateMemoryLimitFailed,
+    InitExecutorFailed,
     DecodeBucketFailed([u8; 32]),
 }
 

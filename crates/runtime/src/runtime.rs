@@ -1,22 +1,22 @@
 //! Ceres Runtime
-use crate::{method::InkMethod, util, Error, InkExecutor, Metadata, Result};
-use ceres_executor::Memory;
+use crate::{method::InkMethod, util, Error, Metadata, Result};
+use ceres_executor::{derive::SealCall, Executor, Memory};
 use ceres_sandbox::{RuntimeInterfaces, Sandbox, Transaction};
-use ceres_std::{Rc, String, ToString, Vec};
-use ceres_support::{
-    traits::{Executor, Storage},
-    types::MemoryStorage,
-};
+use ceres_std::{Box, Rc, String, ToString, Vec};
+use ceres_support::{traits, types};
 use core::cell::RefCell;
 use parity_wasm::elements::Module;
+
+/// Runtime cache
+pub type Cache = traits::Cache<Memory>;
 
 /// Ceres Runtime
 pub struct Runtime {
     pub sandbox: Sandbox,
-    pub executor: Rc<RefCell<InkExecutor>>,
     pub metadata: Metadata,
-    cache: Rc<RefCell<dyn Storage>>,
-    state: Rc<RefCell<dyn Storage>>,
+    cache: Rc<RefCell<Cache>>,
+    executor: Executor<Sandbox>,
+    ri: Vec<SealCall<Sandbox>>,
 }
 
 impl Runtime {
@@ -29,8 +29,8 @@ impl Runtime {
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
-            Rc::new(RefCell::new(MemoryStorage::default())),
-            Rc::new(RefCell::new(MemoryStorage::default())),
+            MemoryStorage::default(),
+            MemoryStorage::default(),
             ri,
         )
     }
@@ -38,8 +38,7 @@ impl Runtime {
     /// Create runtime from contract
     pub fn from_contract(
         contract: &[u8],
-        cache: Rc<RefCell<impl Storage + 'static>>,
-        state: Rc<RefCell<impl Storage + 'static>>,
+        cache: impl Cache + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
@@ -58,8 +57,7 @@ impl Runtime {
     /// Create runtime from metadata and storage
     pub fn from_metadata(
         meta: Metadata,
-        cache: Rc<RefCell<impl Storage + 'static>>,
-        state: Rc<RefCell<impl Storage + 'static>>,
+        cache: impl Cache + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         Self::new(
@@ -76,8 +74,8 @@ impl Runtime {
     pub fn new(
         b: &[u8],
         metadata: Metadata,
-        cache: Rc<RefCell<impl Storage + 'static>>,
-        state: Rc<RefCell<impl Storage + 'static>>,
+        cache: impl Storage + 'static,
+        state: impl Storage + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
@@ -91,45 +89,31 @@ impl Runtime {
         // get code hash
         let code_hash = util::parse_code_hash(&metadata.source.hash)?;
 
-        // Set memory
-        let limit = util::scan_imports(&el).map_err(|_| Error::CalcuateMemoryLimitFailed)?;
-        let mem = Memory::new(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
-
-        // Construct seal calls
+        // generate seal calls
         let seal_calls = ceres_seal::pallet_contracts(ri);
 
         // Create Sandbox and Builder
-        let mut sandbox = Sandbox::new(
-            code_hash,
-            mem,
-            cache.clone(),
-            state.clone(),
-            seal_calls.clone(),
-            Rc::new(RefCell::new(InkExecutor::default())),
-        );
+        let mut sandbox = Sandbox::new(code_hash, cache, seal_calls.clone());
 
         // Store contract
         let contract = &el
             .to_bytes()
             .map_err(|error| Error::SerializeFailed { error })?;
         cache
-            .borrow_mut()
             .set(code_hash, contract.to_vec())
             .ok_or(Error::CouldNotSetStorage)?;
 
-        // Construct executor
-        let executor = Rc::new(RefCell::new(InkExecutor::default()));
-        executor
-            .borrow_mut()
-            .build(&contract, &mut sandbox, seal_calls)
-            .map_err(|error| Error::InitModuleFailed { error })?;
+        // Init executor
+        let executor = Executor::new(contract, &mut sandbox, seal_calls)
+            .map_err(|_| Error::InitExecutorFailed)?;
 
         Ok(Runtime {
             sandbox,
-            executor,
             metadata,
-            cache,
-            state,
+            cache: Box::new(cache),
+            state: Box::new(MemoryStorage::default()),
+            executor,
+            ri: ceres_seal::pallet_contracts(ri),
         })
     }
 
@@ -169,8 +153,7 @@ impl Runtime {
         self.sandbox.input = Some(method.parse(&self.metadata, inner_method, args)?);
 
         self.executor
-            .borrow_mut()
-            .invoke(&method.to_string(), &mut self.sandbox)
+            .invoke(&method.to_string(), &[], &mut self.sandbox)
             .map_err(|error| Error::CallContractFailed { error })?;
 
         Ok(self.sandbox.ret.clone())

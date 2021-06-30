@@ -85,6 +85,7 @@ pub enum Error {
     /// SerdeError
     SerdeError,
     ExecutorNotInited,
+    InitExecutorFailed,
 }
 
 impl PartialEq for Error {
