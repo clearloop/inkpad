@@ -33,7 +33,7 @@ impl Sandbox {
             .to_vec();
 
         // Get memory
-        let memory = cache.memory().ok_or(Error::CouldNotFindMemory)?.clone();
+        let memory = cache.memory().ok_or(Error::CouldNotFindMemory)?;
 
         // drop borrow
         drop(cache);

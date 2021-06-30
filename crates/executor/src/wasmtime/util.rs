@@ -46,7 +46,7 @@ pub fn wrap_fn<T>(store: &Store, state: usize, f: usize, sig: FuncType) -> Func 
                 // the result of `HostFuncType` is 1
                 if results.len() == 1 {
                     results[0] = to_val(ret);
-                } else if results.len() > 1 {
+                } else {
                     return Err(anyhow::Error::new(Error::UnExpectedReturnValue).into());
                 }
                 Ok(())

@@ -32,10 +32,6 @@ impl InkMethod {
         })?;
 
         // parse arguments
-        Ok(util::parse_args(
-            selector,
-            args,
-            tys.iter().map(|ty| ty.1).collect(),
-        )?)
+        util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())
     }
 }

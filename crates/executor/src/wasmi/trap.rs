@@ -12,8 +12,6 @@ impl From<Trap> for trap::Trap {
             TrapKind::Host(e) => {
                 if let Some(e) = e.downcast_ref::<Error>() {
                     return TrapCode::HostError(Box::new(e.clone())).into();
-                } else {
-                    ()
                 }
             }
             _ => {

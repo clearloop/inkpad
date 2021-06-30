@@ -72,7 +72,7 @@ impl traits::Frame for Tree {
 
     /// active frame
     fn active(&self) -> Option<Vec<u8>> {
-        self.frame.last().map(|v| v.clone())
+        self.frame.last().cloned()
     }
 
     /// Pop frame

@@ -29,7 +29,7 @@ impl<Memory: Clone> traits::Storage for Cache<Memory> {
     }
 
     fn get(&self, key: &[u8]) -> Option<Vec<u8>> {
-        self.storage.get(key).map(|v| v.clone())
+        self.storage.get(key).cloned()
     }
 }
 
@@ -41,7 +41,7 @@ impl<Memory: Clone> traits::Frame for Cache<Memory> {
 
     /// active frame
     fn active(&self) -> Option<Vec<u8>> {
-        self.frame.last().map(|v| v.clone())
+        self.frame.last().cloned()
     }
 
     /// Pop frame
