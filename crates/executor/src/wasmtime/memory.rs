@@ -1,7 +1,7 @@
 //! Wasmtime memory
 use super::util;
 use crate::{derive, Error};
-use core::{ops::Range, slice};
+use core::ops::Range;
 use wasmtime::{Limits, Memory as MemoryRef, MemoryType, Store};
 
 /// Construct a range from an offset to a data length after the offset.
@@ -25,42 +25,6 @@ pub struct Memory {
 impl Memory {
     pub fn store(&self) -> &Store {
         &self.store
-    }
-
-    /// Returns linear memory of the wasm instance as a slice.
-    ///
-    /// # Safety
-    ///
-    /// Wasmtime doesn't provide comprehensive documentation about the exact behavior of the data
-    /// pointer. If a dynamic style heap is used the base pointer of the heap can change. Since
-    /// growing, we cannot guarantee the lifetime of the returned slice reference.
-    unsafe fn memory_as_slice(&self) -> &[u8] {
-        let ptr = self.inner.data_ptr() as *const _;
-        let len = self.inner.data_size();
-
-        if len == 0 {
-            &[]
-        } else {
-            slice::from_raw_parts(ptr, len)
-        }
-    }
-
-    /// Returns linear memory of the wasm instance as a slice.
-    ///
-    /// # Safety
-    ///
-    /// See `[memory_as_slice]`. In addition to those requirements, since a mutable reference is
-    /// returned it must be ensured that only one mutable and no shared references to memory exists
-    /// at the same time.
-    #[allow(clippy::mut_from_ref)]
-    unsafe fn memory_as_slice_mut(&self) -> &mut [u8] {
-        let ptr = self.inner.data_ptr();
-        let len = self.inner.data_size();
-        if len == 0 {
-            &mut []
-        } else {
-            slice::from_raw_parts_mut(ptr, len)
-        }
     }
 
     /// Get the inner memory

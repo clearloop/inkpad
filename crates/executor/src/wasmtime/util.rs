@@ -15,7 +15,7 @@ use wasmtime::{Caller, Config, Engine, Func, FuncType, Store, Trap, Val, WasmBac
 pub fn store_with_dwarf() -> Result<Store, Error> {
     Ok(Store::new(
         &Engine::new(
-            Config::new()
+            &Config::new()
                 // .debug_info(true)
                 .wasm_backtrace_details(WasmBacktraceDetails::Enable),
         )

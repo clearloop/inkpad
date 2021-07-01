@@ -1,10 +1,10 @@
 //! Ceres Runtime
 use crate::{method::InkMethod, util, Error, Metadata, Result};
-use ceres_executor::{derive::SealCall, Executor, Memory};
+use ceres_executor::{Executor, Memory};
 use ceres_sandbox::{RuntimeInterfaces, Sandbox, Transaction};
 use ceres_std::{Rc, String, ToString, Vec};
 use ceres_support::{
-    traits,
+    convert, traits,
     types::{self, State},
 };
 use core::cell::RefCell;
@@ -15,8 +15,6 @@ pub struct Runtime {
     pub sandbox: Sandbox,
     pub metadata: Metadata,
     cache: Rc<RefCell<dyn traits::Cache>>,
-    executor: Executor<Sandbox>,
-    ri: Vec<SealCall<Sandbox>>,
 }
 
 impl Runtime {
@@ -98,7 +96,7 @@ impl Runtime {
         cache_mut.push(State::new(code_hash));
 
         // Create Sandbox and Builder
-        let mut sandbox = Sandbox::new(cache.clone(), memory, seal_calls.clone());
+        let sandbox = Sandbox::new(cache.clone(), memory, seal_calls.clone());
 
         // Store contract
         let contract = &el
@@ -109,16 +107,10 @@ impl Runtime {
         // drop borrowed
         drop(cache_mut);
 
-        // Init executor
-        let executor =
-            Executor::new(code_hash, &mut sandbox).map_err(|_| Error::InitExecutorFailed)?;
-
         Ok(Runtime {
             sandbox,
             metadata,
             cache,
-            executor,
-            ri: seal_calls,
         })
     }
 
@@ -157,9 +149,19 @@ impl Runtime {
         // set input
         self.sandbox.input = Some(method.parse(&self.metadata, inner_method, args)?);
 
-        self.executor
-            .invoke(&method.to_string(), &[], &mut self.sandbox)
-            .map_err(|error| Error::CallContractFailed { error })?;
+        // execute
+        let hash = self
+            .cache
+            .borrow()
+            .active()
+            .ok_or(ceres_executor::Error::CodeNotFound)?;
+        Executor::new(
+            convert::to_storage_key(&hash[..]).ok_or(ceres_executor::Error::CodeNotFound)?,
+            &mut self.sandbox,
+        )
+        .map_err(|_| Error::InitExecutorFailed)?
+        .invoke(&method.to_string(), &[], &mut self.sandbox)
+        .map_err(|error| Error::CallContractFailed { error })?;
 
         Ok(self.sandbox.ret.clone())
     }
