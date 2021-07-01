@@ -1,7 +1,6 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 use self::ext::Ext;
-use ceres_executor::derive::SealCall;
-use ceres_executor::Memory;
+use ceres_executor::{derive::SealCall, Memory};
 use ceres_std::{vec, Rc, Vec};
 use ceres_support::traits::Cache;
 use core::cell::RefCell;
@@ -31,15 +30,18 @@ pub struct Sandbox {
     pub ret: Option<Vec<u8>>,
     pub ext: Ext,
     pub tx: tx::Transaction,
-    pub cache: Rc<RefCell<dyn Cache<Memory>>>,
+    pub cache: Rc<RefCell<dyn Cache>>,
     pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
     pub ri: Vec<SealCall<Self>>,
+    /// External memory
+    pub memory: Memory,
 }
 
 impl Sandbox {
     /// New sandbox
     pub fn new(
-        cache: Rc<RefCell<impl Cache<Memory> + 'static>>,
+        cache: Rc<RefCell<impl Cache + 'static>>,
+        memory: Memory,
         ri: Vec<SealCall<Self>>,
     ) -> Sandbox {
         Sandbox {
@@ -50,6 +52,7 @@ impl Sandbox {
             tx: Default::default(),
             cache,
             ri,
+            memory,
         }
     }
 }

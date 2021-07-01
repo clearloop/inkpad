@@ -1,17 +1,20 @@
 //! frame trait
-use crate::traits::Storage;
+use crate::types::State;
 
 /// WASM execution frame
-pub trait Frame: Storage {
-    /// Current id
-    fn id(&self) -> usize;
-
+pub trait Frame {
     /// active frame
-    fn active(&self) -> Option<Vec<u8>>;
+    fn active(&self) -> Option<[u8; 32]>;
+
+    /// active state
+    fn state(&self) -> Option<&State>;
+
+    /// active state
+    fn state_mut(&mut self) -> Option<&mut State>;
 
     /// Pop frame
-    fn pop_frame(&mut self) -> Option<Vec<u8>>;
+    fn pop(&mut self) -> Option<State>;
 
     /// Push frame
-    fn push_frame(&mut self, key: &[u8]) -> Option<Vec<u8>>;
+    fn push(&mut self, frame: State);
 }

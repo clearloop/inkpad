@@ -1,25 +1,26 @@
 //! Memory Cache
-use crate::traits;
+use crate::{
+    traits::{self, Frame, Storage},
+    types::State,
+};
 use ceres_std::{BTreeMap, Vec};
 
 /// Memory cache implementation
-pub struct Cache<Memory: Clone> {
+pub struct Cache {
     storage: BTreeMap<Vec<u8>, Vec<u8>>,
-    frame: Vec<Vec<u8>>,
-    memory: Vec<Memory>,
+    frame: Vec<State>,
 }
 
-impl<Memory: Clone> Default for Cache<Memory> {
+impl Default for Cache {
     fn default() -> Self {
         Self {
             storage: BTreeMap::new(),
-            memory: Vec::new(),
             frame: Vec::new(),
         }
     }
 }
 
-impl<Memory: Clone> traits::Storage for Cache<Memory> {
+impl Storage for Cache {
     fn set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
         self.storage.insert(key, value)
     }
@@ -33,47 +34,26 @@ impl<Memory: Clone> traits::Storage for Cache<Memory> {
     }
 }
 
-impl<Memory: Clone> traits::Frame for Cache<Memory> {
-    /// Current id
-    fn id(&self) -> usize {
-        self.frame.len()
+impl Frame for Cache {
+    fn active(&self) -> Option<[u8; 32]> {
+        Some(self.frame.last()?.hash)
     }
 
-    /// active frame
-    fn active(&self) -> Option<Vec<u8>> {
-        self.frame.last().cloned()
+    fn state(&self) -> Option<&State> {
+        self.frame.last()
     }
 
-    /// Pop frame
-    fn pop_frame(&mut self) -> Option<Vec<u8>> {
+    fn state_mut(&mut self) -> Option<&mut State> {
+        self.frame.last_mut()
+    }
+
+    fn push(&mut self, s: State) {
+        self.frame.push(s)
+    }
+
+    fn pop(&mut self) -> Option<State> {
         self.frame.pop()
     }
-
-    /// Push frame
-    fn push_frame(&mut self, key: &[u8]) -> Option<Vec<u8>> {
-        self.frame.push(key.to_vec());
-        Some(key.to_vec())
-    }
 }
 
-impl<Memory: Clone> traits::State<Memory> for Cache<Memory> {
-    fn memory(&self) -> Option<Memory> {
-        Some(self.memory[self.memory.len() - 1].clone())
-    }
-
-    fn memory_mut(&mut self) -> Option<&mut Memory> {
-        self.memory.last_mut()
-    }
-    /// Get memory mut
-    fn pop_memory(&mut self) -> Option<Memory> {
-        self.memory.pop()
-    }
-
-    /// Get memory mut
-    fn push_memory(&mut self, memory: Memory) -> Option<()> {
-        self.memory.push(memory);
-        Some(())
-    }
-}
-
-impl<Memory: Clone> traits::Cache<Memory> for Cache<Memory> {}
+impl traits::Cache for Cache {}

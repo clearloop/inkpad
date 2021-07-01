@@ -1,7 +1,9 @@
 //! Browser storage
-use ceres_executor::Memory;
 use ceres_std::Vec;
-use ceres_support::traits;
+use ceres_support::{
+    traits::{Cache, Frame, Storage},
+    types::State,
+};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 /// Browser storage
@@ -9,8 +11,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 pub struct Tree {
     name: String,
     storage: web_sys::Storage,
-    memory: Vec<Memory>,
-    frame: Vec<Vec<u8>>,
+    frame: Vec<State>,
 }
 
 #[wasm_bindgen]
@@ -24,7 +25,6 @@ impl Tree {
                 .local_storage()
                 .expect("Could not find local_storage")
                 .expect("Could not find local_storage"),
-            memory: Vec::new(),
             frame: Vec::new(),
         }
     }
@@ -35,7 +35,7 @@ fn browser_key(mut name: String, code_hash: Vec<u8>) -> String {
     name
 }
 
-impl traits::Storage for Tree {
+impl Storage for Tree {
     fn set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
         let data_str = serde_json::to_string(&value).ok()?;
         self.storage
@@ -64,47 +64,26 @@ impl traits::Storage for Tree {
     }
 }
 
-impl traits::Frame for Tree {
-    /// Current id
-    fn id(&self) -> usize {
-        self.frame.len()
+impl Frame for Tree {
+    fn active(&self) -> Option<[u8; 32]> {
+        Some(self.frame.last()?.hash)
     }
 
-    /// active frame
-    fn active(&self) -> Option<Vec<u8>> {
-        self.frame.last().cloned()
+    fn state(&self) -> Option<&State> {
+        self.frame.last()
     }
 
-    /// Pop frame
-    fn pop_frame(&mut self) -> Option<Vec<u8>> {
+    fn state_mut(&mut self) -> Option<&mut State> {
+        self.frame.last_mut()
+    }
+
+    fn push(&mut self, s: State) {
+        self.frame.push(s)
+    }
+
+    fn pop(&mut self) -> Option<State> {
         self.frame.pop()
     }
-
-    /// Push frame
-    fn push_frame(&mut self, key: &[u8]) -> Option<Vec<u8>> {
-        self.frame.push(key.to_vec());
-        Some(key.to_vec())
-    }
 }
 
-impl traits::State<Memory> for Tree {
-    fn memory(&self) -> Option<Memory> {
-        Some(self.memory[self.memory.len() - 1].clone())
-    }
-
-    fn memory_mut(&mut self) -> Option<&mut Memory> {
-        self.memory.last_mut()
-    }
-    /// Get memory mut
-    fn pop_memory(&mut self) -> Option<Memory> {
-        self.memory.pop()
-    }
-
-    /// Get memory mut
-    fn push_memory(&mut self, memory: Memory) -> Option<()> {
-        self.memory.push(memory);
-        Some(())
-    }
-}
-
-impl traits::Cache<Memory> for Tree {}
+impl Cache for Tree {}

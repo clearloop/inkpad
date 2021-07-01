@@ -2,16 +2,13 @@
 use crate::traits::Storage;
 
 /// Contract State
-pub trait State<Memory>: Storage {
-    /// Pop memory
-    fn pop_memory(&mut self) -> Option<Memory>;
+pub trait State: Storage {
+    /// Get hash
+    fn hash(&self) -> [u8; 32];
 
-    /// Push memory
-    fn push_memory(&mut self, memory: Memory) -> Option<()>;
+    /// Input
+    fn input(&mut self) -> Option<&mut Vec<u8>>;
 
-    /// Get memory
-    fn memory(&self) -> Option<Memory>;
-
-    /// Get memory mut
-    fn memory_mut(&mut self) -> Option<&mut Memory>;
+    /// Return data
+    fn output(&mut self) -> Option<&mut Vec<u8>>;
 }

@@ -1,7 +1,9 @@
 //! Storage implementation
-use ceres_executor::Memory;
 use ceres_runtime::{Metadata, Runtime};
-use ceres_support::traits;
+use ceres_support::{
+    traits::{self, Cache, Frame},
+    types::State,
+};
 use etc::{Etc, FileSystem, Meta};
 use sled::Db;
 use std::{fs, path::PathBuf, process};
@@ -10,8 +12,7 @@ use std::{fs, path::PathBuf, process};
 #[derive(Clone)]
 pub struct Storage {
     pub db: Db,
-    memory: Vec<Memory>,
-    frame: Vec<Vec<u8>>,
+    frame: Vec<State>,
 }
 
 impl traits::Storage for Storage {
@@ -28,50 +29,29 @@ impl traits::Storage for Storage {
     }
 }
 
-impl traits::Frame for Storage {
-    /// Current id
-    fn id(&self) -> usize {
-        self.frame.len()
+impl Frame for Storage {
+    fn active(&self) -> Option<[u8; 32]> {
+        Some(self.frame.last()?.hash)
     }
 
-    /// active frame
-    fn active(&self) -> Option<Vec<u8>> {
-        self.frame.last().cloned()
+    fn state(&self) -> Option<&State> {
+        self.frame.last()
     }
 
-    /// Pop frame
-    fn pop_frame(&mut self) -> Option<Vec<u8>> {
+    fn state_mut(&mut self) -> Option<&mut State> {
+        self.frame.last_mut()
+    }
+
+    fn push(&mut self, s: State) {
+        self.frame.push(s)
+    }
+
+    fn pop(&mut self) -> Option<State> {
         self.frame.pop()
     }
-
-    /// Push frame
-    fn push_frame(&mut self, key: &[u8]) -> Option<Vec<u8>> {
-        self.frame.push(key.to_vec());
-        Some(key.to_vec())
-    }
 }
 
-impl traits::State<Memory> for Storage {
-    fn memory(&self) -> Option<Memory> {
-        Some(self.memory[self.memory.len() - 1].clone())
-    }
-
-    fn memory_mut(&mut self) -> Option<&mut Memory> {
-        self.memory.last_mut()
-    }
-    /// Get memory mut
-    fn pop_memory(&mut self) -> Option<Memory> {
-        self.memory.pop()
-    }
-
-    /// Get memory mut
-    fn push_memory(&mut self, memory: Memory) -> Option<()> {
-        self.memory.push(memory);
-        Some(())
-    }
-}
-
-impl traits::Cache<Memory> for Storage {}
+impl Cache for Storage {}
 
 impl Storage {
     fn quit() {
@@ -88,7 +68,6 @@ impl Storage {
 
         Ok(Self {
             db: sled::open(etc.open(".ceres/contracts")?.real_path()?)?,
-            memory: Vec::new(),
             frame: Vec::new(),
         })
     }
