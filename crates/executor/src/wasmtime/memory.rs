@@ -56,7 +56,6 @@ impl Memory {
     unsafe fn memory_as_slice_mut(&self) -> &mut [u8] {
         let ptr = self.inner.data_ptr();
         let len = self.inner.data_size();
-
         if len == 0 {
             &mut []
         } else {
@@ -83,7 +82,7 @@ impl derive::Memory for Memory {
     fn get(&self, ptr: u32, buf: &mut [u8]) -> Result<(), Error> {
         // This should be safe since we don't grow up memory while caching this reference and
         // we give up the reference before returning from this function.
-        let memory = unsafe { self.memory_as_slice() };
+        let memory = unsafe { self.inner.data_unchecked() };
         let range =
             checked_range(ptr as usize, buf.len(), memory.len()).ok_or(Error::OutOfBounds)?;
         buf.copy_from_slice(&memory[range]);
@@ -91,7 +90,7 @@ impl derive::Memory for Memory {
     }
 
     fn set(&self, ptr: u32, buf: &[u8]) -> Result<(), Error> {
-        let memory = unsafe { self.memory_as_slice_mut() };
+        let memory = unsafe { self.inner.data_unchecked_mut() };
         let range =
             checked_range(ptr as usize, buf.len(), memory.len()).ok_or(Error::OutOfBounds)?;
         memory[range].copy_from_slice(buf);

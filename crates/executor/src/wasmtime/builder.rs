@@ -21,11 +21,6 @@ pub struct Builder<T> {
 }
 
 impl<T> Builder<T> {
-    /// Get the current store
-    pub fn store(&self) -> Option<&Store> {
-        self.mem.as_ref().map(|memory| memory.store())
-    }
-
     /// Resolve extern
     pub fn resolve(
         &self,
