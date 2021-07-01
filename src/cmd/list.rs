@@ -5,7 +5,7 @@ use ceres_runtime::Metadata;
 /// List all contracts
 pub fn exec(store: &Storage) -> Result<()> {
     let mut contracts: Vec<Metadata> = Vec::new();
-    for r in store.0.iter() {
+    for r in store.db.iter() {
         let (k, v) = r?;
         if k.len() == 32 {
             continue;

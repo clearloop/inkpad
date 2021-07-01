@@ -1,12 +1,9 @@
 //! Ceres Runtime interfaces
 use crate::{result::err_check, ri::Interface, ti::Transaction, Tree};
 use ceres_runtime::Runtime as RuntimeInner;
-use ceres_std::Rc;
-use core::cell::RefCell;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 const CERES_BROWSER_CACHE: &str = "CERES_BROWSER_CACHE";
-const CERES_BROWSER_STATE: &str = "CERES_BROWSER_STATE";
 
 /// Ceres browser runtime
 #[wasm_bindgen]
@@ -17,10 +14,9 @@ impl Runtime {
     /// New runtime
     #[wasm_bindgen(constructor)]
     pub fn new(contract: &str) -> Runtime {
-        Runtime(err_check(RuntimeInner::from_metadata_and_storage(
+        Runtime(err_check(RuntimeInner::from_metadata(
             err_check(serde_json::from_str(contract)),
-            Rc::new(RefCell::new(Tree::new(CERES_BROWSER_CACHE))),
-            Rc::new(RefCell::new(Tree::new(CERES_BROWSER_STATE))),
+            Tree::new(CERES_BROWSER_CACHE),
             Some(Interface),
         )))
     }
@@ -34,11 +30,12 @@ impl Runtime {
 
     /// Deploy contract
     pub fn call(&mut self, method: &str, args_json: &str, tx_json: Option<String>) -> String {
-        hex::encode(&Self::parse_args_and_then(
-            args_json,
-            tx_json,
-            move |args, tx| err_check(self.0.call(&method, args, tx.map(|v| v.into()))),
-        ))
+        hex::encode(
+            &Self::parse_args_and_then(args_json, tx_json, move |args, tx| {
+                err_check(self.0.call(&method, args, tx.map(|v| v.into())))
+            })
+            .unwrap_or_default(),
+        )
     }
 
     /// Parse js arguments

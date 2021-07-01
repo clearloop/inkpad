@@ -6,16 +6,7 @@ use crate::{
 use ceres_std::vec;
 use core::mem;
 use parity_scale_codec::Encode;
-use wasmtime::{
-    Caller,
-    Config,
-    Engine,
-    Func,
-    FuncType,
-    Store,
-    Trap,
-    Val, // WasmBacktraceDetails,
-};
+use wasmtime::{Caller, Config, Engine, Func, FuncType, Store, Trap, Val, WasmBacktraceDetails};
 
 /// Create store with DWARF enabled
 ///
@@ -24,10 +15,10 @@ use wasmtime::{
 pub fn store_with_dwarf() -> Result<Store, Error> {
     Ok(Store::new(
         &Engine::new(
-		&Config::new()
-			// .debug_info(true)
-			// .wasm_backtrace_details(WasmBacktraceDetails::Enable),
-	)
+            &Config::new()
+                // .debug_info(true)
+                .wasm_backtrace_details(WasmBacktraceDetails::Enable),
+        )
         .map_err(|_| Error::CreateWasmtimeConfigFailed)?,
     ))
 }
@@ -55,7 +46,7 @@ pub fn wrap_fn<T>(store: &Store, state: usize, f: usize, sig: FuncType) -> Func 
                 // the result of `HostFuncType` is 1
                 if results.len() == 1 {
                     results[0] = to_val(ret);
-                } else if results.len() > 1 {
+                } else {
                     return Err(anyhow::Error::new(Error::UnExpectedReturnValue).into());
                 }
                 Ok(())

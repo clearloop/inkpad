@@ -1,27 +1,25 @@
 //! Ceres Runtime
-use crate::{util, Error, InkExecutor, Metadata, Result};
-use ceres_executor::Memory;
+use crate::{method::InkMethod, util, Error, Metadata, Result};
+use ceres_executor::{Executor, Memory};
 use ceres_sandbox::{RuntimeInterfaces, Sandbox, Transaction};
 use ceres_std::{Rc, String, ToString, Vec};
 use ceres_support::{
-    traits::{Executor, Storage},
-    types::MemoryStorage,
+    convert, traits,
+    types::{self, State},
 };
 use core::cell::RefCell;
 use parity_wasm::elements::Module;
 
 /// Ceres Runtime
 pub struct Runtime {
-    pub sandbox: Rc<RefCell<Sandbox>>,
-    pub executor: Rc<RefCell<InkExecutor>>,
+    pub sandbox: Sandbox,
     pub metadata: Metadata,
-    cache: Rc<RefCell<dyn Storage>>,
-    state: Rc<RefCell<dyn Storage>>,
+    cache: Rc<RefCell<dyn traits::Cache>>,
 }
 
 impl Runtime {
     /// Create runtime from contract
-    pub fn from_contract(contract: &[u8], ri: Option<impl RuntimeInterfaces>) -> Result<Runtime> {
+    pub fn contract(contract: &[u8], ri: Option<impl RuntimeInterfaces>) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
             .map_err(|_| Error::DecodeContractFailed)?;
 
@@ -29,17 +27,15 @@ impl Runtime {
             &hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
-            Rc::new(RefCell::new(MemoryStorage::default())),
-            Rc::new(RefCell::new(MemoryStorage::default())),
+            types::Cache::default(),
             ri,
         )
     }
 
     /// Create runtime from contract
-    pub fn from_contract_and_storage(
+    pub fn from_contract(
         contract: &[u8],
-        cache: Rc<RefCell<impl Storage + 'static>>,
-        state: Rc<RefCell<impl Storage + 'static>>,
+        cache: impl traits::Cache + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
@@ -50,16 +46,14 @@ impl Runtime {
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             cache,
-            state,
             ri,
         )
     }
 
     /// Create runtime from metadata and storage
-    pub fn from_metadata_and_storage(
+    pub fn from_metadata(
         meta: Metadata,
-        cache: Rc<RefCell<impl Storage + 'static>>,
-        state: Rc<RefCell<impl Storage + 'static>>,
+        cache: impl traits::Cache + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         Self::new(
@@ -67,7 +61,6 @@ impl Runtime {
                 .map_err(|_| Error::DecodeContractFailed)?,
             meta,
             cache,
-            state,
             ri,
         )
     }
@@ -76,8 +69,7 @@ impl Runtime {
     pub fn new(
         b: &[u8],
         metadata: Metadata,
-        cache: Rc<RefCell<impl Storage + 'static>>,
-        state: Rc<RefCell<impl Storage + 'static>>,
+        cache: impl traits::Cache + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
@@ -88,98 +80,89 @@ impl Runtime {
             }
         }
 
-        // Set memory
-        let limit = util::scan_imports(&el).map_err(|_| Error::CalcuateMemoryLimitFailed)?;
-        let mem = Memory::new(limit.0, limit.1).map_err(|_| Error::AllocMemoryFailed)?;
+        // get code hash
+        let code_hash = util::parse_code_hash(&metadata.source.hash)?;
 
-        // Construct seal calls
+        // generate seal calls
         let seal_calls = ceres_seal::pallet_contracts(ri);
 
+        // reset cache
+        let cache = Rc::new(RefCell::new(cache));
+
+        // set up initial frame and memory
+        let mut cache_mut = cache.borrow_mut();
+        let limit = ceres_executor::scan_imports(&el)?;
+        let memory = Memory::new(limit.0, limit.1)?;
+        cache_mut.push(State::new(code_hash));
+
         // Create Sandbox and Builder
-        let sandbox = Rc::new(RefCell::new(Sandbox::new(
-            mem,
-            cache.clone(),
-            state.clone(),
-            seal_calls.clone(),
-            Rc::new(RefCell::new(InkExecutor::default())),
-        )));
+        let sandbox = Sandbox::new(cache.clone(), memory, seal_calls.clone());
 
         // Store contract
         let contract = &el
             .to_bytes()
             .map_err(|error| Error::SerializeFailed { error })?;
-        cache
-            .borrow_mut()
-            .set(
-                util::parse_code_hash(&metadata.source.hash)?,
-                contract.to_vec(),
-            )
-            .ok_or(Error::CouldNotSetStorage)?;
+        cache_mut.set(code_hash.to_vec(), contract.to_vec());
 
-        // Construct executor
-        let executor = Rc::new(RefCell::new(InkExecutor::default()));
-        executor
-            .borrow_mut()
-            .build(&contract, &mut sandbox.borrow_mut(), seal_calls)
-            .map_err(|error| Error::InitModuleFailed { error })?;
+        // drop borrowed
+        drop(cache_mut);
 
         Ok(Runtime {
             sandbox,
-            executor,
             metadata,
             cache,
-            state,
         })
     }
 
     /// Deploy contract
-    pub fn deploy(&self, method: &str, args: Vec<Vec<u8>>, tx: Option<Transaction>) -> Result<()> {
-        if let Some(tx) = tx {
-            self.sandbox.borrow_mut().tx = tx;
-        }
-
-        let constructors = self.metadata.constructors();
-        let (selector, tys) = constructors.get(method).ok_or(Error::GetMethodFailed {
-            name: method.to_string(),
-        })?;
-
-        self.executor
-            .borrow_mut()
-            .invoke(
-                "deploy",
-                util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
-                &mut self.sandbox.borrow_mut(),
-            )
-            .map_err(|error| Error::DeployContractFailed { error })?;
-
-        Ok(())
+    pub fn deploy(
+        &mut self,
+        method: &str,
+        args: Vec<Vec<u8>>,
+        tx: Option<Transaction>,
+    ) -> Result<Option<Vec<u8>>> {
+        self.invoke(InkMethod::Deploy, method, args, tx)
     }
 
     /// Call contract
     pub fn call(
-        &self,
+        &mut self,
         method: &str,
         args: Vec<Vec<u8>>,
         tx: Option<Transaction>,
-    ) -> Result<Vec<u8>> {
+    ) -> Result<Option<Vec<u8>>> {
+        self.invoke(InkMethod::Call, method, args, tx)
+    }
+
+    // Invoke (ink) method
+    pub fn invoke(
+        &mut self,
+        method: InkMethod,
+        inner_method: &str,
+        args: Vec<Vec<u8>>,
+        tx: Option<Transaction>,
+    ) -> Result<Option<Vec<u8>>> {
         if let Some(tx) = tx {
-            self.sandbox.borrow_mut().tx = tx;
+            self.sandbox.tx = tx;
         }
 
-        let messages = self.metadata.messages();
-        let (selector, tys) = messages.get(method).ok_or(Error::GetMethodFailed {
-            name: method.to_string(),
-        })?;
+        // set input
+        self.sandbox.input = Some(method.parse(&self.metadata, inner_method, args)?);
 
-        Ok(self
-            .executor
-            .borrow_mut()
-            .invoke(
-                "call",
-                util::parse_args(selector, args, tys.iter().map(|ty| ty.1).collect())?,
-                &mut self.sandbox.borrow_mut(),
-            )
-            .map_err(|error| Error::CallContractFailed { error })?
-            .0)
+        // execute
+        let hash = self
+            .cache
+            .borrow()
+            .active()
+            .ok_or(ceres_executor::Error::CodeNotFound)?;
+        Executor::new(
+            convert::to_storage_key(&hash[..]).ok_or(ceres_executor::Error::CodeNotFound)?,
+            &mut self.sandbox,
+        )
+        .map_err(|_| Error::InitExecutorFailed)?
+        .invoke(&method.to_string(), &[], &mut self.sandbox)
+        .map_err(|error| Error::CallContractFailed { error })?;
+
+        Ok(self.sandbox.ret.clone())
     }
 }

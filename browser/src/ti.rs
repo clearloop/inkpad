@@ -5,9 +5,9 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 /// vector to hash
-fn hash(mut src: Vec<u8>) -> [u8; 32] {
+fn hash(src: Vec<u8>) -> [u8; 32] {
     let mut dest: [u8; 32] = [0; 32];
-    dest.copy_from_slice(&mut src);
+    dest.copy_from_slice(&src);
     dest
 }
 

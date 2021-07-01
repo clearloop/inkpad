@@ -1,14 +1,9 @@
 use crate::Sandbox;
-use ceres_executor::{Error, Memory, Result};
+use ceres_executor::{Error, Result};
 use ceres_std::{vec, Vec};
 use parity_scale_codec::{Decode, DecodeAll, Encode};
 
 impl Sandbox {
-    /// Get memory ref
-    pub fn mem(&self) -> Memory {
-        self.memory.clone()
-    }
-
     /// Read designated chunk from the sandbox memory.
     pub fn read_sandbox_memory(&self, ptr: u32, len: u32) -> Result<Vec<u8>> {
         let mut buf = vec![0u8; len as usize];
@@ -45,6 +40,7 @@ impl Sandbox {
     ) -> Result<()> {
         let buf_len = buf.len() as u32;
         let len: u32 = self.read_sandbox_memory_as(out_len_ptr, 4)?;
+
         if len < buf_len {
             return Err(Error::OutputBufferTooSmall);
         }

@@ -4,6 +4,7 @@ use ceres_executor::Result;
 use ceres_std::Vec;
 
 /// Restore Entry
+#[derive(Default)]
 pub struct RestoreEntry {
     pub dest: [u8; 32],
     pub code_hash: [u8; 32],

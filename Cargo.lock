@@ -253,8 +253,11 @@ dependencies = [
  "anyhow",
  "bitflags",
  "ceres-std",
+ "ceres-support",
  "hex",
+ "log",
  "parity-scale-codec",
+ "parity-wasm",
  "patract-wasmi",
  "wasmtime",
 ]
@@ -304,7 +307,7 @@ dependencies = [
  "hex",
  "log",
  "parity-scale-codec",
- "serde",
+ "parity-wasm",
 ]
 
 [[package]]

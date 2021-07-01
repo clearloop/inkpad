@@ -7,6 +7,7 @@ use crate::{
 use ceres_std::Vec;
 
 /// Extend data
+#[derive(Default)]
 pub struct Ext {
     pub instantiates: Vec<instantiate::InstantiateEntry>,
     pub restores: Vec<restore::RestoreEntry>,

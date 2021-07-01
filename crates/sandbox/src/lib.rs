@@ -1,9 +1,8 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 use self::ext::Ext;
-use ceres_executor::Memory;
-use ceres_executor::{derive::SealCall, Error, ExecResult};
+use ceres_executor::{derive::SealCall, Memory};
 use ceres_std::{vec, Rc, Vec};
-use ceres_support::traits::{Executor, Storage};
+use ceres_support::traits::{self, Cache};
 use core::cell::RefCell;
 
 /// Custom storage key
@@ -31,45 +30,43 @@ pub struct Sandbox {
     pub ret: Option<Vec<u8>>,
     pub ext: Ext,
     pub tx: tx::Transaction,
-    pub cache: Rc<RefCell<dyn Storage>>,
-    pub state: Rc<RefCell<dyn Storage>>,
-    memory: Memory,
+    pub cache: Rc<RefCell<dyn Cache>>,
     pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
     pub ri: Vec<SealCall<Self>>,
-    pub executor: Rc<RefCell<dyn Executor<Sandbox, SealCall<Sandbox>, ExecResult, Error>>>,
+    /// External memory
+    pub memory: Memory,
 }
 
 impl Sandbox {
     /// New sandbox
     pub fn new(
+        cache: Rc<RefCell<impl Cache + 'static>>,
         memory: Memory,
-        cache: Rc<RefCell<impl Storage + 'static>>,
-        state: Rc<RefCell<impl Storage + 'static>>,
         ri: Vec<SealCall<Self>>,
-        executor: Rc<
-            RefCell<impl Executor<Sandbox, SealCall<Sandbox>, ExecResult, Error> + 'static>,
-        >,
     ) -> Sandbox {
         Sandbox {
             input: None,
             ret: None,
-            ext: Ext {
-                instantiates: vec![],
-                restores: vec![],
-                rent_allowance: [0; 32],
-                terminations: vec![],
-                transfers: vec![],
-                schedule: Default::default(),
-                rent_params: Default::default(),
-                gas_meter: Default::default(),
-            },
+            ext: Default::default(),
             events: vec![],
             tx: Default::default(),
             cache,
-            state,
-            memory,
             ri,
-            executor,
+            memory,
         }
+    }
+}
+
+impl traits::Ext<Memory, Vec<SealCall<Self>>> for Sandbox {
+    fn code(&self, hash: [u8; 32]) -> Option<Vec<u8>> {
+        self.cache.borrow().get(&hash).map(|v| v.to_vec())
+    }
+
+    fn memory(&self) -> Memory {
+        self.memory.clone()
+    }
+
+    fn seal_call(&self) -> Vec<SealCall<Self>> {
+        self.ri.clone()
     }
 }

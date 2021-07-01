@@ -1,39 +1,57 @@
 //! Storage implementation
-use ceres_runtime::{Error, Metadata, Runtime};
-use ceres_support::{traits, types::StorageKey};
+use ceres_runtime::{Metadata, Runtime};
+use ceres_support::{
+    traits::{self, Cache, Frame},
+    types::State,
+};
 use etc::{Etc, FileSystem, Meta};
 use sled::Db;
-use std::{cell::RefCell, fs, path::PathBuf, process, rc::Rc};
-
-const CERES_CACHE_TREE: &str = "CERES_CACHE_TREE";
-const CERES_STATE_TREE: &str = "CERES_STATE_TREE";
-
-/// Custom Tree
-pub struct Tree(pub sled::Tree);
-
-impl traits::Storage for Tree {
-    fn get(&self, code_hash: [u8; 32]) -> Option<Vec<u8>> {
-        bincode::deserialize(&self.0.get(&code_hash).ok()??).ok()
-    }
-
-    fn set(&mut self, code_hash: StorageKey, data: Vec<u8>) -> Option<StorageKey> {
-        self.0
-            .insert(
-                &code_hash,
-                bincode::serialize(&data)
-                    .map_err(|_| Error::Custom {
-                        err: "Serialize failed",
-                    })
-                    .ok()?,
-            )
-            .ok()
-            .map(|_| code_hash)
-    }
-}
+use std::{fs, path::PathBuf, process};
 
 /// A ceres storage implementation using sled
 #[derive(Clone)]
-pub struct Storage(pub Db);
+pub struct Storage {
+    pub db: Db,
+    frame: Vec<State>,
+}
+
+impl traits::Storage for Storage {
+    fn set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
+        self.db.insert(key, value).ok()?.map(|v| v.to_vec())
+    }
+
+    fn remove(&mut self, key: &[u8]) -> Option<Vec<u8>> {
+        self.db.remove(key).ok()?.map(|v| v.to_vec())
+    }
+
+    fn get(&self, key: &[u8]) -> Option<Vec<u8>> {
+        self.db.get(key).ok()?.map(|v| v.to_vec())
+    }
+}
+
+impl Frame for Storage {
+    fn active(&self) -> Option<[u8; 32]> {
+        Some(self.frame.last()?.hash)
+    }
+
+    fn state(&self) -> Option<&State> {
+        self.frame.last()
+    }
+
+    fn state_mut(&mut self) -> Option<&mut State> {
+        self.frame.last_mut()
+    }
+
+    fn push(&mut self, s: State) {
+        self.frame.push(s)
+    }
+
+    fn pop(&mut self) -> Option<State> {
+        self.frame.pop()
+    }
+}
+
+impl Cache for Storage {}
 
 impl Storage {
     fn quit() {
@@ -46,12 +64,12 @@ impl Storage {
 
     /// New storage
     pub fn new() -> crate::Result<Self> {
-        let etc =
-            Etc::new(&dirs::home_dir().ok_or(crate::Error::Custom("Could not find home dir"))?)?;
+        let etc = Etc::new(&dirs::home_dir().ok_or("Could not find home dir")?)?;
 
-        Ok(Self(sled::open(
-            etc.open(".ceres/contracts")?.real_path()?,
-        )?))
+        Ok(Self {
+            db: sled::open(etc.open(".ceres/contracts")?.real_path()?)?,
+            frame: Vec::new(),
+        })
     }
 
     /// Contract instance
@@ -61,24 +79,18 @@ impl Storage {
     /// * From code_hash of `*.contract`
     pub fn rt(&mut self, contract: &str) -> crate::Result<Runtime> {
         let if_path = PathBuf::from(contract);
-        let cache = Rc::new(RefCell::new(Tree(self.0.open_tree(CERES_CACHE_TREE)?)));
-        let state = Rc::new(RefCell::new(Tree(self.0.open_tree(CERES_STATE_TREE)?)));
+        let cache = self.clone();
         Ok(if if_path.exists() {
             let source = fs::read(if_path)?;
-            let rt = Runtime::from_contract_and_storage(
-                &source,
-                cache,
-                state,
-                Some(ceres_ri::Instance),
-            )?;
-            self.0.insert(
+            let rt = Runtime::from_contract(&source, cache, Some(ceres_ri::Instance))?;
+            self.db.insert(
                 &rt.metadata.contract.name,
                 bincode::serialize(&rt.metadata.clone())?,
             )?;
             rt
         } else if let Ok(Some(contract)) = if contract.is_empty() {
             let mut recent = None;
-            for c in self.0.iter() {
+            for c in self.db.iter() {
                 let (k, v) = c?;
                 if k.len() != 32 {
                     recent = Some(Ok(Some(v)));
@@ -94,12 +106,11 @@ impl Storage {
                 ));
             }
         } else {
-            self.0.get(contract.as_bytes())
+            self.db.get(contract.as_bytes())
         } {
-            Runtime::from_metadata_and_storage(
+            Runtime::from_metadata(
                 bincode::deserialize::<Metadata>(&contract)?,
                 cache,
-                state,
                 Some(ceres_ri::Instance),
             )?
         } else {

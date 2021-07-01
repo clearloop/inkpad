@@ -1,6 +1,6 @@
 //! Derive types && traits
 use ceres_executor::{
-    derive::{HostParcel, Value},
+    derive::{HostCall, Value},
     Result,
 };
 use ceres_sandbox::Sandbox;
@@ -17,7 +17,7 @@ pub trait Host: Sized {
     fn wrap(sandbox: &mut Sandbox, args: &[Value]) -> Result<Option<Value>>;
 
     /// Pack instance
-    fn pack() -> HostParcel<&'static str, &'static str, Sandbox> {
+    fn pack() -> HostCall<&'static str, &'static str, Sandbox> {
         (
             <Self as Host>::module(),
             <Self as Host>::name(),

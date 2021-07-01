@@ -107,15 +107,32 @@ pub enum Error {
     ParseWasmModuleFailed,
     ExecutorNotInited,
     CodeNotFound,
+    ExitedAllFrames,
+    CalcuateMemoryLimitFailed,
+    InitExecutorFailed,
+    DecodeBucketFailed([u8; 32]),
+    CouldNotFindMemory,
+    SerializationError(String),
+}
+
+impl From<parity_wasm::SerializationError> for Error {
+    fn from(e: parity_wasm::SerializationError) -> Error {
+        Error::SerializationError(format!("{}", e))
+    }
+}
+
+impl From<&'static str> for Error {
+    fn from(e: &'static str) -> Error {
+        Error::Custom(e)
+    }
 }
 
 #[cfg(feature = "wasmtime")]
 impl std::error::Error for Error {}
 
 impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> core::result::Result<(), fmt::Error> {
-        f.write_str(&format!("{:?}", &self))?;
-        Ok(())
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
     }
 }
 

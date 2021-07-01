@@ -5,14 +5,13 @@ use ceres_std::Vec;
 impl Sandbox {
     /// Get storage
     pub fn get_storage(&self, key: &StorageKey) -> Result<Option<Vec<u8>>> {
-        log::debug!("sandbox get storage {:?}", key);
-        Ok(self.state.borrow().get(*key).map(|v| v.to_vec()))
+        let v = self.cache.borrow().active_get(key).map(|v| v.to_vec());
+        Ok(v)
     }
 
     /// Get storage
-    pub fn set_storage(&mut self, key: &StorageKey, value: Vec<u8>) -> Result<()> {
-        log::debug!("sandbox set storage {:?}", key);
-        self.state.borrow_mut().set(*key, value);
+    pub fn set_storage(&mut self, key: StorageKey, value: Vec<u8>) -> Result<()> {
+        self.cache.borrow_mut().active_set(key.to_vec(), value);
         Ok(())
     }
 }

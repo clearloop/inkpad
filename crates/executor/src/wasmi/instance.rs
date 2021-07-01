@@ -52,7 +52,7 @@ impl<T> derive::Instance<T> for Instance<T> {
         match result {
             Ok(value) => Ok(match value {
                 Some(v) => v.into(),
-                None => Value::default().into(),
+                None => Value::default(),
             }),
             Err(e) => Err(match e {
                 ::wasmi::Error::Trap(t) => Error::Trap(t.into()),

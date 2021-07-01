@@ -85,7 +85,7 @@ pub fn seal_instantiate(
     }
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
-    Err(Error::Return(output))
+    Ok(Some(Value::I32(0)))
 }
 
 /// Make a call to another contract.
@@ -137,5 +137,5 @@ pub fn seal_call(
     let output = sandbox.call(callee, value, input_data)?;
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
 
-    Ok(None)
+    Ok(Some(Value::I32(0)))
 }

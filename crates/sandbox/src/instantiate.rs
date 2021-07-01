@@ -1,9 +1,11 @@
 //! Instantiate Entry
-use crate::{contract::GasMeter, Sandbox};
-use ceres_executor::{Error, Result, ReturnCode, ReturnData};
+use crate::{contract::GasMeter, transfer::TransferEntry, Sandbox};
+use ceres_executor::{Executor, Result, ReturnData};
 use ceres_std::Vec;
+// use parity_wasm::elements::Module;
 
 /// Instantiate Entry
+#[derive(Default)]
 pub struct InstantiateEntry {
     pub code_hash: [u8; 32],
     pub endowment: u64,
@@ -13,6 +15,37 @@ pub struct InstantiateEntry {
 }
 
 impl Sandbox {
+    // Invoke (ink) method
+    pub fn invoke(
+        &mut self,
+        code_hash: [u8; 32],
+        method: &str,
+        data: Vec<u8>,
+    ) -> Result<([u8; 32], ReturnData)> {
+        self.input = Some(data);
+
+        // Get contract from code_hash
+        //
+        // entrypoint
+        // let contract = self
+        //     .cache
+        //     .borrow()
+        //     .get(&code_hash)
+        //     .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?
+        //     .to_vec();
+
+        // Get memory
+        // let limit = ceres_executor::scan_imports(&Module::from_bytes(&contract)?)?;
+        // let memory = Memory::new(limit.0, limit.1)?;
+
+        // invoke with provided `data`
+        let mut executor = Executor::new(code_hash, self)?;
+        let ret = executor.invoke(method, &[], self)?;
+
+        // return vals
+        Ok((code_hash, ret.data))
+    }
+
     pub fn instantiate(
         &mut self,
         code_hash: [u8; 32],
@@ -29,22 +62,17 @@ impl Sandbox {
             salt: salt.to_vec(),
         });
 
-        // Get contract from code_hash
-        //
-        // entrypoint
-        let contract = &mut self
-            .cache
-            .borrow()
-            .get(code_hash)
-            .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?;
+        self.invoke(code_hash, "deploy", data)
+    }
 
-        // Call deploy by provided `data`
-        let executor = self.executor.clone();
-        let mut executor_mut = executor.borrow_mut();
-        executor_mut.build(&contract, self, self.ri.clone())?;
-        let ret = executor_mut.invoke("deploy", data, self)?;
+    /// Call other contract
+    pub fn call(&mut self, code_hash: [u8; 32], value: u64, data: Vec<u8>) -> Result<ReturnData> {
+        self.ext.transfers.push(TransferEntry {
+            to: code_hash,
+            value,
+            data: data.clone(),
+        });
 
-        // return data
-        Ok((code_hash, ret.1.data))
+        self.invoke(code_hash, "deploy", data).map(|v| v.1)
     }
 }

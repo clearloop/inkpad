@@ -24,7 +24,7 @@ impl<T> derive::Instance<T> for Instance<T> {
 
     fn new(code: &[u8], env_def_builder: &Builder<T>, state: &mut T) -> Result<Instance<T>, Error> {
         let dummy_store = util::store_with_dwarf()?;
-        let store = if let Some(store) = env_def_builder.store() {
+        let store = if let Some(store) = env_def_builder.mem.as_ref().map(|m| m.store()) {
             store
         } else {
             &dummy_store
@@ -58,7 +58,7 @@ impl<T> derive::Instance<T> for Instance<T> {
         match func.call(&args) {
             Ok(result) => {
                 if result.len() != 1 {
-                    return Err(Error::UnExpectedReturnValue);
+                    Err(Error::UnExpectedReturnValue)
                 } else {
                     Ok(util::from_val(result[0].clone()))
                 }
