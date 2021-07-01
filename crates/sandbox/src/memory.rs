@@ -1,6 +1,7 @@
 use crate::Sandbox;
 use ceres_executor::{Error, Result};
 use ceres_std::{vec, Vec};
+use ceres_support::traits::Ext;
 use parity_scale_codec::{Decode, DecodeAll, Encode};
 
 impl Sandbox {
@@ -13,7 +14,10 @@ impl Sandbox {
 
     /// Read designated chunk from the sandbox into the supplied buffer
     pub fn read_sandbox_memory_into_buf(&self, ptr: u32, buf: &mut [u8]) -> Result<()> {
-        self.memory.get(ptr, buf).map_err(|_| Error::OutOfBounds)?;
+        self.memory()
+            .ok_or(Error::CodeNotFound)?
+            .get(ptr, buf)
+            .map_err(|_| Error::OutOfBounds)?;
         Ok(())
     }
 
@@ -26,7 +30,10 @@ impl Sandbox {
 
     /// Write the given buffer to the designated location in the sandbox memory.
     pub fn write_sandbox_memory(&mut self, ptr: u32, buf: &[u8]) -> Result<()> {
-        self.memory.set(ptr, buf).map_err(|_| Error::OutOfBounds)
+        self.memory()
+            .ok_or(Error::CodeNotFound)?
+            .set(ptr, buf)
+            .map_err(|_| Error::OutOfBounds)
     }
 
     /// Write the given buffer and its length to the designated locations in sandbox memory
@@ -45,9 +52,10 @@ impl Sandbox {
             return Err(Error::OutputBufferTooSmall);
         }
 
-        self.memory
+        let memory = self.memory().ok_or(Error::CodeNotFound)?;
+        memory
             .set(out_ptr, buf)
-            .and_then(|_| self.memory.set(out_len_ptr, &buf_len.encode()))
+            .and_then(|_| memory.set(out_len_ptr, &buf_len.encode()))
             .map_err(|_| Error::OutOfBounds)?;
 
         Ok(())

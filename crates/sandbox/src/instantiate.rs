@@ -1,8 +1,9 @@
 //! Instantiate Entry
 use crate::{contract::GasMeter, transfer::TransferEntry, Sandbox};
-use ceres_executor::{Executor, Result, ReturnData};
+use ceres_executor::{Error, Executor, Memory, Result, ReturnData};
 use ceres_std::Vec;
-// use parity_wasm::elements::Module;
+use ceres_support::{traits::Ext, types::State};
+use parity_wasm::elements::Module;
 
 /// Instantiate Entry
 #[derive(Default)]
@@ -24,19 +25,13 @@ impl Sandbox {
     ) -> Result<([u8; 32], ReturnData)> {
         self.input = Some(data);
 
-        // Get contract from code_hash
-        //
-        // entrypoint
-        // let contract = self
-        //     .cache
-        //     .borrow()
-        //     .get(&code_hash)
-        //     .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?
-        //     .to_vec();
-
         // Get memory
-        // let limit = ceres_executor::scan_imports(&Module::from_bytes(&contract)?)?;
-        // let memory = Memory::new(limit.0, limit.1)?;
+        let contract = self.code(code_hash).ok_or(Error::CodeNotFound)?;
+        let limit = ceres_executor::scan_imports(&Module::from_bytes(&contract)?)?;
+        let memory = Memory::new(limit.0, limit.1)?;
+
+        // Push new state
+        self.cache.borrow_mut().push(State::new(code_hash, memory));
 
         // invoke with provided `data`
         let mut executor = Executor::new(code_hash, self)?;

@@ -33,15 +33,12 @@ pub struct Sandbox {
     pub cache: Rc<RefCell<dyn Cache<Memory>>>,
     pub events: Vec<(Vec<[u8; 32]>, Vec<u8>)>,
     pub ri: Vec<SealCall<Self>>,
-    /// External memory
-    pub memory: Memory,
 }
 
 impl Sandbox {
     /// New sandbox
     pub fn new(
         cache: Rc<RefCell<impl Cache<Memory> + 'static>>,
-        memory: Memory,
         ri: Vec<SealCall<Self>>,
     ) -> Sandbox {
         Sandbox {
@@ -52,7 +49,6 @@ impl Sandbox {
             tx: Default::default(),
             cache,
             ri,
-            memory,
         }
     }
 }
@@ -62,8 +58,8 @@ impl traits::Ext<Memory, Vec<SealCall<Self>>> for Sandbox {
         self.cache.borrow().get(&hash).map(|v| v.to_vec())
     }
 
-    fn memory(&self) -> Memory {
-        self.memory.clone()
+    fn memory(&self) -> Option<Memory> {
+        Some(self.cache.borrow().state()?.memory.clone())
     }
 
     fn seal_call(&self) -> Vec<SealCall<Self>> {
