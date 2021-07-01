@@ -2,7 +2,7 @@
 use crate::traits::{Frame, Storage};
 
 /// Cache traits
-pub trait Cache: Frame + Storage {
+pub trait Cache<Memory: 'static + Clone>: Frame<Memory> + Storage {
     fn active_set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
         self.state_mut()?.set(key, value)
     }

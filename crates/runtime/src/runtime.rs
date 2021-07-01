@@ -14,7 +14,7 @@ use parity_wasm::elements::Module;
 pub struct Runtime {
     pub sandbox: Sandbox,
     pub metadata: Metadata,
-    cache: Rc<RefCell<dyn traits::Cache>>,
+    cache: Rc<RefCell<dyn traits::Cache<Memory>>>,
 }
 
 impl Runtime {
@@ -35,7 +35,7 @@ impl Runtime {
     /// Create runtime from contract
     pub fn from_contract(
         contract: &[u8],
-        cache: impl traits::Cache + 'static,
+        cache: impl traits::Cache<Memory> + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
@@ -53,7 +53,7 @@ impl Runtime {
     /// Create runtime from metadata and storage
     pub fn from_metadata(
         meta: Metadata,
-        cache: impl traits::Cache + 'static,
+        cache: impl traits::Cache<Memory> + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         Self::new(
@@ -69,7 +69,7 @@ impl Runtime {
     pub fn new(
         b: &[u8],
         metadata: Metadata,
-        cache: impl traits::Cache + 'static,
+        cache: impl traits::Cache<Memory> + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;

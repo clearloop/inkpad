@@ -1,4 +1,5 @@
 //! Storage implementation
+use ceres_executor::Memory;
 use ceres_runtime::{Metadata, Runtime};
 use ceres_support::{
     traits::{self, Cache, Frame},
@@ -12,7 +13,7 @@ use std::{fs, path::PathBuf, process};
 #[derive(Clone)]
 pub struct Storage {
     pub db: Db,
-    frame: Vec<State>,
+    frame: Vec<State<Memory>>,
 }
 
 impl traits::Storage for Storage {
@@ -29,29 +30,29 @@ impl traits::Storage for Storage {
     }
 }
 
-impl Frame for Storage {
+impl Frame<Memory> for Storage {
     fn active(&self) -> Option<[u8; 32]> {
         Some(self.frame.last()?.hash)
     }
 
-    fn state(&self) -> Option<&State> {
+    fn state(&self) -> Option<&State<Memory>> {
         self.frame.last()
     }
 
-    fn state_mut(&mut self) -> Option<&mut State> {
+    fn state_mut(&mut self) -> Option<&mut State<Memory>> {
         self.frame.last_mut()
     }
 
-    fn push(&mut self, s: State) {
+    fn push(&mut self, s: State<Memory>) {
         self.frame.push(s)
     }
 
-    fn pop(&mut self) -> Option<State> {
+    fn pop(&mut self) -> Option<State<Memory>> {
         self.frame.pop()
     }
 }
 
-impl Cache for Storage {}
+impl Cache<Memory> for Storage {}
 
 impl Storage {
     fn quit() {

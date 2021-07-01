@@ -1,4 +1,5 @@
 //! Browser storage
+use ceres_executor::Memory;
 use ceres_std::Vec;
 use ceres_support::{
     traits::{Cache, Frame, Storage},
@@ -11,7 +12,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 pub struct Tree {
     name: String,
     storage: web_sys::Storage,
-    frame: Vec<State>,
+    frame: Vec<State<Memory>>,
 }
 
 #[wasm_bindgen]
@@ -64,26 +65,26 @@ impl Storage for Tree {
     }
 }
 
-impl Frame for Tree {
+impl Frame<Memory> for Tree {
     fn active(&self) -> Option<[u8; 32]> {
         Some(self.frame.last()?.hash)
     }
 
-    fn state(&self) -> Option<&State> {
+    fn state(&self) -> Option<&State<Memory>> {
         self.frame.last()
     }
 
-    fn state_mut(&mut self) -> Option<&mut State> {
+    fn state_mut(&mut self) -> Option<&mut State<Memory>> {
         self.frame.last_mut()
     }
 
-    fn push(&mut self, s: State) {
+    fn push(&mut self, s: State<Memory>) {
         self.frame.push(s)
     }
 
-    fn pop(&mut self) -> Option<State> {
+    fn pop(&mut self) -> Option<State<Memory>> {
         self.frame.pop()
     }
 }
 
-impl Cache for Tree {}
+impl Cache<Memory> for Tree {}
