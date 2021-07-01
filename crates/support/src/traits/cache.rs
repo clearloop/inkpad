@@ -7,7 +7,7 @@ pub trait Cache: Frame + Storage {
         self.state_mut()?.set(key, value)
     }
 
-    fn active_get(&self, key: &[u8]) -> Option<Vec<u8>> {
+    fn active_get(&self, key: &[u8]) -> Option<&[u8]> {
         self.state()?.get(key)
     }
 }

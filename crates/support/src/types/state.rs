@@ -25,7 +25,7 @@ impl State {
         self.state.insert(key, value)
     }
 
-    pub fn get(&self, key: &[u8]) -> Option<Vec<u8>> {
-        self.state.get(key).cloned()
+    pub fn get(&self, key: &[u8]) -> Option<&[u8]> {
+        self.state.get(key).map(|v| v.as_ref())
     }
 }

@@ -2,7 +2,7 @@
 use self::ext::Ext;
 use ceres_executor::{derive::SealCall, Memory};
 use ceres_std::{vec, Rc, Vec};
-use ceres_support::traits::Cache;
+use ceres_support::traits::{self, Cache};
 use core::cell::RefCell;
 
 /// Custom storage key
@@ -54,5 +54,19 @@ impl Sandbox {
             ri,
             memory,
         }
+    }
+}
+
+impl traits::Ext<Memory, Vec<SealCall<Self>>> for Sandbox {
+    fn code(&self, hash: [u8; 32]) -> Option<Vec<u8>> {
+        self.cache.borrow().get(&hash).map(|v| v.to_vec())
+    }
+
+    fn memory(&self) -> Memory {
+        self.memory.clone()
+    }
+
+    fn seal_call(&self) -> Vec<SealCall<Self>> {
+        self.ri.clone()
     }
 }

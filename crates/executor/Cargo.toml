@@ -24,6 +24,7 @@ anyhow = { version = "1", default-features = false }
 
 # ceres dependencies
 ceres-std = { path = "../std", version = "^0" }
+ceres-support = { path = "../support", version = "^0" }
 
 [features]
 default = [ "wasmi" ]

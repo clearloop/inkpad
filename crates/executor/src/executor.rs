@@ -3,35 +3,32 @@ use crate::{
     derive::SealCall, result::ExecResult, Builder, Error, Instance, Memory, Result, Value,
 };
 use ceres_std::Vec;
-use parity_wasm::elements::Module;
+use ceres_support::traits::Ext;
 
 /// Ceres WASM executor
 pub struct Executor<T> {
+    pub memory: Memory,
     instance: Instance<T>,
 }
 
-impl<T> Executor<T> {
+impl<T> Executor<T>
+where
+    T: Ext<Memory, Vec<SealCall<T>>>,
+{
     /// New executor
-    pub fn new(b: &[u8], memory: Memory, ri: Vec<SealCall<T>>, sandbox: &mut T) -> Result<Self> {
-        let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
-        if el.has_names_section() {
-            el = match el.parse_names() {
-                Ok(m) => m,
-                Err((_, m)) => m,
-            }
-        }
-
+    pub fn new(code: [u8; 32], sandbox: &mut T) -> Result<Self> {
         // construct builder
-        let mut builder = Builder::new().add_host_parcels(ri);
-        builder.add_memory("env", "memory", memory);
+        let memory = sandbox.memory();
+        let mut builder = Builder::new().add_host_parcels(sandbox.seal_call());
+        builder.add_memory("env", "memory", memory.clone());
+
+        // get wasm code
+        let wasm = sandbox.code(code).ok_or(Error::CodeNotFound)?.to_vec();
 
         // new executor
         Ok(Self {
-            instance: Instance::new(
-                &el.to_bytes().map_err(|_| Error::ParseWasmModuleFailed)?,
-                &builder,
-                sandbox,
-            )?,
+            memory,
+            instance: Instance::new(&wasm, &builder, sandbox)?,
         })
     }
 

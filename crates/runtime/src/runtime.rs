@@ -98,7 +98,7 @@ impl Runtime {
         cache_mut.push(State::new(code_hash));
 
         // Create Sandbox and Builder
-        let mut sandbox = Sandbox::new(cache.clone(), memory.clone(), seal_calls.clone());
+        let mut sandbox = Sandbox::new(cache.clone(), memory, seal_calls.clone());
 
         // Store contract
         let contract = &el
@@ -110,8 +110,8 @@ impl Runtime {
         drop(cache_mut);
 
         // Init executor
-        let executor = Executor::new(contract, memory, seal_calls.clone(), &mut sandbox)
-            .map_err(|_| Error::InitExecutorFailed)?;
+        let executor =
+            Executor::new(code_hash, &mut sandbox).map_err(|_| Error::InitExecutorFailed)?;
 
         Ok(Runtime {
             sandbox,

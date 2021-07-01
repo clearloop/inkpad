@@ -253,6 +253,7 @@ dependencies = [
  "anyhow",
  "bitflags",
  "ceres-std",
+ "ceres-support",
  "hex",
  "log",
  "parity-scale-codec",
