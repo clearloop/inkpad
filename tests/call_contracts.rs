@@ -48,7 +48,7 @@ fn test_call_contracts() {
             "new",
             vec![
                 42.encode(),
-                0.encode(),
+                1.encode(),
                 hashes[0].encode(),
                 hashes[1].encode(),
                 hashes[2].encode(),

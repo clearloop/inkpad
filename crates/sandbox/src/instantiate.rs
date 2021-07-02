@@ -77,6 +77,6 @@ impl Sandbox {
             data: data.clone(),
         });
 
-        self.invoke(code_hash, "deploy", data).map(|v| v.1)
+        self.invoke(code_hash, "call", data).map(|v| v.1)
     }
 }
