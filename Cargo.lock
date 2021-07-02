@@ -220,21 +220,15 @@ dependencies = [
  "ceres-ri",
  "ceres-runtime",
  "ceres-sandbox",
- "ceres-seal",
  "ceres-std",
  "ceres-support",
  "dirs",
- "env_logger 0.8.4",
  "etc",
  "hex",
- "parity-scale-codec",
- "parity-wasm",
  "serde",
- "serde_json",
  "sled",
  "structopt",
  "thiserror",
- "wat",
 ]
 
 [[package]]
@@ -331,6 +325,24 @@ name = "ceres-support"
 version = "0.1.0"
 dependencies = [
  "ceres-std",
+]
+
+[[package]]
+name = "ceres-tests"
+version = "0.1.0"
+dependencies = [
+ "ceres-executor",
+ "ceres-ri",
+ "ceres-runtime",
+ "ceres-sandbox",
+ "ceres-seal",
+ "ceres-std",
+ "ceres-support",
+ "env_logger 0.8.4",
+ "parity-scale-codec",
+ "parity-wasm",
+ "serde_json",
+ "wat",
 ]
 
 [[package]]
