@@ -40,6 +40,8 @@ fn test_call_contracts() {
         hashes.push(delegator.load(contract).unwrap())
     }
 
+    println!("{:?}", hashes);
+
     // deploy
     delegator
         .deploy(
@@ -54,4 +56,9 @@ fn test_call_contracts() {
             None,
         )
         .unwrap();
+
+    println!("----");
+
+    // call
+    delegator.call("get", vec![], None).unwrap();
 }

@@ -67,6 +67,7 @@ pub fn seal_instantiate(
     salt_len: u32,
 ) -> Result<Option<Value>> {
     let code_hash: [u8; 32] = sandbox.read_sandbox_memory_as(code_hash_ptr, code_hash_len)?;
+    log::debug!("{:?}", code_hash);
 
     // # Safty
     //

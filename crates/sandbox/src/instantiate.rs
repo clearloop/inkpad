@@ -37,6 +37,9 @@ impl Sandbox {
         let mut executor = Executor::new(code_hash, self)?;
         let ret = executor.invoke(method, &[], self)?;
 
+        // Pop state
+        self.cache.borrow_mut().pop();
+
         // return vals
         Ok((code_hash, ret.data))
     }

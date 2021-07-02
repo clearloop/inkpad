@@ -39,6 +39,7 @@ pub fn seal_set_storage(key_ptr: u32, value_ptr: u32, value_len: u32) -> Result<
     let mut key: StorageKey = [0; 32];
     sandbox.read_sandbox_memory_into_buf(key_ptr, &mut key)?;
     let value = sandbox.read_sandbox_memory(value_ptr, value_len)?;
+
     sandbox.set_storage(key, value)?;
 
     Ok(None)

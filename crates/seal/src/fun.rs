@@ -7,6 +7,11 @@ use ceres_sandbox::Sandbox;
 #[host(seal0)]
 pub fn seal_input(out_ptr: u32, out_len_ptr: u32) -> Result<Option<Value>> {
     if let Some(input) = sandbox.input.take() {
+        log::debug!(
+            "(seal_input) {:?} ({:?})",
+            input,
+            sandbox.cache.borrow().active()
+        );
         sandbox.write_sandbox_output(out_ptr, out_len_ptr, &input)?;
         Ok(None)
     } else {
