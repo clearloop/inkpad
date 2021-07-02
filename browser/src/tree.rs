@@ -1,10 +1,11 @@
 //! Browser storage
 use ceres_executor::Memory;
-use ceres_std::Vec;
+use ceres_std::{Rc, Vec};
 use ceres_support::{
     traits::{Cache, Frame, Storage},
     types::State,
 };
+use core::cell::RefCell;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 /// Browser storage
@@ -12,7 +13,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 pub struct Tree {
     name: String,
     storage: web_sys::Storage,
-    frame: Vec<State<Memory>>,
+    frame: Vec<Rc<RefCell<State<Memory>>>>,
 }
 
 #[wasm_bindgen]
@@ -65,26 +66,18 @@ impl Storage for Tree {
     }
 }
 
-impl Frame<Memory> for Tree {
-    fn active(&self) -> Option<[u8; 32]> {
-        Some(self.frame.last()?.hash)
+impl Frame<Memory> for Tree {}
+
+impl Cache<Memory> for Tree {
+    fn frame(&self) -> &Vec<Rc<RefCell<State<Memory>>>> {
+        &self.frame
     }
 
-    fn state(&self) -> Option<&State<Memory>> {
-        self.frame.last()
+    fn frame_mut(&mut self) -> &mut Vec<Rc<RefCell<State<Memory>>>> {
+        &mut self.frame
     }
 
-    fn state_mut(&mut self) -> Option<&mut State<Memory>> {
-        self.frame.last_mut()
-    }
-
-    fn push(&mut self, code_hash: [u8; 32], memory: Memory) {
-        self.frame.push(State::new(code_hash, memory))
-    }
-
-    fn pop(&mut self) -> Option<State<Memory>> {
-        self.frame.pop()
+    fn memory(&self) -> Option<Memory> {
+        Some(self.frame.last()?.borrow().memory.clone())
     }
 }
-
-impl Cache<Memory> for Tree {}
