@@ -59,7 +59,7 @@ impl traits::Ext<Memory, Vec<SealCall<Self>>> for Sandbox {
     }
 
     fn memory(&self) -> Option<Memory> {
-        Some(self.cache.borrow().state()?.memory.clone())
+        self.cache.borrow().memory()
     }
 
     fn seal_call(&self) -> Vec<SealCall<Self>> {

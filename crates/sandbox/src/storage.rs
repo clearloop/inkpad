@@ -22,7 +22,7 @@ impl Sandbox {
             value,
             self.cache.borrow().active(),
         );
-        self.cache.borrow_mut().active_set(key.to_vec(), value);
+        self.cache.borrow_mut().active_set(key, value);
         Ok(())
     }
 }

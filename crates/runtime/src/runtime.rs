@@ -3,10 +3,7 @@ use crate::{method::InkMethod, util, Error, Metadata, Result};
 use ceres_executor::{Executor, Memory};
 use ceres_sandbox::{RuntimeInterfaces, Sandbox, Transaction};
 use ceres_std::{Rc, String, ToString, Vec};
-use ceres_support::{
-    convert, traits,
-    types::{self, State},
-};
+use ceres_support::{convert, traits, types};
 use core::cell::RefCell;
 use parity_wasm::elements::Module;
 
@@ -110,7 +107,7 @@ impl Runtime {
         // set up initial frame and memory
         let limit = ceres_executor::scan_imports(&el)?;
         let memory = Memory::new(limit.0, limit.1)?;
-        cache_mut.push(State::new(code_hash, memory));
+        cache_mut.push(code_hash, memory);
 
         // Create Sandbox and Builder
         let sandbox = Sandbox::new(cache.clone(), seal_calls.clone());

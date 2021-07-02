@@ -2,7 +2,6 @@
 use crate::{contract::GasMeter, transfer::TransferEntry, Sandbox};
 use ceres_executor::{Error, Executor, Memory, Result, ReturnData};
 use ceres_std::Vec;
-use ceres_support::{traits::Ext, types::State};
 use parity_wasm::elements::Module;
 
 /// Instantiate Entry
@@ -25,20 +24,22 @@ impl Sandbox {
     ) -> Result<([u8; 32], ReturnData)> {
         self.input = Some(data);
 
-        // Get memory
-        let contract = self.code(code_hash).ok_or(Error::CodeNotFound)?;
-        let limit = ceres_executor::scan_imports(&Module::from_bytes(&contract)?)?;
-        let memory = Memory::new(limit.0, limit.1)?;
-
-        // Push new state
-        self.cache.borrow_mut().push(State::new(code_hash, memory));
+        // Push new frame
+        let mut cache_mut = self.cache.borrow_mut();
+        if cache_mut.switch(code_hash).is_none() {
+            let contract = cache_mut.get(&code_hash).ok_or(Error::CodeNotFound)?;
+            let limit = ceres_executor::scan_imports(&Module::from_bytes(&contract)?)?;
+            let memory = Memory::new(limit.0, limit.1)?;
+            cache_mut.push(code_hash, memory);
+        }
+        drop(cache_mut);
 
         // invoke with provided `data`
         let mut executor = Executor::new(code_hash, self)?;
         let ret = executor.invoke(method, &[], self)?;
 
         // Pop state
-        self.cache.borrow_mut().pop();
+        self.cache.borrow_mut().back().ok_or(Error::StateNotFound)?;
 
         // return vals
         Ok((code_hash, ret.data))
@@ -64,10 +65,15 @@ impl Sandbox {
     }
 
     /// Call other contract
-    pub fn call(&mut self, code_hash: [u8; 32], value: u64, data: Vec<u8>) -> Result<ReturnData> {
+    pub fn call(
+        &mut self,
+        code_hash: [u8; 32],
+        // value: u64,
+        data: Vec<u8>,
+    ) -> Result<ReturnData> {
         self.ext.transfers.push(TransferEntry {
             to: code_hash,
-            value,
+            value: 0,
             data: data.clone(),
         });
 

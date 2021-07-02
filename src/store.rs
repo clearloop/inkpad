@@ -7,13 +7,13 @@ use ceres_support::{
 };
 use etc::{Etc, FileSystem, Meta};
 use sled::Db;
-use std::{fs, path::PathBuf, process};
+use std::{cell::RefCell, fs, path::PathBuf, process, rc::Rc};
 
 /// A ceres storage implementation using sled
 #[derive(Clone)]
 pub struct Storage {
     pub db: Db,
-    frame: Vec<State<Memory>>,
+    frame: Vec<Rc<RefCell<State<Memory>>>>,
 }
 
 impl traits::Storage for Storage {
@@ -32,23 +32,56 @@ impl traits::Storage for Storage {
 
 impl Frame<Memory> for Storage {
     fn active(&self) -> Option<[u8; 32]> {
-        Some(self.frame.last()?.hash)
+        Some(self.frame.last()?.borrow().hash)
     }
 
-    fn state(&self) -> Option<&State<Memory>> {
-        self.frame.last()
+    fn active_set(&self, key: [u8; 32], value: Vec<u8>) -> Option<Vec<u8>> {
+        self.frame
+            .last()
+            .map(|state| state.borrow_mut().set(key.to_vec(), value))?
     }
 
-    fn state_mut(&mut self) -> Option<&mut State<Memory>> {
-        self.frame.last_mut()
+    fn active_get(&self, key: &[u8]) -> Option<Vec<u8>> {
+        self.frame
+            .last()
+            .map(|state| state.borrow().get(key).map(|v| v.to_vec()))?
     }
 
-    fn push(&mut self, s: State<Memory>) {
-        self.frame.push(s)
+    fn push(&mut self, code_hash: [u8; 32], memory: Memory) {
+        self.frame
+            .push(Rc::new(RefCell::new(State::new(code_hash, memory))));
     }
 
-    fn pop(&mut self) -> Option<State<Memory>> {
-        self.frame.pop()
+    #[allow(mutable_borrow_reservation_conflict)]
+    fn switch(&mut self, code_hash: [u8; 32]) -> Option<()> {
+        for frame in &self.frame {
+            if frame.borrow().hash != code_hash {
+                continue;
+            }
+
+            self.frame.push(frame.clone());
+            return Some(());
+        }
+
+        None
+    }
+
+    fn back(&mut self) -> Option<()> {
+        if self.frame.len() < 2 {
+            None
+        } else {
+            self.frame.push(self.frame[self.frame.len() - 1].clone());
+            Some(())
+        }
+    }
+
+    fn top(&mut self) -> Option<()> {
+        self.frame.push(self.frame[0].clone());
+        Some(())
+    }
+
+    fn memory(&self) -> Option<Memory> {
+        Some(self.frame.last()?.borrow().memory.clone())
     }
 }
 

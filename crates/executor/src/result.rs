@@ -111,8 +111,9 @@ pub enum Error {
     CalcuateMemoryLimitFailed,
     InitExecutorFailed,
     DecodeBucketFailed([u8; 32]),
-    CouldNotFindMemory,
+    MemoryNotFound,
     SerializationError(String),
+    StateNotFound,
 }
 
 impl From<parity_wasm::SerializationError> for Error {

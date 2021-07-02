@@ -18,7 +18,7 @@ where
     /// New executor
     pub fn new(code: [u8; 32], sandbox: &mut T) -> Result<Self> {
         // construct builder
-        let memory = sandbox.memory().ok_or(Error::CouldNotFindMemory)?;
+        let memory = sandbox.memory().ok_or(Error::MemoryNotFound)?;
         let mut builder = Builder::new().add_host_parcels(sandbox.seal_call());
         builder.add_memory("env", "memory", memory.clone());
 

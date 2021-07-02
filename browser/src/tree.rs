@@ -78,8 +78,8 @@ impl Frame<Memory> for Tree {
         self.frame.last_mut()
     }
 
-    fn push(&mut self, s: State<Memory>) {
-        self.frame.push(s)
+    fn push(&mut self, code_hash: [u8; 32], memory: Memory) {
+        self.frame.push(State::new(code_hash, memory))
     }
 
     fn pop(&mut self) -> Option<State<Memory>> {
