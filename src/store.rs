@@ -1,4 +1,5 @@
 //! Storage implementation
+use ceres_executor::Memory;
 use ceres_runtime::{Metadata, Runtime};
 use ceres_support::{
     traits::{self, Cache, Frame},
@@ -6,13 +7,13 @@ use ceres_support::{
 };
 use etc::{Etc, FileSystem, Meta};
 use sled::Db;
-use std::{fs, path::PathBuf, process};
+use std::{cell::RefCell, fs, path::PathBuf, process, rc::Rc};
 
 /// A ceres storage implementation using sled
 #[derive(Clone)]
 pub struct Storage {
     pub db: Db,
-    frame: Vec<State>,
+    frame: Vec<Rc<RefCell<State<Memory>>>>,
 }
 
 impl traits::Storage for Storage {
@@ -29,29 +30,21 @@ impl traits::Storage for Storage {
     }
 }
 
-impl Frame for Storage {
-    fn active(&self) -> Option<[u8; 32]> {
-        Some(self.frame.last()?.hash)
+impl Cache<Memory> for Storage {
+    fn frame(&self) -> &Vec<Rc<RefCell<State<Memory>>>> {
+        &self.frame
     }
 
-    fn state(&self) -> Option<&State> {
-        self.frame.last()
+    fn frame_mut(&mut self) -> &mut Vec<Rc<RefCell<State<Memory>>>> {
+        &mut self.frame
     }
 
-    fn state_mut(&mut self) -> Option<&mut State> {
-        self.frame.last_mut()
-    }
-
-    fn push(&mut self, s: State) {
-        self.frame.push(s)
-    }
-
-    fn pop(&mut self) -> Option<State> {
-        self.frame.pop()
+    fn memory(&self) -> Option<Memory> {
+        Some(self.frame.last()?.borrow().memory.clone())
     }
 }
 
-impl Cache for Storage {}
+impl Frame<Memory> for Storage {}
 
 impl Storage {
     fn quit() {

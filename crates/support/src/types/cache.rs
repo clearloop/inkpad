@@ -3,15 +3,16 @@ use crate::{
     traits::{self, Frame, Storage},
     types::State,
 };
-use ceres_std::{BTreeMap, Vec};
+use ceres_std::{BTreeMap, Rc, Vec};
+use core::cell::RefCell;
 
 /// Memory cache implementation
-pub struct Cache {
+pub struct Cache<Memory: Clone> {
     storage: BTreeMap<Vec<u8>, Vec<u8>>,
-    frame: Vec<State>,
+    frame: Vec<Rc<RefCell<State<Memory>>>>,
 }
 
-impl Default for Cache {
+impl<Memory: Clone> Default for Cache<Memory> {
     fn default() -> Self {
         Self {
             storage: BTreeMap::new(),
@@ -20,7 +21,7 @@ impl Default for Cache {
     }
 }
 
-impl Storage for Cache {
+impl<Memory: Clone> Storage for Cache<Memory> {
     fn set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
         self.storage.insert(key, value)
     }
@@ -34,26 +35,20 @@ impl Storage for Cache {
     }
 }
 
-impl Frame for Cache {
-    fn active(&self) -> Option<[u8; 32]> {
-        Some(self.frame.last()?.hash)
+impl<Memory: 'static + Clone> traits::Cache<Memory> for Cache<Memory> {
+    /// Get frame
+    fn frame(&self) -> &Vec<Rc<RefCell<State<Memory>>>> {
+        &self.frame
     }
 
-    fn state(&self) -> Option<&State> {
-        self.frame.last()
+    /// Get frame mut
+    fn frame_mut(&mut self) -> &mut Vec<Rc<RefCell<State<Memory>>>> {
+        &mut self.frame
     }
 
-    fn state_mut(&mut self) -> Option<&mut State> {
-        self.frame.last_mut()
-    }
-
-    fn push(&mut self, s: State) {
-        self.frame.push(s)
-    }
-
-    fn pop(&mut self) -> Option<State> {
-        self.frame.pop()
+    fn memory(&self) -> Option<Memory> {
+        Some(self.frame.last()?.borrow().memory.clone())
     }
 }
 
-impl traits::Cache for Cache {}
+impl<Memory: 'static + Clone> Frame<Memory> for Cache<Memory> {}

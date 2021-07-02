@@ -1,8 +1,8 @@
 //! Instantiate Entry
 use crate::{contract::GasMeter, transfer::TransferEntry, Sandbox};
-use ceres_executor::{Executor, Result, ReturnData};
+use ceres_executor::{Error, Executor, Memory, Result, ReturnData};
 use ceres_std::Vec;
-// use parity_wasm::elements::Module;
+use parity_wasm::elements::Module;
 
 /// Instantiate Entry
 #[derive(Default)]
@@ -24,23 +24,22 @@ impl Sandbox {
     ) -> Result<([u8; 32], ReturnData)> {
         self.input = Some(data);
 
-        // Get contract from code_hash
-        //
-        // entrypoint
-        // let contract = self
-        //     .cache
-        //     .borrow()
-        //     .get(&code_hash)
-        //     .ok_or(Error::ExecuteFailed(ReturnCode::CodeNotFound))?
-        //     .to_vec();
-
-        // Get memory
-        // let limit = ceres_executor::scan_imports(&Module::from_bytes(&contract)?)?;
-        // let memory = Memory::new(limit.0, limit.1)?;
+        // Push new frame
+        let mut cache_mut = self.cache.borrow_mut();
+        if cache_mut.switch(code_hash).is_none() {
+            let contract = cache_mut.get(&code_hash).ok_or(Error::CodeNotFound)?;
+            let limit = ceres_executor::scan_imports(&Module::from_bytes(&contract)?)?;
+            let memory = Memory::new(limit.0, limit.1)?;
+            cache_mut.push(code_hash, memory);
+        }
+        drop(cache_mut);
 
         // invoke with provided `data`
         let mut executor = Executor::new(code_hash, self)?;
         let ret = executor.invoke(method, &[], self)?;
+
+        // Pop state
+        self.cache.borrow_mut().back().ok_or(Error::StateNotFound)?;
 
         // return vals
         Ok((code_hash, ret.data))
@@ -66,13 +65,18 @@ impl Sandbox {
     }
 
     /// Call other contract
-    pub fn call(&mut self, code_hash: [u8; 32], value: u64, data: Vec<u8>) -> Result<ReturnData> {
+    pub fn call(
+        &mut self,
+        code_hash: [u8; 32],
+        // value: u64,
+        data: Vec<u8>,
+    ) -> Result<ReturnData> {
         self.ext.transfers.push(TransferEntry {
             to: code_hash,
-            value,
+            value: 0,
             data: data.clone(),
         });
 
-        self.invoke(code_hash, "deploy", data).map(|v| v.1)
+        self.invoke(code_hash, "call", data).map(|v| v.1)
     }
 }

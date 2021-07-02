@@ -6,5 +6,5 @@ pub trait Ext<Memory, SealCall> {
     fn seal_call(&self) -> SealCall;
 
     /// Provide memory
-    fn memory(&self) -> Memory;
+    fn memory(&self) -> Option<Memory>;
 }

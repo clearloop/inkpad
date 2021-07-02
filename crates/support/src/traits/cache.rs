@@ -1,13 +1,16 @@
 //! Cache trait
-use crate::traits::{Frame, Storage};
+use crate::{traits::Storage, types::State};
+use ceres_std::Rc;
+use core::cell::RefCell;
 
 /// Cache traits
-pub trait Cache: Frame + Storage {
-    fn active_set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
-        self.state_mut()?.set(key, value)
-    }
+pub trait Cache<Memory: 'static + Clone>: Storage {
+    /// Get frame
+    fn frame(&self) -> &Vec<Rc<RefCell<State<Memory>>>>;
 
-    fn active_get(&self, key: &[u8]) -> Option<&[u8]> {
-        self.state()?.get(key)
-    }
+    /// Get frame mut
+    fn frame_mut(&mut self) -> &mut Vec<Rc<RefCell<State<Memory>>>>;
+
+    /// Memory
+    fn memory(&self) -> Option<Memory>;
 }
