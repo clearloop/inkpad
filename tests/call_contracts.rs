@@ -18,9 +18,6 @@ use parity_scale_codec::Encode;
 
 #[test]
 fn test_call_contracts() {
-    env_logger::init();
-
-    // init delegator
     let mut delegator = Runtime::from_contract(
         include_bytes!("../contracts/delegator.contract"),
         Cache::default(),
@@ -40,8 +37,6 @@ fn test_call_contracts() {
         hashes.push(delegator.load(contract).unwrap())
     }
 
-    println!("{:?}", hashes);
-
     // deploy
     delegator
         .deploy(
@@ -57,8 +52,6 @@ fn test_call_contracts() {
         )
         .unwrap();
 
-    println!("----");
-
     // call
-    delegator.call("get", vec![], None).unwrap();
+    assert_eq!(delegator.call("get", vec![], None), Ok(Some(42.encode())));
 }
