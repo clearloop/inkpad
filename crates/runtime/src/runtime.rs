@@ -104,22 +104,22 @@ impl Runtime {
         let cache = Rc::new(RefCell::new(cache));
         let mut cache_mut = cache.borrow_mut();
 
-        // set up initial frame and memory
-        let limit = ceres_executor::scan_imports(&el)?;
-        let memory = Memory::new(limit.0, limit.1)?;
-        cache_mut.push(code_hash, memory);
+        // Push new frame
+        if cache_mut.switch(code_hash).is_none() {
+            let limit = ceres_executor::scan_imports(&el)?;
+            let memory = Memory::new(limit.0, limit.1)?;
+            cache_mut.push(code_hash, memory);
+
+            // set contract
+            let contract = &el
+                .to_bytes()
+                .map_err(|error| Error::SerializeFailed { error })?;
+            cache_mut.set(code_hash.to_vec(), contract.to_vec());
+        }
+        drop(cache_mut);
 
         // Create Sandbox and Builder
         let sandbox = Sandbox::new(cache.clone(), seal_calls.clone());
-
-        // Store contract
-        let contract = &el
-            .to_bytes()
-            .map_err(|error| Error::SerializeFailed { error })?;
-        cache_mut.set(code_hash.to_vec(), contract.to_vec());
-
-        // drop borrowed
-        drop(cache_mut);
 
         Ok(Runtime {
             sandbox,
@@ -172,8 +172,7 @@ impl Runtime {
         Executor::new(
             convert::to_storage_key(&hash[..]).ok_or(ceres_executor::Error::CodeNotFound)?,
             &mut self.sandbox,
-        )
-        .map_err(|_| Error::InitExecutorFailed)?
+        )?
         .invoke(&method.to_string(), &[], &mut self.sandbox)
         .map_err(|error| Error::CallContractFailed { error })?;
 
