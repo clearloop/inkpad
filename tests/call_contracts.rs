@@ -22,7 +22,7 @@ fn test_call_contracts() {
 
     // init delegator
     let mut delegator = Runtime::from_contract(
-        include_bytes!("../contracts/delegator.contract.debug"),
+        include_bytes!("../contracts/delegator.contract"),
         Cache::default(),
         Some(Instance),
     )
@@ -31,9 +31,9 @@ fn test_call_contracts() {
     // Get hashes
     let mut hashes: Vec<[u8; 32]> = Vec::new();
     for contract in [
-        include_bytes!("../contracts/accumulator.contract.debug").to_vec(),
-        include_bytes!("../contracts/adder.contract.debug").to_vec(),
-        include_bytes!("../contracts/subber.contract.debug").to_vec(),
+        include_bytes!("../contracts/accumulator.contract").to_vec(),
+        include_bytes!("../contracts/adder.contract").to_vec(),
+        include_bytes!("../contracts/subber.contract").to_vec(),
     ]
     .iter()
     {
