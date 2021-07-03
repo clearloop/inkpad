@@ -1,6 +1,7 @@
 //! List all contracts
 use crate::{util, Result, Storage};
-use ceres_runtime::Metadata;
+use ceres_support::types::Metadata;
+use parity_scale_codec::Decode;
 
 /// List all contracts
 pub fn exec(store: &Storage) -> Result<()> {
@@ -11,7 +12,7 @@ pub fn exec(store: &Storage) -> Result<()> {
             continue;
         }
 
-        contracts.push(bincode::deserialize(&v)?);
+        contracts.push(Metadata::decode(&mut v.as_ref())?);
     }
 
     let mut output: String = format!("\n\t{} {}\n", util::pad("contract", 20), "code-hash");

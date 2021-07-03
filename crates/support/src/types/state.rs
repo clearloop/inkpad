@@ -5,8 +5,6 @@ use ceres_std::{BTreeMap, Vec};
 #[derive(Clone, Debug)]
 pub struct State<Memory> {
     pub hash: [u8; 32],
-    pub input: Option<Vec<u8>>,
-    pub output: Option<Vec<u8>>,
     pub memory: Memory,
     state: BTreeMap<Vec<u8>, Vec<u8>>,
 }
@@ -16,8 +14,6 @@ impl<Memory: Clone> State<Memory> {
     pub fn new(hash: [u8; 32], memory: Memory) -> Self {
         Self {
             hash,
-            input: None,
-            output: None,
             memory,
             state: BTreeMap::new(),
         }

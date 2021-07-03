@@ -1,8 +1,8 @@
 //! Ceres CLI Error
-use bincode::Error as Bincode;
 use ceres_runtime::Error as Runtime;
 use ceres_support::errors;
 use etc::Error as Etc;
+use parity_scale_codec::Error as Codec;
 use sled::Error as Sled;
 use std::{
     error::Error as ErrorTrait,
@@ -20,7 +20,7 @@ pub struct DecodeAddressFailed(String);
 pub struct Custom(String);
 
 errors! {
-    Bincode,
+    Codec,
     Runtime,
     Etc,
     Sled,

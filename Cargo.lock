@@ -27,17 +27,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe"
 
 [[package]]
-name = "ahash"
-version = "0.7.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43bb833f0bf979d8475d38fbf09ed3b8a55e1885fe93ad3f93239fc6a4f17b98"
-dependencies = [
- "getrandom",
- "once_cell",
- "version_check",
-]
-
-[[package]]
 name = "aho-corasick"
 version = "0.7.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -215,7 +204,6 @@ dependencies = [
 name = "ceres-cli"
 version = "0.1.0"
 dependencies = [
- "bincode",
  "ceres-executor",
  "ceres-ri",
  "ceres-runtime",
@@ -225,7 +213,7 @@ dependencies = [
  "dirs",
  "etc",
  "hex",
- "serde",
+ "parity-scale-codec",
  "sled",
  "structopt",
  "thiserror",
@@ -282,13 +270,12 @@ dependencies = [
  "ceres-support",
  "cfg-if 1.0.0",
  "derivative",
- "hashbrown 0.11.2",
  "hex",
  "log",
+ "parity-scale-codec",
  "parity-wasm",
  "serde",
  "serde_json",
- "snafu",
 ]
 
 [[package]]
@@ -325,6 +312,10 @@ name = "ceres-support"
 version = "0.1.0"
 dependencies = [
  "ceres-std",
+ "derivative",
+ "hex",
+ "parity-scale-codec",
+ "serde",
 ]
 
 [[package]]
@@ -794,15 +785,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d7afe4a420e3fe79967a00898cc1f4db7c8a49a9333a29f8a4bd76a253d5cd04"
 
 [[package]]
-name = "hashbrown"
-version = "0.11.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab5ef0d4909ef3724cc8cce6ccc8572c5c817592e9285f5464f8e86f8bd3726e"
-dependencies = [
- "ahash",
-]
-
-[[package]]
 name = "heck"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -848,7 +830,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "824845a0bf897a9042383849b02c1bc219c2383772efcd5c6f9766fa4b81aef3"
 dependencies = [
  "autocfg",
- "hashbrown 0.9.1",
+ "hashbrown",
  "serde",
 ]
 
@@ -1058,12 +1040,6 @@ checksum = "a38f2be3697a57b4060074ff41b44c16870d916ad7877c17696e063257482bc7"
 dependencies = [
  "memchr",
 ]
-
-[[package]]
-name = "once_cell"
-version = "1.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "692fcb63b64b1758029e0a96ee63e049ce8c5948587f2f7208df04625e5f6b56"
 
 [[package]]
 name = "opaque-debug"

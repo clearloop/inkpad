@@ -1,11 +1,12 @@
 //! Storage implementation
 use ceres_executor::Memory;
-use ceres_runtime::{Metadata, Runtime};
+use ceres_runtime::Runtime;
 use ceres_support::{
     traits::{self, Cache, Frame},
-    types::State,
+    types::{Metadata, State},
 };
 use etc::{Etc, FileSystem, Meta};
+use parity_scale_codec::{Decode, Encode};
 use sled::Db;
 use std::{cell::RefCell, fs, path::PathBuf, process, rc::Rc};
 
@@ -18,11 +19,15 @@ pub struct Storage {
 
 impl traits::Storage for Storage {
     fn set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
-        self.db.insert(key, value).ok()?.map(|v| v.to_vec())
+        let r = self.db.insert(key, value).ok()?.map(|v| v.to_vec());
+        self.db.flush().ok()?;
+        r
     }
 
     fn remove(&mut self, key: &[u8]) -> Option<Vec<u8>> {
-        self.db.remove(key).ok()?.map(|v| v.to_vec())
+        let r = self.db.remove(key).ok()?.map(|v| v.to_vec());
+        self.db.flush().ok()?;
+        r
     }
 
     fn get(&self, key: &[u8]) -> Option<Vec<u8>> {
@@ -58,9 +63,10 @@ impl Storage {
     /// New storage
     pub fn new() -> crate::Result<Self> {
         let etc = Etc::new(&dirs::home_dir().ok_or("Could not find home dir")?)?;
+        let db = sled::open(etc.open(".ceres/contracts")?.real_path()?)?;
 
         Ok(Self {
-            db: sled::open(etc.open(".ceres/contracts")?.real_path()?)?,
+            db,
             frame: Vec::new(),
         })
     }
@@ -76,10 +82,8 @@ impl Storage {
         Ok(if if_path.exists() {
             let source = fs::read(if_path)?;
             let rt = Runtime::from_contract(&source, cache, Some(ceres_ri::Instance))?;
-            self.db.insert(
-                &rt.metadata.contract.name,
-                bincode::serialize(&rt.metadata.clone())?,
-            )?;
+            self.db
+                .insert(&rt.metadata.contract.name, rt.metadata.encode())?;
             rt
         } else if let Ok(Some(contract)) = if contract.is_empty() {
             let mut recent = None;
@@ -102,7 +106,7 @@ impl Storage {
             self.db.get(contract.as_bytes())
         } {
             Runtime::from_metadata(
-                bincode::deserialize::<Metadata>(&contract)?,
+                Metadata::decode(&mut contract.as_ref())?,
                 cache,
                 Some(ceres_ri::Instance),
             )?

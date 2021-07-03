@@ -114,6 +114,8 @@ pub enum Error {
     MemoryNotFound,
     SerializationError(String),
     StateNotFound,
+    CodeHashNotFound,
+    DecodeContractFailed,
 }
 
 impl From<parity_wasm::SerializationError> for Error {

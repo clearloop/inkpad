@@ -1,9 +1,13 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 use self::ext::Ext;
-use ceres_executor::{derive::SealCall, Memory};
+use ceres_executor::{derive::SealCall, Error, Memory, Result};
 use ceres_std::{vec, Rc, Vec};
-use ceres_support::traits::{self, Frame};
+use ceres_support::{
+    traits::{self, Frame},
+    types::Metadata,
+};
 use core::cell::RefCell;
+use parity_wasm::elements::Module;
 
 /// Custom storage key
 pub type StorageKey = [u8; 32];
@@ -50,6 +54,40 @@ impl Sandbox {
             cache,
             ri,
         }
+    }
+
+    /// Preare a new frame
+    pub fn prepare(&mut self, code_hash: [u8; 32]) -> Result<()> {
+        let contract = self
+            .cache
+            .borrow()
+            .get(&code_hash)
+            .ok_or(Error::CodeNotFound)?
+            .to_vec();
+
+        // store contract if not exists
+        let mut cache_mut = self.cache.borrow_mut();
+        if cache_mut.switch(code_hash).is_none() {
+            let mut el =
+                Module::from_bytes(Metadata::wasm(&contract).ok_or(Error::ParseWasmModuleFailed)?)?;
+            if el.has_names_section() {
+                el = match el.parse_names() {
+                    Ok(m) => m,
+                    Err((_, m)) => m,
+                }
+            }
+
+            let limit = ceres_executor::scan_imports(&el)?;
+            let memory = Memory::new(limit.0, limit.1)?;
+            cache_mut.push(code_hash, memory);
+
+            // set contract
+            let contract = &el.to_bytes()?;
+            cache_mut.set(code_hash.to_vec(), contract.to_vec());
+        }
+        drop(cache_mut);
+
+        Ok(())
     }
 }
 
