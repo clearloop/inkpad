@@ -19,6 +19,7 @@ pub fn parse_args(selector: &str, args: Vec<Vec<u8>>, tys: Vec<u32>) -> Result<V
         .ok_or(Error::DecodeSelectorFailed)?
         .to_vec();
     for mut arg in args {
+        log::debug!("-----> {:?}", arg);
         res.append(&mut arg);
     }
 

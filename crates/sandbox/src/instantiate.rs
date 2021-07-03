@@ -32,12 +32,11 @@ impl Sandbox {
 
         // Pop state
         let mut cache_mut = self.cache.borrow_mut();
-        cache_mut.back().ok_or(Error::StateNotFound)?;
+        cache_mut.top().ok_or(Error::StateNotFound)?;
         cache_mut.flush().ok_or(Error::FlushDataFailed)?;
         drop(cache_mut);
 
         // flush data
-        log::debug!("curent state {}", self.cache.borrow().frame().len());
         self.cache
             .borrow_mut()
             .flush()

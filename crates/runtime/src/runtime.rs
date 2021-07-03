@@ -137,6 +137,6 @@ impl Runtime {
             .borrow_mut()
             .flush()
             .ok_or(Error::FlushDataFailed)?;
-        Ok(self.sandbox.ret.clone())
+        Ok(self.sandbox.ret.take())
     }
 }

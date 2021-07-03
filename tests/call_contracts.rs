@@ -18,7 +18,6 @@ use parity_scale_codec::Encode;
 
 #[test]
 fn test_call_contracts() {
-    env_logger::init();
     let mut delegator = Runtime::from_contract(
         include_bytes!("../contracts/delegator.contract"),
         Cache::default(),
@@ -38,18 +37,9 @@ fn test_call_contracts() {
         hashes.push(delegator.load(contract).unwrap())
     }
 
-    println!(
-        "{} {} {} {} {}",
-        hex::encode(42.encode()),
-        hex::encode(1.encode()),
-        hex::encode(hashes[0].encode()),
-        hex::encode(hashes[1].encode()),
-        hex::encode(hashes[2].encode())
-    );
-
     // deploy
-    delegator
-        .deploy(
+    assert_eq!(
+        delegator.deploy(
             "new",
             vec![
                 42.encode(),
@@ -59,9 +49,15 @@ fn test_call_contracts() {
                 hashes[2].encode(),
             ],
             None,
-        )
-        .unwrap();
+        ),
+        Ok(None)
+    );
 
     // call
+    assert_eq!(delegator.call("get", vec![], None), Ok(Some(42.encode())));
+    assert_eq!(delegator.call("change", vec![1.encode()], None), Ok(None));
+    assert_eq!(delegator.call("get", vec![], None), Ok(Some(43.encode())));
+    assert_eq!(delegator.call("switch", vec![], None), Ok(None));
+    assert_eq!(delegator.call("change", vec![1.encode()], None), Ok(None));
     assert_eq!(delegator.call("get", vec![], None), Ok(Some(42.encode())));
 }
