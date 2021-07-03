@@ -109,7 +109,6 @@ fn test_number_and_hash() {
 
 #[test]
 fn test_all() {
-    env_logger::init();
     t(|args: &mut Runtime| {
         let hash = [0; 32];
         let mut res = 0.encode();

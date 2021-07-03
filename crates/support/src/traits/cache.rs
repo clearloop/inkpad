@@ -13,4 +13,9 @@ pub trait Cache<Memory: 'static + Clone>: Storage {
 
     /// Memory
     fn memory(&self) -> Option<Memory>;
+
+    /// (lifecycle) Flush data
+    fn flush(&mut self) -> Option<()> {
+        Some(())
+    }
 }

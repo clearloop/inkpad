@@ -27,6 +27,5 @@ pub fn run() -> Result<()> {
         Command::Call(tx) => cmd::call::exec(&mut rt, tx)?,
     }
 
-    store.db.flush()?;
     Ok(())
 }

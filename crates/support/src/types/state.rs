@@ -6,7 +6,7 @@ use ceres_std::{BTreeMap, Vec};
 pub struct State<Memory> {
     pub hash: [u8; 32],
     pub memory: Memory,
-    state: BTreeMap<Vec<u8>, Vec<u8>>,
+    pub state: BTreeMap<Vec<u8>, Vec<u8>>,
 }
 
 impl<Memory: Clone> State<Memory> {

@@ -1,6 +1,6 @@
 [package]
 name = "ceres-cli"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2018"
 authors = [
   "Patract <hi@patract.io>",
@@ -17,12 +17,14 @@ name = "ceres"
 path = "bin/ceres.rs"
 
 [dependencies]
+log = "0.4.14"
 etc = "0.1.16"
 hex = "0.4.3"
 dirs = "3.0.1"
 sled = "0.34.6"
 structopt = "0.3.21"
 thiserror = "1.0.24"
+env_logger = "0.8.4"
 parity-scale-codec = { version = "2", features = ["derive"] }
 
 # ceres deps

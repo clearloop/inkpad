@@ -202,7 +202,7 @@ dependencies = [
 
 [[package]]
 name = "ceres-cli"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "ceres-executor",
  "ceres-ri",
@@ -211,8 +211,10 @@ dependencies = [
  "ceres-std",
  "ceres-support",
  "dirs",
+ "env_logger 0.8.4",
  "etc",
  "hex",
+ "log",
  "parity-scale-codec",
  "sled",
  "structopt",
@@ -315,6 +317,7 @@ dependencies = [
  "derivative",
  "hex",
  "parity-scale-codec",
+ "parity-wasm",
  "serde",
 ]
 
@@ -330,6 +333,8 @@ dependencies = [
  "ceres-std",
  "ceres-support",
  "env_logger 0.8.4",
+ "hex",
+ "log",
  "parity-scale-codec",
  "parity-wasm",
  "serde_json",

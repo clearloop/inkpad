@@ -116,6 +116,7 @@ pub enum Error {
     StateNotFound,
     CodeHashNotFound,
     DecodeContractFailed,
+    FlushDataFailed,
 }
 
 impl From<parity_wasm::SerializationError> for Error {
@@ -143,7 +144,7 @@ impl fmt::Display for Error {
 pub type Result<T> = core::result::Result<T, Error>;
 
 /// Wasm function execution result
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct ExecResult {
     pub data: ReturnData,
     pub value: Value,

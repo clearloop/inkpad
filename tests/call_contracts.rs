@@ -38,8 +38,8 @@ fn test_call_contracts() {
     }
 
     // deploy
-    delegator
-        .deploy(
+    assert_eq!(
+        delegator.deploy(
             "new",
             vec![
                 42.encode(),
@@ -49,9 +49,15 @@ fn test_call_contracts() {
                 hashes[2].encode(),
             ],
             None,
-        )
-        .unwrap();
+        ),
+        Ok(None)
+    );
 
     // call
+    assert_eq!(delegator.call("get", vec![], None), Ok(Some(42.encode())));
+    assert_eq!(delegator.call("change", vec![1.encode()], None), Ok(None));
+    assert_eq!(delegator.call("get", vec![], None), Ok(Some(43.encode())));
+    assert_eq!(delegator.call("switch", vec![], None), Ok(None));
+    assert_eq!(delegator.call("change", vec![1.encode()], None), Ok(None));
     assert_eq!(delegator.call("get", vec![], None), Ok(Some(42.encode())));
 }

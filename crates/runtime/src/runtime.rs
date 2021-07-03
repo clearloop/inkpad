@@ -8,7 +8,6 @@ use ceres_support::{
     types::{self, Metadata},
 };
 use core::cell::RefCell;
-use parity_scale_codec::Encode;
 
 /// Ceres Runtime
 pub struct Runtime {
@@ -50,20 +49,13 @@ impl Runtime {
     /// Load contract to cache
     pub fn load(&mut self, b: &[u8]) -> Result<[u8; 32]> {
         self.load_metadata(
-            serde_json::from_slice::<Metadata>(&b).map_err(|_| Error::DecodeContractFailed)?,
+            &serde_json::from_slice::<Metadata>(&b).map_err(|_| Error::DecodeContractFailed)?,
         )
     }
 
     /// Load metadata to cache
-    pub fn load_metadata(&mut self, meta: Metadata) -> Result<[u8; 32]> {
-        let code_hash =
-            convert::parse_code_hash(&meta.source.hash).ok_or(Error::InvalidCodeHash)?;
-        self.cache.borrow_mut().set(
-            code_hash.to_vec(),
-            hex::decode(&meta.source.wasm.as_bytes()[2..])
-                .map_err(|_| Error::DecodeContractFailed)?,
-        );
-        Ok(code_hash)
+    pub fn load_metadata(&mut self, meta: &Metadata) -> Result<[u8; 32]> {
+        Ok(self.sandbox.load_metadata(&meta)?)
     }
 
     /// New runtime
@@ -80,17 +72,10 @@ impl Runtime {
 
         // Create Sandbox and Builder
         let mut sandbox = Sandbox::new(cache.clone(), seal_calls.clone());
-
-        // Sotre contract
-        let code_hash =
-            convert::parse_code_hash(&metadata.source.hash).ok_or(Error::DecodeContractFailed)?;
-        cache
-            .borrow_mut()
-            .set(code_hash.to_vec(), metadata.encode());
-
-        // Prepare contract
+        let code_hash = sandbox.load_metadata(&metadata)?;
         sandbox.prepare(code_hash)?;
 
+        // Construct runtime
         Ok(Runtime {
             sandbox,
             metadata,
@@ -126,6 +111,7 @@ impl Runtime {
         args: Vec<Vec<u8>>,
         tx: Option<Transaction>,
     ) -> Result<Option<Vec<u8>>> {
+        // construct transaction
         if let Some(tx) = tx {
             self.sandbox.tx = tx;
         }
@@ -146,6 +132,11 @@ impl Runtime {
         .invoke(&method.to_string(), &[], &mut self.sandbox)
         .map_err(|error| Error::CallContractFailed { error })?;
 
-        Ok(self.sandbox.ret.clone())
+        // flush data
+        self.cache
+            .borrow_mut()
+            .flush()
+            .ok_or(Error::FlushDataFailed)?;
+        Ok(self.sandbox.ret.take())
     }
 }

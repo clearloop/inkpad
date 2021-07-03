@@ -9,10 +9,8 @@ pub fn exec(store: &Storage) -> Result<()> {
     for r in store.db.iter() {
         let (k, v) = r?;
         if k.len() == 32 {
-            continue;
+            contracts.push(Metadata::decode(&mut v.as_ref())?);
         }
-
-        contracts.push(Metadata::decode(&mut v.as_ref())?);
     }
 
     let mut output: String = format!("\n\t{} {}\n", util::pad("contract", 20), "code-hash");

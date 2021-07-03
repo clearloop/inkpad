@@ -3,10 +3,12 @@ use self::ext::Ext;
 use ceres_executor::{derive::SealCall, Error, Memory, Result};
 use ceres_std::{vec, Rc, Vec};
 use ceres_support::{
+    convert,
     traits::{self, Frame},
     types::Metadata,
 };
 use core::cell::RefCell;
+use parity_scale_codec::Encode;
 use parity_wasm::elements::Module;
 
 /// Custom storage key
@@ -58,36 +60,27 @@ impl Sandbox {
 
     /// Preare a new frame
     pub fn prepare(&mut self, code_hash: [u8; 32]) -> Result<()> {
-        let contract = self
-            .cache
-            .borrow()
-            .get(&code_hash)
-            .ok_or(Error::CodeNotFound)?
-            .to_vec();
-
-        // store contract if not exists
         let mut cache_mut = self.cache.borrow_mut();
         if cache_mut.switch(code_hash).is_none() {
-            let mut el =
-                Module::from_bytes(Metadata::wasm(&contract).ok_or(Error::ParseWasmModuleFailed)?)?;
-            if el.has_names_section() {
-                el = match el.parse_names() {
-                    Ok(m) => m,
-                    Err((_, m)) => m,
-                }
-            }
-
-            let limit = ceres_executor::scan_imports(&el)?;
+            let contract = cache_mut.get(&code_hash).ok_or(Error::CodeNotFound)?;
+            let limit = ceres_executor::scan_imports(&Module::from_bytes(&contract)?)?;
             let memory = Memory::new(limit.0, limit.1)?;
             cache_mut.push(code_hash, memory);
-
-            // set contract
-            let contract = &el.to_bytes()?;
-            cache_mut.set(code_hash.to_vec(), contract.to_vec());
         }
         drop(cache_mut);
 
         Ok(())
+    }
+
+    /// Load metadata to cache
+    pub fn load_metadata(&mut self, meta: &Metadata) -> Result<[u8; 32]> {
+        let code_hash =
+            convert::parse_code_hash(&meta.source.hash).ok_or(Error::DecodeContractFailed)?;
+        self.cache.borrow_mut().set(
+            code_hash.to_vec(),
+            Metadata::wasm(&meta.encode()).ok_or(Error::DecodeContractFailed)?,
+        );
+        Ok(code_hash)
     }
 }
 
