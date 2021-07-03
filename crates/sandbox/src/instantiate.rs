@@ -31,7 +31,10 @@ impl Sandbox {
         let ret = executor.invoke(method, &[], self)?;
 
         // Pop state
-        self.cache.borrow_mut().back().ok_or(Error::StateNotFound)?;
+        let mut cache_mut = self.cache.borrow_mut();
+        cache_mut.back().ok_or(Error::StateNotFound)?;
+        cache_mut.flush().ok_or(Error::FlushDataFailed)?;
+        drop(cache_mut);
 
         // return vals
         Ok((code_hash, ret.data))

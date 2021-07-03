@@ -71,6 +71,8 @@ pub enum Error {
     InitExecutorFailed,
     /// Executor Error
     ExecuteWasmFailed(ceres_executor::Error),
+    LoadDataFailed,
+    FlushDataFailed,
 }
 
 impl From<ceres_executor::Error> for Error {

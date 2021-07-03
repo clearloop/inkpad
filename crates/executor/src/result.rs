@@ -116,6 +116,7 @@ pub enum Error {
     StateNotFound,
     CodeHashNotFound,
     DecodeContractFailed,
+    FlushDataFailed,
 }
 
 impl From<parity_wasm::SerializationError> for Error {

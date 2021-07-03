@@ -111,6 +111,7 @@ impl Runtime {
         args: Vec<Vec<u8>>,
         tx: Option<Transaction>,
     ) -> Result<Option<Vec<u8>>> {
+        // construct transaction
         if let Some(tx) = tx {
             self.sandbox.tx = tx;
         }
@@ -131,6 +132,11 @@ impl Runtime {
         .invoke(&method.to_string(), &[], &mut self.sandbox)
         .map_err(|error| Error::CallContractFailed { error })?;
 
+        // flush data
+        self.cache
+            .borrow_mut()
+            .flush()
+            .ok_or(Error::FlushDataFailed)?;
         Ok(self.sandbox.ret.clone())
     }
 }
