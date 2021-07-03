@@ -18,6 +18,7 @@ use parity_scale_codec::Encode;
 
 #[test]
 fn test_call_contracts() {
+    env_logger::init();
     let mut delegator = Runtime::from_contract(
         include_bytes!("../contracts/delegator.contract"),
         Cache::default(),

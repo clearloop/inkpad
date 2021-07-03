@@ -13,6 +13,7 @@ pub fn seal_input(out_ptr: u32, out_len_ptr: u32) -> Result<Option<Value>> {
             sandbox.cache.borrow().active()
         );
         sandbox.write_sandbox_output(out_ptr, out_len_ptr, &input)?;
+        log::debug!("(seal_input) end");
         Ok(None)
     } else {
         Err(Error::OutOfBounds)

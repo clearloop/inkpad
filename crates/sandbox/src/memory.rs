@@ -61,6 +61,7 @@ impl Sandbox {
             .and_then(|_| memory.set(out_len_ptr, &buf_len.encode()))
             .map_err(|_| Error::OutOfBounds)?;
 
+        log::debug!("write sandbox output done");
         Ok(())
     }
 }

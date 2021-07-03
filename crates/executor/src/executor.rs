@@ -34,6 +34,11 @@ where
 
     // invoke method
     pub fn invoke(&mut self, method: &str, data: &[Value], sandbox: &mut T) -> Result<ExecResult> {
-        ExecResult::from_res(self.instance.invoke(method, data, sandbox))
+        let res = ExecResult::from_res(self.instance.invoke(method, data, sandbox));
+        if let Ok(r) = res.clone() {
+            log::debug!("{:?}", &r.data);
+        }
+
+        res
     }
 }

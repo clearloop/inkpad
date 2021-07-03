@@ -36,7 +36,12 @@ impl Sandbox {
         cache_mut.flush().ok_or(Error::FlushDataFailed)?;
         drop(cache_mut);
 
-        // return vals
+        // flush data
+        log::debug!("curent state {}", self.cache.borrow().frame().len());
+        self.cache
+            .borrow_mut()
+            .flush()
+            .ok_or(Error::FlushDataFailed)?;
         Ok((code_hash, ret.data))
     }
 

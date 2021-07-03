@@ -14,6 +14,7 @@ use std::{cell::RefCell, fs, path::PathBuf, process, rc::Rc};
 
 const RUNTIME_CACHE: &str = "RUNTIME_CACHE";
 const PREVIOUS_STATE: &str = "PREVIOUS_STATE";
+type HostState = BTreeMap<[u8; 32], BTreeMap<Vec<u8>, Vec<u8>>>;
 
 /// A ceres storage implementation using sled
 #[derive(Clone)]
@@ -21,6 +22,7 @@ pub struct Storage {
     pub db: Db,
     cache: Tree,
     frame: Vec<Rc<RefCell<State<Memory>>>>,
+    state: HostState,
 }
 
 impl traits::Storage for Storage {
@@ -50,21 +52,21 @@ impl Cache<Memory> for Storage {
         Some(self.frame.last()?.borrow().memory.clone())
     }
 
-    // Try load previous state
-
     /// Flush data
     fn flush(&mut self) -> Option<()> {
-        let mut states = self
-            .frame
-            .iter()
-            .map(|state| {
-                let state = state.borrow();
-                (state.hash.clone(), state.state.clone())
-            })
-            .collect::<Vec<_>>();
-        states.dedup();
-        self.cache.flush().ok()?;
-        self.db.insert(PREVIOUS_STATE, states.encode()).ok()?;
+        for state in self.frame.iter() {
+            let state = state.borrow().clone();
+            self.state.insert(state.hash, state.state);
+        }
+
+        let mut data = if let Some(state) = self.db.get(PREVIOUS_STATE).ok()? {
+            HostState::decode(&mut state.as_ref()).ok()?
+        } else {
+            BTreeMap::new()
+        };
+
+        data.append(&mut self.state.clone());
+        self.db.insert(PREVIOUS_STATE, data.encode()).ok()?;
         self.db.flush().ok()?;
         Some(())
     }
@@ -91,19 +93,21 @@ impl Storage {
             db,
             cache,
             frame: Vec::new(),
+            state: BTreeMap::new(),
         })
     }
 
     fn load(&mut self, rt: &mut Runtime) -> Result<()> {
-        for (code_hash, map) in <Vec<([u8; 32], BTreeMap<Vec<u8>, Vec<u8>>)>>::decode(
-            &mut self
-                .db
-                .get(PREVIOUS_STATE)?
-                .ok_or("Get previous data failed")?
-                .as_ref(),
-        )?
-        .into_iter()
+        let previous = self.db.get(PREVIOUS_STATE)?;
+        if previous.is_none() {
+            return Ok(());
+        }
+
+        for (code_hash, map) in
+            HostState::decode(&mut previous.ok_or("Get previous data failed")?.as_ref())?
+                .into_iter()
         {
+            log::info!("loaded contract: 0x{}", hex::encode(code_hash));
             rt.sandbox.prepare(code_hash)?;
             rt.sandbox
                 .cache
@@ -116,12 +120,12 @@ impl Storage {
         }
 
         let mut cache = rt.sandbox.cache.borrow_mut();
-        let last = cache
+        let first = cache
             .frame()
-            .last()
+            .first()
             .ok_or("No frame in current runtime")?
             .clone();
-        cache.frame_mut().push(last.clone());
+        cache.frame_mut().push(first.clone());
         Ok(())
     }
 
@@ -143,7 +147,7 @@ impl Storage {
                     .active()
                     .ok_or(ceres_executor::Error::CodeNotFound)?
                     .clone(),
-                source,
+                r.metadata.encode(),
             )?;
             r
         } else if let Ok(Some(contract)) = if contract.is_empty() {
@@ -151,7 +155,7 @@ impl Storage {
             let mut recent = None;
             for c in self.db.iter() {
                 let (k, v) = c?;
-                if k.len() != 32 {
+                if k.len() == 32 {
                     recent = Some(Ok(Some(v)));
                     break;
                 }
