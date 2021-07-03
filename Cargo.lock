@@ -315,6 +315,7 @@ dependencies = [
  "derivative",
  "hex",
  "parity-scale-codec",
+ "parity-wasm",
  "serde",
 ]
 

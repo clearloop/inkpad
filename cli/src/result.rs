@@ -1,4 +1,5 @@
 //! Ceres CLI Error
+use ceres_executor::Error as Executor;
 use ceres_runtime::Error as Runtime;
 use ceres_support::errors;
 use etc::Error as Etc;
@@ -22,6 +23,7 @@ pub struct Custom(String);
 errors! {
     Codec,
     Runtime,
+    Executor,
     Etc,
     Sled,
     Io,

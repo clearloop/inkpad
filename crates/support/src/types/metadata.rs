@@ -3,6 +3,7 @@ use crate::convert::step_hex;
 use ceres_std::{BTreeMap, String, Vec};
 use derivative::Derivative;
 use parity_scale_codec::{Decode, Encode};
+use parity_wasm::elements::Module;
 use serde::{Deserialize, Serialize};
 
 type Method = (String, Vec<(Option<String>, u32)>);
@@ -19,7 +20,16 @@ pub struct Metadata {
 impl Metadata {
     /// Get wasm from metadata
     pub fn wasm(mut b: &[u8]) -> Option<Vec<u8>> {
-        step_hex(&Self::decode(&mut b).ok()?.source.wasm)
+        let raw = step_hex(&Self::decode(&mut b).ok()?.source.wasm)?;
+        let mut el = Module::from_bytes(&raw).ok()?;
+        if el.has_names_section() {
+            el = match el.parse_names() {
+                Ok(m) => m,
+                Err((_, m)) => m,
+            }
+        }
+
+        el.to_bytes().ok()
     }
 }
 
