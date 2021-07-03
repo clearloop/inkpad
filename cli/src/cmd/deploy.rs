@@ -12,6 +12,6 @@ pub fn exec(rt: &mut Runtime, tx: Tx) -> Result<()> {
 
     rt.deploy(&tx.method, args, Some(tx.tx()?))?;
 
-    println!("Deploy contract succeed!");
+    println!("\n\tDeploy contract succeed!\n");
     Ok(())
 }

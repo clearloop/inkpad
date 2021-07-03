@@ -10,6 +10,9 @@ pub fn exec(rt: &mut Runtime, tx: Tx) -> Result<()> {
         args.push(step_hex(arg).ok_or("argument should be hex encoded")?);
     }
 
-    println!("result: {:?}", rt.call(&tx.method, args, Some(tx.tx()?))?);
+    println!(
+        "\n\tresult: {:?}\n",
+        rt.call(&tx.method, args, Some(tx.tx()?))?
+    );
     Ok(())
 }

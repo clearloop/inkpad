@@ -107,7 +107,7 @@ impl Storage {
             HostState::decode(&mut previous.ok_or("Get previous data failed")?.as_ref())?
                 .into_iter()
         {
-            println!("load contract: 0x{}", hex::encode(code_hash));
+            log::debug!("load contract: 0x{}", hex::encode(code_hash));
             rt.sandbox.prepare(code_hash)?;
             rt.sandbox
                 .cache

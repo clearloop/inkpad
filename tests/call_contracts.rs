@@ -38,6 +38,15 @@ fn test_call_contracts() {
         hashes.push(delegator.load(contract).unwrap())
     }
 
+    println!(
+        "{} {} {} {} {}",
+        hex::encode(42.encode()),
+        hex::encode(1.encode()),
+        hex::encode(hashes[0].encode()),
+        hex::encode(hashes[1].encode()),
+        hex::encode(hashes[2].encode())
+    );
+
     // deploy
     delegator
         .deploy(
