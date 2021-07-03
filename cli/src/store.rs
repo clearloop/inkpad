@@ -7,36 +7,31 @@ use ceres_support::{
 };
 use etc::{Etc, FileSystem, Meta};
 use parity_scale_codec::{Decode, Encode};
-use sled::{Db, Tree};
+use sled::Db;
 use std::{cell::RefCell, fs, path::PathBuf, process, rc::Rc};
-
-const CACHE_STORAGE: &str = "cache";
 
 /// A ceres storage implementation using sled
 #[derive(Clone)]
 pub struct Storage {
     pub db: Db,
-    pub cache: Tree,
     frame: Vec<Rc<RefCell<State<Memory>>>>,
 }
 
 impl traits::Storage for Storage {
     fn set(&mut self, key: Vec<u8>, value: Vec<u8>) -> Option<Vec<u8>> {
-        let r = self.cache.insert(key, value).ok()?.map(|v| v.to_vec());
-        self.cache.flush().ok();
-        self.db.flush().ok();
+        let r = self.db.insert(key, value).ok()?.map(|v| v.to_vec());
+        self.db.flush().ok()?;
         r
     }
 
     fn remove(&mut self, key: &[u8]) -> Option<Vec<u8>> {
-        let r = self.cache.remove(key).ok()?.map(|v| v.to_vec());
-        self.cache.flush().ok();
-        self.db.flush().ok();
+        let r = self.db.remove(key).ok()?.map(|v| v.to_vec());
+        self.db.flush().ok()?;
         r
     }
 
     fn get(&self, key: &[u8]) -> Option<Vec<u8>> {
-        self.cache.get(key).ok()?.map(|v| v.to_vec())
+        self.db.get(key).ok()?.map(|v| v.to_vec())
     }
 }
 
@@ -69,11 +64,9 @@ impl Storage {
     pub fn new() -> crate::Result<Self> {
         let etc = Etc::new(&dirs::home_dir().ok_or("Could not find home dir")?)?;
         let db = sled::open(etc.open(".ceres/contracts")?.real_path()?)?;
-        let cache = db.open_tree(CACHE_STORAGE)?;
 
         Ok(Self {
             db,
-            cache,
             frame: Vec::new(),
         })
     }
