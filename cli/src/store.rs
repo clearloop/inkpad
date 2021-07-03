@@ -1,11 +1,12 @@
 //! Storage implementation
 use ceres_executor::Memory;
-use ceres_runtime::{Metadata, Runtime};
+use ceres_runtime::Runtime;
 use ceres_support::{
     traits::{self, Cache, Frame},
-    types::State,
+    types::{Metadata, State},
 };
 use etc::{Etc, FileSystem, Meta};
+use parity_scale_codec::{Decode, Encode};
 use sled::{Db, Tree};
 use std::{cell::RefCell, fs, path::PathBuf, process, rc::Rc};
 
@@ -88,10 +89,8 @@ impl Storage {
         Ok(if if_path.exists() {
             let source = fs::read(if_path)?;
             let rt = Runtime::from_contract(&source, cache, Some(ceres_ri::Instance))?;
-            self.db.insert(
-                &rt.metadata.contract.name,
-                bincode::serialize(&rt.metadata.clone())?,
-            )?;
+            self.db
+                .insert(&rt.metadata.contract.name, rt.metadata.encode())?;
             rt
         } else if let Ok(Some(contract)) = if contract.is_empty() {
             let mut recent = None;
@@ -114,7 +113,7 @@ impl Storage {
             self.db.get(contract.as_bytes())
         } {
             Runtime::from_metadata(
-                bincode::deserialize::<Metadata>(&contract)?,
+                Metadata::decode(&mut contract.as_ref())?,
                 cache,
                 Some(ceres_ri::Instance),
             )?

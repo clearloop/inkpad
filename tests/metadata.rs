@@ -1,4 +1,4 @@
-use ceres_runtime::Metadata;
+use ceres_support::types::Metadata;
 
 #[test]
 fn test_decoding_flipper() {

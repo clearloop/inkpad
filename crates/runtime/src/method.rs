@@ -1,6 +1,7 @@
 //! Contract methods
-use crate::{util, Error, Metadata, Result};
+use crate::{util, Error, Result};
 use ceres_std::{String, ToString, Vec};
+use ceres_support::types::Metadata;
 
 /// Custom ink method
 pub enum InkMethod {

@@ -1,17 +1,20 @@
 //! Ceres Runtime
-use crate::{method::InkMethod, util, Error, Metadata, Result};
+use crate::{method::InkMethod, Error, Result};
 use ceres_executor::{Executor, Memory};
 use ceres_sandbox::{RuntimeInterfaces, Sandbox, Transaction};
 use ceres_std::{Rc, String, ToString, Vec};
-use ceres_support::{convert, traits, types};
+use ceres_support::{
+    convert, traits,
+    types::{self, Metadata},
+};
 use core::cell::RefCell;
-use parity_wasm::elements::Module;
+use parity_scale_codec::Encode;
 
 /// Ceres Runtime
 pub struct Runtime {
     pub sandbox: Sandbox,
     pub metadata: Metadata,
-    cache: Rc<RefCell<dyn traits::Frame<Memory>>>,
+    pub cache: Rc<RefCell<dyn traits::Frame<Memory>>>,
 }
 
 impl Runtime {
@@ -20,13 +23,7 @@ impl Runtime {
         let meta = serde_json::from_str::<Metadata>(&String::from_utf8_lossy(contract))
             .map_err(|_| Error::DecodeContractFailed)?;
 
-        Self::new(
-            &hex::decode(&meta.source.wasm.as_bytes()[2..])
-                .map_err(|_| Error::DecodeContractFailed)?,
-            meta,
-            types::Cache::default(),
-            ri,
-        )
+        Self::new(meta, types::Cache::default(), ri)
     }
 
     /// Create runtime from contract
@@ -38,13 +35,7 @@ impl Runtime {
         let meta = serde_json::from_slice::<Metadata>(&contract)
             .map_err(|_| Error::DecodeContractFailed)?;
 
-        Self::new(
-            &hex::decode(&meta.source.wasm.as_bytes()[2..])
-                .map_err(|_| Error::DecodeContractFailed)?,
-            meta,
-            cache,
-            ri,
-        )
+        Self::new(meta, cache, ri)
     }
 
     /// Create runtime from metadata and storage
@@ -53,13 +44,7 @@ impl Runtime {
         cache: impl traits::Frame<Memory> + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
-        Self::new(
-            &hex::decode(&meta.source.wasm.as_bytes()[2..])
-                .map_err(|_| Error::DecodeContractFailed)?,
-            meta,
-            cache,
-            ri,
-        )
+        Self::new(meta, cache, ri)
     }
 
     /// Load contract to cache
@@ -71,55 +56,40 @@ impl Runtime {
 
     /// Load metadata to cache
     pub fn load_metadata(&mut self, meta: Metadata) -> Result<[u8; 32]> {
+        let code_hash =
+            convert::parse_code_hash(&meta.source.hash).ok_or(Error::InvalidCodeHash)?;
         self.cache.borrow_mut().set(
-            util::parse_code_hash(&meta.source.hash)?.to_vec(),
+            code_hash.to_vec(),
             hex::decode(&meta.source.wasm.as_bytes()[2..])
                 .map_err(|_| Error::DecodeContractFailed)?,
         );
-        util::parse_code_hash(&meta.source.hash)
+        Ok(code_hash)
     }
 
     /// New runtime
     pub fn new(
-        b: &[u8],
         metadata: Metadata,
         cache: impl traits::Frame<Memory> + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
-        let mut el = Module::from_bytes(b).map_err(|_| Error::ParseWasmModuleFailed)?;
-        if el.has_names_section() {
-            el = match el.parse_names() {
-                Ok(m) => m,
-                Err((_, m)) => m,
-            }
-        }
-
-        // get code hash
-        let code_hash = util::parse_code_hash(&metadata.source.hash)?;
-
         // generate seal calls
         let seal_calls = ceres_seal::pallet_contracts(ri);
 
-        // reset cache
+        // wrap cache
         let cache = Rc::new(RefCell::new(cache));
-        let mut cache_mut = cache.borrow_mut();
-
-        // Push new frame
-        if cache_mut.switch(code_hash).is_none() {
-            let limit = ceres_executor::scan_imports(&el)?;
-            let memory = Memory::new(limit.0, limit.1)?;
-            cache_mut.push(code_hash, memory);
-
-            // set contract
-            let contract = &el
-                .to_bytes()
-                .map_err(|error| Error::SerializeFailed { error })?;
-            cache_mut.set(code_hash.to_vec(), contract.to_vec());
-        }
-        drop(cache_mut);
 
         // Create Sandbox and Builder
-        let sandbox = Sandbox::new(cache.clone(), seal_calls.clone());
+        let mut sandbox = Sandbox::new(cache.clone(), seal_calls.clone());
+
+        // Sotre contract
+        let code_hash =
+            convert::parse_code_hash(&metadata.source.hash).ok_or(Error::DecodeContractFailed)?;
+        cache
+            .borrow_mut()
+            .set(code_hash.to_vec(), metadata.encode());
+
+        // Prepare contract
+        sandbox.prepare(code_hash)?;
 
         Ok(Runtime {
             sandbox,

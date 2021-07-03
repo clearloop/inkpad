@@ -1,6 +1,7 @@
 //! Memory generator
 use crate::{Error, Result};
 use ceres_std::Vec;
+use ceres_support::convert::step_hex;
 use parity_wasm::elements::{External, Module};
 
 const IMPORT_MODULE_MEMORY: &str = "env";
@@ -15,35 +16,13 @@ pub fn parse_args(selector: &str, args: Vec<Vec<u8>>, tys: Vec<u32>) -> Result<V
     }
 
     let mut res = step_hex(selector)
-        .map_err(|_| Error::DecodeSelectorFailed)?
+        .ok_or(Error::DecodeSelectorFailed)?
         .to_vec();
     for mut arg in args {
         res.append(&mut arg);
     }
 
     Ok(res)
-}
-
-/// Trim 0x prefix
-pub fn step_hex(h: &str) -> Result<Vec<u8>> {
-    if let Some(stripped) = h.strip_prefix("0x") {
-        hex::decode(stripped)
-    } else {
-        hex::decode(&h)
-    }
-    .map_err(|_| Error::DecodeSelectorFailed)
-}
-
-/// Parse code hash from string
-pub fn parse_code_hash(h: &str) -> Result<[u8; 32]> {
-    let hash = step_hex(h)?;
-    let mut res = [0; 32];
-    if hash.len() != 32 {
-        Err(Error::InvalidCodeHash)
-    } else {
-        res.copy_from_slice(&hash);
-        Ok(res)
-    }
 }
 
 /// Scan an import section if any.

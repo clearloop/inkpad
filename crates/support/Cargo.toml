@@ -5,6 +5,10 @@ authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+hex = "0.4.3"
+serde = { version = "1.0.125", features = ["derive"] }
+derivative = { version = "2.2.0", features = ["use_core"] }
+parity-scale-codec = { version = "2", features = ["derive"] }
 ceres-std = { path = "../std", version = "^0" }
 
 [features]
