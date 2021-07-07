@@ -1,5 +1,7 @@
+gh-pages
 .log
 **/*target
 **/*.DS_Store
 **/*.wasm
 **/*.debug
+

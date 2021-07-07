@@ -1,0 +1,14 @@
+[book]
+authors = ["clearloop"]
+language = "en"
+multilingual = false
+src = "docs"
+title = "The Ceres Book"
+
+[build]
+build-dir = "gh-pages"
+
+[output.html]
+default-theme = "dark"
+preferred-dark-theme = "ayu"
+git-repository-url = "https://github.com/patractlabs/ceres"
