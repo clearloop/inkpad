@@ -125,7 +125,7 @@ impl Storage {
             .first()
             .ok_or("No frame in current runtime")?
             .clone();
-        cache.frame_mut().push(first.clone());
+        cache.frame_mut().push(first);
         Ok(())
     }
 
@@ -145,8 +145,7 @@ impl Storage {
                 r.cache
                     .borrow()
                     .active()
-                    .ok_or(ceres_executor::Error::CodeNotFound)?
-                    .clone(),
+                    .ok_or(ceres_executor::Error::CodeNotFound)?,
                 r.metadata.encode(),
             )?;
             r
