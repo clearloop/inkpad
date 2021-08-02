@@ -3,7 +3,7 @@
 - [Introduction](./README.md)
 - [Quickstart](./quickstart.md)
 - [Prerequisites](./prerequisites/README.md)
-  - [ink! contract](./ink-contract.md)
+  - [ink! contract](./prerequisites/ink-contract.md)
   - [cargo-contract](./prerequisites/cargo-contract.md)
 - [CLI](./cli/README.md)
   - [call](./cli/call.md)

@@ -49,13 +49,13 @@ impl Runtime {
     /// Load contract to cache
     pub fn load(&mut self, b: &[u8]) -> Result<[u8; 32]> {
         self.load_metadata(
-            &serde_json::from_slice::<Metadata>(&b).map_err(|_| Error::DecodeContractFailed)?,
+            &serde_json::from_slice::<Metadata>(b).map_err(|_| Error::DecodeContractFailed)?,
         )
     }
 
     /// Load metadata to cache
     pub fn load_metadata(&mut self, meta: &Metadata) -> Result<[u8; 32]> {
-        Ok(self.sandbox.load_metadata(&meta)?)
+        Ok(self.sandbox.load_metadata(meta)?)
     }
 
     /// New runtime

@@ -24,7 +24,7 @@ impl Runtime {
     /// Deploy contract
     pub fn deploy(&mut self, method: &str, args_json: &str, tx_json: Option<String>) {
         Self::parse_args_and_then(args_json, tx_json, move |args, tx| {
-            err_check(self.0.deploy(&method, args, tx.map(|v| v.into())));
+            err_check(self.0.deploy(method, args, tx.map(|v| v.into())));
         })
     }
 
@@ -32,7 +32,7 @@ impl Runtime {
     pub fn call(&mut self, method: &str, args_json: &str, tx_json: Option<String>) -> String {
         hex::encode(
             &Self::parse_args_and_then(args_json, tx_json, move |args, tx| {
-                err_check(self.0.call(&method, args, tx.map(|v| v.into())))
+                err_check(self.0.call(method, args, tx.map(|v| v.into())))
             })
             .unwrap_or_default(),
         )
@@ -43,7 +43,7 @@ impl Runtime {
     where
         F: FnMut(Vec<Vec<u8>>, Option<Transaction>) -> T,
     {
-        let args: Vec<String> = err_check(serde_json::from_str(&args_json));
+        let args: Vec<String> = err_check(serde_json::from_str(args_json));
         let tx = tx_json.map(|v| err_check(serde_json::from_str(&v)));
         let mut args_bytes: Vec<Vec<u8>> = Default::default();
 
