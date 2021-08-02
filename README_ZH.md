@@ -14,19 +14,23 @@ Ceres
 [e1]: https://img.shields.io/crates/l/ceres-runtime.svg
 [e2]: https://choosealicense.com/licenses/apache-2.0/
 
-[Run ink! contract anywhere!](https://patractlabs.github.io/ceres/)
+ <h3>
+    <a href="https://patractlabs.github.io/ceres/"> 教程 </a>
+    <span> | </span>
+    <a href="./README.md"> 英文 </a>
+</h3>
 
 </div>
 
-## Play with it
+## 尝试 Ceres
 
-The Ceres CLI can be installed with:
+可以通过以下命令安装 Ceres CLI:
 
 ```
 cargo install ceres-cli
 ```
 
-We can use the `ceres` binary to explore the usages of ceres library.
+我们可以通过 `ceres` 命令来探索 Ceres 库:
 
 ```
 ceres 0.2.0
@@ -50,26 +54,27 @@ SUBCOMMANDS:
     list      Lists all contracts
 ```
 
-## Features
+## 特性
 
-* **lightweight**. Ceres is a standalone ink! contract environment that scales with your needs, 
-Ceres can be embedded into almost any application.
-* **debugging**. Ceres built with the traps handlers of both `wasmi` and `wasmtime`, it supports
-catching the traps of the wasm binary of ink! contracts
-* **tests**. With Ceres, you can write tests of ink! contract with full-features of the chain api
-* **customized**. The runtime of ceres works with various of rust `trait` that we can configure it 
-blazing flexible.
+* **轻量**。 Ceres 是一个可以根据你的需求进行拓展的 ink! contract 执行环境,
+它可以被嵌入到绝大数 Apps 中。
+* **debugging**. Ceres 包含了 `wasmi` 和 `wasmtime` 的 trap handlers，可以捕捉
+ink! contract 执行过程中抛出的 traps。
+* **tests**. Ceres 包含了 ink! contract 执行环境的全部特性，你可以通过 Ceres 
+轻松地测试你的 ink! contract。
+* **customized**. Ceres 的 runtime 通过 Rust `trait` 构建，我们可以十分灵活
+地定制自己的 Ceres Runtime。
 
 
-## Platform Support
+## 支持平台
 
-You can use Ceres from a variety of different platforms:
+你可以在以下平台使用 Ceres:
 
-* Rust - the [ceres-runtime][ceres-runtime] crate
-* Browser - the [ceres-browser][ceres-browser] crate
-* Command Line - the [ceres-cli][ceres-cli] crate
+* Rust - 请看 [ceres-runtime][ceres-runtime]
+* 浏览器 - 请看 [ceres-browser][ceres-browser]
+* 命令行 - 请看 [ceres-cli][ceres-cli]
 
-## Example
+## 案例
 
 ```rust
 // test flipper.contract
@@ -97,15 +102,14 @@ fn test_flipper() {
 }
 ```
 
-## How it works
+## Ceres 如何运作？
 
-Ceres extracted from `sp-sandbox` and `pallet-contracts` of substrate
-with both `wasmi` and `wasmtime` features, plus trap handlers for the
-two executors.
+Ceres 给予 substrate 的 `sp-sandbox` 和 `pallet-contracts` 制作，同时
+包含了 `wasmi` 和 `wasmtime` 两种执行器，并且为它们添加了 wasm trap 
+handlers。
 
-It abstracts the chain environment which ink! contracts requires so
-that we can embed ceres almost any applications to run ink! contracts.
-
+它模拟了 substrate 链的环境，以至于我们可以将 Ceres 嵌入到任何 Apps
+中使用。
 
 ---
 
