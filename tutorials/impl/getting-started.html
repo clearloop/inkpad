@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../../quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li class="chapter-item expanded "><a href="../../prerequisites/index.html"><strong aria-hidden="true">3.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../ink-contract.html"><strong aria-hidden="true">3.1.</strong> ink! contract</a></li><li class="chapter-item expanded "><a href="../../prerequisites/cargo-contract.html"><strong aria-hidden="true">3.2.</strong> cargo-contract</a></li></ol></li><li class="chapter-item expanded "><a href="../../cli/index.html"><strong aria-hidden="true">4.</strong> CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../cli/call.html"><strong aria-hidden="true">4.1.</strong> call</a></li><li class="chapter-item expanded "><a href="../../cli/deploy.html"><strong aria-hidden="true">4.2.</strong> deploy</a></li><li class="chapter-item expanded "><a href="../../cli/info.html"><strong aria-hidden="true">4.3.</strong> info</a></li><li class="chapter-item expanded "><a href="../../cli/list.html"><strong aria-hidden="true">4.4.</strong> list</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/index.html"><strong aria-hidden="true">5.</strong> Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/debug/index.html"><strong aria-hidden="true">5.1.</strong> debug ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/debug/getting-started.html"><strong aria-hidden="true">5.1.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/tests/index.html"><strong aria-hidden="true">5.2.</strong> write tests for ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/tests/getting-started.html"><strong aria-hidden="true">5.2.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/browser/index.html"><strong aria-hidden="true">5.3.</strong> run ink! contract in browser</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/browser/getting-started.html"><strong aria-hidden="true">5.3.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/impl/index.html"><strong aria-hidden="true">5.4.</strong> write your implementation of ceres</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/impl/getting-started.html" class="active"><strong aria-hidden="true">5.4.1.</strong> Getting Started</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../../quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li class="chapter-item expanded "><a href="../../prerequisites/index.html"><strong aria-hidden="true">3.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../prerequisites/ink-contract.html"><strong aria-hidden="true">3.1.</strong> ink! contract</a></li><li class="chapter-item expanded "><a href="../../prerequisites/cargo-contract.html"><strong aria-hidden="true">3.2.</strong> cargo-contract</a></li></ol></li><li class="chapter-item expanded "><a href="../../cli/index.html"><strong aria-hidden="true">4.</strong> CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../cli/call.html"><strong aria-hidden="true">4.1.</strong> call</a></li><li class="chapter-item expanded "><a href="../../cli/deploy.html"><strong aria-hidden="true">4.2.</strong> deploy</a></li><li class="chapter-item expanded "><a href="../../cli/info.html"><strong aria-hidden="true">4.3.</strong> info</a></li><li class="chapter-item expanded "><a href="../../cli/list.html"><strong aria-hidden="true">4.4.</strong> list</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/index.html"><strong aria-hidden="true">5.</strong> Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/debug/index.html"><strong aria-hidden="true">5.1.</strong> debug ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/debug/getting-started.html"><strong aria-hidden="true">5.1.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/tests/index.html"><strong aria-hidden="true">5.2.</strong> write tests for ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/tests/getting-started.html"><strong aria-hidden="true">5.2.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/browser/index.html"><strong aria-hidden="true">5.3.</strong> run ink! contract in browser</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/browser/getting-started.html"><strong aria-hidden="true">5.3.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/impl/index.html"><strong aria-hidden="true">5.4.</strong> write your implementation of ceres</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/impl/getting-started.html" class="active"><strong aria-hidden="true">5.4.1.</strong> Getting Started</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -170,6 +170,218 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
+<h3 id="0-implement-your-storage"><a class="header" href="#0-implement-your-storage">0. implement your <code>storage</code></a></h3>
+<p>The <code>Storage</code> trait in <code>ceres/crate/support</code> is the entry of ceres storage, 
+first of all, we need to construct a storage for our implementation.</p>
+<p>For example, the storage implementation of <code>ceres-cli</code> is like:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ceres_support::traits::{self, Cache, Frame};
+
+/// A ceres storage implementation using sled
+#[derive(Clone)]
+pub struct Storage {
+    pub db: Db,
+    cache: Tree,
+    frame: Vec&lt;Rc&lt;RefCell&lt;State&lt;Memory&gt;&gt;&gt;&gt;,
+    state: HostState,
+}
+
+impl traits::Storage for Storage {
+    fn set(&amp;mut self, key: Vec&lt;u8&gt;, value: Vec&lt;u8&gt;) -&gt; Option&lt;Vec&lt;u8&gt;&gt; {
+        self.cache.insert(key, value).ok()?.map(|v| v.to_vec())
+    }
+
+    fn remove(&amp;mut self, key: &amp;[u8]) -&gt; Option&lt;Vec&lt;u8&gt;&gt; {
+        self.cache.remove(key).ok()?.map(|v| v.to_vec())
+    }
+
+    fn get(&amp;self, key: &amp;[u8]) -&gt; Option&lt;Vec&lt;u8&gt;&gt; {
+        self.cache.get(key).ok()?.map(|v| v.to_vec())
+    }
+}
+
+impl Cache&lt;Memory&gt; for Storage {
+    fn frame(&amp;self) -&gt; &amp;Vec&lt;Rc&lt;RefCell&lt;State&lt;Memory&gt;&gt;&gt;&gt; {
+        &amp;self.frame
+    }
+
+    fn frame_mut(&amp;mut self) -&gt; &amp;mut Vec&lt;Rc&lt;RefCell&lt;State&lt;Memory&gt;&gt;&gt;&gt; {
+        &amp;mut self.frame
+    }
+
+    fn memory(&amp;self) -&gt; Option&lt;Memory&gt; {
+        Some(self.frame.last()?.borrow().memory.clone())
+    }
+
+    /// Flush data
+    fn flush(&amp;mut self) -&gt; Option&lt;()&gt; {
+        for state in self.frame.iter() {
+            let state = state.borrow().clone();
+            self.state.insert(state.hash, state.state);
+        }
+
+        let mut data = if let Some(state) = self.db.get(PREVIOUS_STATE).ok()? {
+            HostState::decode(&amp;mut state.as_ref()).ok()?
+        } else {
+            BTreeMap::new()
+        };
+
+        data.append(&amp;mut self.state.clone());
+        self.db.insert(PREVIOUS_STATE, data.encode()).ok()?;
+        self.db.flush().ok()?;
+        Some(())
+    }
+}
+
+impl Frame&lt;Memory&gt; for Storage {}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="1-construct-your-seal-calls"><a class="header" href="#1-construct-your-seal-calls">1. construct your seal calls</a></h3>
+<p>we need to construct seal calls for different platforms, for example, <code>ceres-cli</code> use 
+system interfaces, <code>ceres-browser</code> use browser interfaces.</p>
+<p>For example, the seal calls of <code>ceres-browser</code> is like</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ceres_sandbox::{RuntimeInterfaces, Sandbox};
+
+/// Browser interface
+pub struct Interface;
+
+impl RuntimeInterfaces for Interface {
+    /// Println
+    fn seal_println(sandbox: &amp;mut Sandbox, args: &amp;[Value]) -&gt; Ret {
+        if args.len() != 2 {
+            return Err(Error::WrongArugmentLength);
+        }
+
+        let data = sandbox.read_sandbox_memory(args[0].into(), args[1].into())?;
+        if let Ok(utf8) = core::str::from_utf8(&amp;data) {
+            log(utf8);
+        }
+
+        Ok(None)
+    }
+
+    /// Generate random value
+    fn seal_random(sandbox: &amp;mut Sandbox, args: &amp;[Value]) -&gt; Ret {
+        if args.len() != 4 {
+            return Err(Error::WrongArugmentLength);
+        }
+        let subject_ptr = args[0].into();
+        let subject_len = args[1].into();
+        let output_ptr: u32 = args[2].into();
+        let output_len: u32 = args[2].into();
+
+        // random
+        let mut dest: [u8; 1] = [0];
+        err_check(getrandom(&amp;mut dest));
+        let mut subject_buf = sandbox
+            .read_sandbox_memory(subject_ptr, subject_len)?
+            .to_vec();
+        subject_buf.push(dest[0]);
+
+        let output = blake2b::blake2b(32, &amp;[], &amp;subject_buf);
+        sandbox.write_sandbox_output(output_ptr, output_len, output.as_bytes())?;
+        Ok(None)
+    }
+
+    /// sha2 256
+    fn seal_hash_sha2_256(sandbox: &amp;mut Sandbox, args: &amp;[Value]) -&gt; Ret {
+        if args.len() != 3 {
+            return Err(Error::WrongArugmentLength);
+        }
+        let input_ptr = args[0].into();
+        let input_len = args[1].into();
+        let output_ptr = args[2].into();
+
+        // hash
+        let mut dest: [u8; 32] = [0; 32];
+        let mut hasher = Sha256::new();
+        let input = sandbox.read_sandbox_memory(input_ptr, input_len)?;
+        hasher.update(&amp;input);
+        dest.copy_from_slice(&amp;hasher.finalize());
+        sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
+
+        // result
+        Ok(None)
+    }
+
+    /// keccak 256
+    fn seal_hash_keccak_256(sandbox: &amp;mut Sandbox, args: &amp;[Value]) -&gt; Ret {
+        if args.len() != 3 {
+            return Err(Error::WrongArugmentLength);
+        }
+        let input_ptr = args[0].into();
+        let input_len = args[1].into();
+        let output_ptr = args[2].into();
+
+        // hash
+        let mut dest: [u8; 32] = [0; 32];
+        let mut keccak = Keccak::v256();
+        let input = sandbox.read_sandbox_memory(input_ptr, input_len)?;
+        keccak.update(&amp;input);
+        keccak.finalize(&amp;mut dest);
+        sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
+
+        // result
+        Ok(None)
+    }
+
+    /// blake2 256
+    fn seal_hash_blake2_256(sandbox: &amp;mut Sandbox, args: &amp;[Value]) -&gt; Ret {
+        if args.len() != 3 {
+            return Err(Error::WrongArugmentLength);
+        }
+        let input_ptr = args[0].into();
+        let input_len = args[1].into();
+        let output_ptr = args[2].into();
+
+        // hash
+        let mut dest = [0; 32];
+        let input = sandbox.read_sandbox_memory(input_ptr, input_len)?;
+        dest.copy_from_slice(blake2b::blake2b(32, &amp;[], &amp;input).as_bytes());
+        sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
+
+        // result
+        Ok(None)
+    }
+
+    /// blake2 128
+    fn seal_hash_blake2_128(sandbox: &amp;mut Sandbox, args: &amp;[Value]) -&gt; Ret {
+        if args.len() != 3 {
+            return Err(Error::WrongArugmentLength);
+        }
+        let input_ptr = args[0].into();
+        let input_len = args[1].into();
+        let output_ptr = args[2].into();
+
+        // hash
+        let mut dest = [0; 16];
+        let input = sandbox.read_sandbox_memory(input_ptr, input_len)?;
+        dest.copy_from_slice(blake2b::blake2b(16, &amp;[], &amp;input).as_bytes());
+        sandbox.write_sandbox_memory(output_ptr, dest.as_ref())?;
+
+        // result
+        Ok(None)
+    }
+}
+
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="2-build-runtime-with-your-implementations"><a class="header" href="#2-build-runtime-with-your-implementations">2. Build <code>Runtime</code> with your implementations</a></h3>
+<pre><pre class="playground"><code class="language-rust">/// This Instance has `RuntimeInterfaces` trait bundled
+use my_runtime_interfaces::Instance;
+use my_storage::Storage;
+
+fn main() {
+    let storage = Storage::new();
+    let rt = Runtime::from_contract(&amp;source, storage, Some(Instance));
+}
+</code></pre></pre>
+<p>Here we go, a new implementation of ceres.</p>
 
                     </main>
 

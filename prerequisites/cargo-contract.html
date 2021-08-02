@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li class="chapter-item expanded "><a href="../prerequisites/index.html"><strong aria-hidden="true">3.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ink-contract.html"><strong aria-hidden="true">3.1.</strong> ink! contract</a></li><li class="chapter-item expanded "><a href="../prerequisites/cargo-contract.html" class="active"><strong aria-hidden="true">3.2.</strong> cargo-contract</a></li></ol></li><li class="chapter-item expanded "><a href="../cli/index.html"><strong aria-hidden="true">4.</strong> CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cli/call.html"><strong aria-hidden="true">4.1.</strong> call</a></li><li class="chapter-item expanded "><a href="../cli/deploy.html"><strong aria-hidden="true">4.2.</strong> deploy</a></li><li class="chapter-item expanded "><a href="../cli/info.html"><strong aria-hidden="true">4.3.</strong> info</a></li><li class="chapter-item expanded "><a href="../cli/list.html"><strong aria-hidden="true">4.4.</strong> list</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/index.html"><strong aria-hidden="true">5.</strong> Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/debug/index.html"><strong aria-hidden="true">5.1.</strong> debug ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/debug/getting-started.html"><strong aria-hidden="true">5.1.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/tests/index.html"><strong aria-hidden="true">5.2.</strong> write tests for ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/tests/getting-started.html"><strong aria-hidden="true">5.2.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/browser/index.html"><strong aria-hidden="true">5.3.</strong> run ink! contract in browser</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/browser/getting-started.html"><strong aria-hidden="true">5.3.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/impl/index.html"><strong aria-hidden="true">5.4.</strong> write your implementation of ceres</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/impl/getting-started.html"><strong aria-hidden="true">5.4.1.</strong> Getting Started</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li class="chapter-item expanded "><a href="../prerequisites/index.html"><strong aria-hidden="true">3.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../prerequisites/ink-contract.html"><strong aria-hidden="true">3.1.</strong> ink! contract</a></li><li class="chapter-item expanded "><a href="../prerequisites/cargo-contract.html" class="active"><strong aria-hidden="true">3.2.</strong> cargo-contract</a></li></ol></li><li class="chapter-item expanded "><a href="../cli/index.html"><strong aria-hidden="true">4.</strong> CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cli/call.html"><strong aria-hidden="true">4.1.</strong> call</a></li><li class="chapter-item expanded "><a href="../cli/deploy.html"><strong aria-hidden="true">4.2.</strong> deploy</a></li><li class="chapter-item expanded "><a href="../cli/info.html"><strong aria-hidden="true">4.3.</strong> info</a></li><li class="chapter-item expanded "><a href="../cli/list.html"><strong aria-hidden="true">4.4.</strong> list</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/index.html"><strong aria-hidden="true">5.</strong> Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/debug/index.html"><strong aria-hidden="true">5.1.</strong> debug ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/debug/getting-started.html"><strong aria-hidden="true">5.1.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/tests/index.html"><strong aria-hidden="true">5.2.</strong> write tests for ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/tests/getting-started.html"><strong aria-hidden="true">5.2.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/browser/index.html"><strong aria-hidden="true">5.3.</strong> run ink! contract in browser</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/browser/getting-started.html"><strong aria-hidden="true">5.3.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/impl/index.html"><strong aria-hidden="true">5.4.</strong> write your implementation of ceres</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/impl/getting-started.html"><strong aria-hidden="true">5.4.1.</strong> Getting Started</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -169,14 +169,43 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="cargo-contract"><a class="header" href="#cargo-contract">cargo-contract</a></h1>
+                        <h1 id="patractlabscargo-contract"><a class="header" href="#patractlabscargo-contract"><code>patractlabs/cargo-contract</code></a></h1>
+<p>For compiling ink! contract with debug info, we can use <code>patractlabs/cargo-contract</code>
+along with <code>ceres</code>.</p>
+<h2 id="0-installation"><a class="header" href="#0-installation">0. Installation</a></h2>
+<pre><code>cargo install --git https://github.com/patractlabs/cargo-contract.git --branch tag-v0.12.1 --force
+</code></pre>
+<h2 id="1-compile-with-debug-info"><a class="header" href="#1-compile-with-debug-info">1. Compile with debug info</a></h2>
+<pre><code> 𝝺 cargo contract build -h
+cargo-contract-build 0.10.0
+Executes build of the smart-contract which produces a wasm binary that is ready for deploying.
+
+It does so by invoking `cargo build` and then post processing the final binary.
+
+USAGE:
+    cargo contract build [FLAGS] [OPTIONS]
+
+FLAGS:
+    -d, --debug      Enable debug info in the wasm bundle
+    -h, --help       Prints help information
+        --quiet      No output printed to stdout
+    -V, --version    Prints version information
+        --verbose    Use verbose output
+
+OPTIONS:
+        --generate &lt;all | code-only&gt;       Which build artifacts to generate. [default: all]
+        --manifest-path &lt;manifest-path&gt;    Path to the Cargo.toml of the contract to build
+    -Z, --unstable-options &lt;options&gt;...    Use the original manifest (Cargo.toml), do not modify for build optimizations
+</code></pre>
+<p>See the <code>--debug</code> flag, run <code>cargo build -d</code> in the contract path will embed
+debug info in the wasm of our contract.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../ink-contract.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../prerequisites/ink-contract.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
@@ -194,7 +223,7 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../ink-contract.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../prerequisites/ink-contract.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 

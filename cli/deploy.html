@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li class="chapter-item expanded "><a href="../prerequisites/index.html"><strong aria-hidden="true">3.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ink-contract.html"><strong aria-hidden="true">3.1.</strong> ink! contract</a></li><li class="chapter-item expanded "><a href="../prerequisites/cargo-contract.html"><strong aria-hidden="true">3.2.</strong> cargo-contract</a></li></ol></li><li class="chapter-item expanded "><a href="../cli/index.html"><strong aria-hidden="true">4.</strong> CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cli/call.html"><strong aria-hidden="true">4.1.</strong> call</a></li><li class="chapter-item expanded "><a href="../cli/deploy.html" class="active"><strong aria-hidden="true">4.2.</strong> deploy</a></li><li class="chapter-item expanded "><a href="../cli/info.html"><strong aria-hidden="true">4.3.</strong> info</a></li><li class="chapter-item expanded "><a href="../cli/list.html"><strong aria-hidden="true">4.4.</strong> list</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/index.html"><strong aria-hidden="true">5.</strong> Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/debug/index.html"><strong aria-hidden="true">5.1.</strong> debug ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/debug/getting-started.html"><strong aria-hidden="true">5.1.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/tests/index.html"><strong aria-hidden="true">5.2.</strong> write tests for ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/tests/getting-started.html"><strong aria-hidden="true">5.2.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/browser/index.html"><strong aria-hidden="true">5.3.</strong> run ink! contract in browser</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/browser/getting-started.html"><strong aria-hidden="true">5.3.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/impl/index.html"><strong aria-hidden="true">5.4.</strong> write your implementation of ceres</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/impl/getting-started.html"><strong aria-hidden="true">5.4.1.</strong> Getting Started</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li class="chapter-item expanded "><a href="../prerequisites/index.html"><strong aria-hidden="true">3.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../prerequisites/ink-contract.html"><strong aria-hidden="true">3.1.</strong> ink! contract</a></li><li class="chapter-item expanded "><a href="../prerequisites/cargo-contract.html"><strong aria-hidden="true">3.2.</strong> cargo-contract</a></li></ol></li><li class="chapter-item expanded "><a href="../cli/index.html"><strong aria-hidden="true">4.</strong> CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cli/call.html"><strong aria-hidden="true">4.1.</strong> call</a></li><li class="chapter-item expanded "><a href="../cli/deploy.html" class="active"><strong aria-hidden="true">4.2.</strong> deploy</a></li><li class="chapter-item expanded "><a href="../cli/info.html"><strong aria-hidden="true">4.3.</strong> info</a></li><li class="chapter-item expanded "><a href="../cli/list.html"><strong aria-hidden="true">4.4.</strong> list</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/index.html"><strong aria-hidden="true">5.</strong> Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/debug/index.html"><strong aria-hidden="true">5.1.</strong> debug ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/debug/getting-started.html"><strong aria-hidden="true">5.1.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/tests/index.html"><strong aria-hidden="true">5.2.</strong> write tests for ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/tests/getting-started.html"><strong aria-hidden="true">5.2.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/browser/index.html"><strong aria-hidden="true">5.3.</strong> run ink! contract in browser</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/browser/getting-started.html"><strong aria-hidden="true">5.3.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/impl/index.html"><strong aria-hidden="true">5.4.</strong> write your implementation of ceres</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/impl/getting-started.html"><strong aria-hidden="true">5.4.1.</strong> Getting Started</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -169,7 +169,46 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="deploy"><a class="header" href="#deploy">deploy</a></h1>
+                        <h1 id="ceres-deploy"><a class="header" href="#ceres-deploy">ceres deploy</a></h1>
+<p>The <code>ceres deploy</code> command deploy the supplied contract with constructor, like <code>ceres call</code></p>
+<pre><code> 𝝺 ceres deploy -h
+ceres-deploy
+Calls a deploy method
+
+USAGE:
+    ceres deploy [OPTIONS] &lt;method&gt;
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --address &lt;address&gt;                        Contract callee
+    -b, --balance &lt;balance&gt;                        contract balance
+        --caller &lt;caller&gt;                          Contract caller
+    -m, --minimum-balance &lt;minimum-balance&gt;        minimum balance
+    -n, --now &lt;now&gt;                                current time
+    -a, --args &lt;string,&gt;...                        Arguments
+    -v, --value-transferred &lt;value-transferred&gt;    transferred value
+
+ARGS:
+    &lt;method&gt;    Calling method
+</code></pre>
+<p>The options of method <code>deploy</code> are destructed from <code>Transaction</code></p>
+<h3 id="address"><a class="header" href="#address">address</a></h3>
+<p>Callee address</p>
+<h3 id="balance"><a class="header" href="#balance">balance</a></h3>
+<p>Contract balance</p>
+<h3 id="caller"><a class="header" href="#caller">caller</a></h3>
+<p>Caller address</p>
+<h3 id="minimum-balance"><a class="header" href="#minimum-balance">minimum-balance</a></h3>
+<p><code>minimum_balance</code> in transaction</p>
+<h3 id="now"><a class="header" href="#now">now</a></h3>
+<p>Transaction time</p>
+<h3 id="args"><a class="header" href="#args">args</a></h3>
+<p>Transaction arguments, should be <code>parity-scale-codec</code> format</p>
+<h3 id="value"><a class="header" href="#value">value</a></h3>
+<p>Transferred value</p>
 
                     </main>
 

@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../../quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li class="chapter-item expanded "><a href="../../prerequisites/index.html"><strong aria-hidden="true">3.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../ink-contract.html"><strong aria-hidden="true">3.1.</strong> ink! contract</a></li><li class="chapter-item expanded "><a href="../../prerequisites/cargo-contract.html"><strong aria-hidden="true">3.2.</strong> cargo-contract</a></li></ol></li><li class="chapter-item expanded "><a href="../../cli/index.html"><strong aria-hidden="true">4.</strong> CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../cli/call.html"><strong aria-hidden="true">4.1.</strong> call</a></li><li class="chapter-item expanded "><a href="../../cli/deploy.html"><strong aria-hidden="true">4.2.</strong> deploy</a></li><li class="chapter-item expanded "><a href="../../cli/info.html"><strong aria-hidden="true">4.3.</strong> info</a></li><li class="chapter-item expanded "><a href="../../cli/list.html"><strong aria-hidden="true">4.4.</strong> list</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/index.html"><strong aria-hidden="true">5.</strong> Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/debug/index.html"><strong aria-hidden="true">5.1.</strong> debug ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/debug/getting-started.html"><strong aria-hidden="true">5.1.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/tests/index.html"><strong aria-hidden="true">5.2.</strong> write tests for ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/tests/getting-started.html" class="active"><strong aria-hidden="true">5.2.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/browser/index.html"><strong aria-hidden="true">5.3.</strong> run ink! contract in browser</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/browser/getting-started.html"><strong aria-hidden="true">5.3.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/impl/index.html"><strong aria-hidden="true">5.4.</strong> write your implementation of ceres</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/impl/getting-started.html"><strong aria-hidden="true">5.4.1.</strong> Getting Started</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../../quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li class="chapter-item expanded "><a href="../../prerequisites/index.html"><strong aria-hidden="true">3.</strong> Prerequisites</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../prerequisites/ink-contract.html"><strong aria-hidden="true">3.1.</strong> ink! contract</a></li><li class="chapter-item expanded "><a href="../../prerequisites/cargo-contract.html"><strong aria-hidden="true">3.2.</strong> cargo-contract</a></li></ol></li><li class="chapter-item expanded "><a href="../../cli/index.html"><strong aria-hidden="true">4.</strong> CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../cli/call.html"><strong aria-hidden="true">4.1.</strong> call</a></li><li class="chapter-item expanded "><a href="../../cli/deploy.html"><strong aria-hidden="true">4.2.</strong> deploy</a></li><li class="chapter-item expanded "><a href="../../cli/info.html"><strong aria-hidden="true">4.3.</strong> info</a></li><li class="chapter-item expanded "><a href="../../cli/list.html"><strong aria-hidden="true">4.4.</strong> list</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/index.html"><strong aria-hidden="true">5.</strong> Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/debug/index.html"><strong aria-hidden="true">5.1.</strong> debug ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/debug/getting-started.html"><strong aria-hidden="true">5.1.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/tests/index.html"><strong aria-hidden="true">5.2.</strong> write tests for ink! contract</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/tests/getting-started.html" class="active"><strong aria-hidden="true">5.2.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/browser/index.html"><strong aria-hidden="true">5.3.</strong> run ink! contract in browser</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/browser/getting-started.html"><strong aria-hidden="true">5.3.1.</strong> Getting Started</a></li></ol></li><li class="chapter-item expanded "><a href="../../tutorials/impl/index.html"><strong aria-hidden="true">5.4.</strong> write your implementation of ceres</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../tutorials/impl/getting-started.html"><strong aria-hidden="true">5.4.1.</strong> Getting Started</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -170,6 +170,57 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
+<h3 id="0-template-contract"><a class="header" href="#0-template-contract">0. Template contract</a></h3>
+<p>First of all, we need an ink! contract, flipper here.</p>
+<pre><code>cargo contract new flipper
+</code></pre>
+<h3 id="1-add-buildrs-to-our-contract"><a class="header" href="#1-add-buildrs-to-our-contract">1. add <code>build.rs</code> to our contract</a></h3>
+<pre><pre class="playground"><code class="language-rust">// flipper/build.rs
+use std::process::Command;
+
+fn main() {
+    println!(&quot;cargo:rerun-if-changed=src/lib.rs&quot;);
+    Command::new(&quot;cargo&quot;).args(&amp;[&quot;contract&quot;, &quot;build&quot;]);
+}
+</code></pre></pre>
+<h3 id="2-add-ceres-as-dev-dependencies"><a class="header" href="#2-add-ceres-as-dev-dependencies">2. add ceres as <code>dev-dependencies</code></a></h3>
+<pre><code class="language-toml">[dev-dependencies]
+ceres = &quot;^0&quot;
+</code></pre>
+<h3 id="3-write-tests-with-ceres"><a class="header" href="#3-write-tests-with-ceres">3. write tests with ceres</a></h3>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// /tests/flipper.rs
+use ceres_executor::{Trap, TrapCode};
+use ceres_ri::Instance;
+use ceres_runtime::Runtime;
+use parity_scale_codec::Encode;
+
+#[test]
+fn test_flipper() {
+    let mut rt = Runtime::contract(
+        include_bytes!(&quot;../contracts/flipper.contract&quot;),
+        Some(Instance),
+    )
+    .expect(&quot;Create runtime failed&quot;);
+
+    rt.deploy(&quot;default&quot;, vec![], None).expect(&quot;Deploy failed&quot;);
+    assert_eq!(rt.call(&quot;get&quot;, vec![], None), Ok(Some(vec![0])));
+
+    rt.deploy(&quot;new&quot;, vec![true.encode()], None)
+        .expect(&quot;Deploy failed&quot;);
+    assert_eq!(rt.call(&quot;get&quot;, vec![], None), Ok(Some(vec![1])));
+
+    rt.call(&quot;flip&quot;, vec![], None).expect(&quot;Call contract failed&quot;);
+    assert_eq!(rt.call(&quot;get&quot;, vec![], None), Ok(Some(vec![0])));
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="4-run-tests"><a class="header" href="#4-run-tests">4. run tests</a></h3>
+<pre><code># flipper/
+cargo test
+</code></pre>
 
                     </main>
 
