@@ -14,10 +14,8 @@ Ceres
 [e1]: https://img.shields.io/crates/l/ceres-runtime.svg
 [e2]: https://choosealicense.com/licenses/apache-2.0/
 
-Run ink! contract anywhere!
-
-<br/>
-
-[Guide](https://patractlabs.github.io/ceres/)
+[Run ink! contract anywhere!](https://patractlabs.github.io/ceres/)
 
 </div>
+
+Hello world
