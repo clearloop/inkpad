@@ -10,5 +10,6 @@ build-dir = "gh-pages"
 
 [output.html]
 default-theme = "dark"
-preferred-dark-theme = "ayu"
 git-repository-url = "https://github.com/patractlabs/ceres"
+preferred-dark-theme = "ayu"
+site-url = "/ceres/"
