@@ -99,8 +99,17 @@ fn test_flipper() {
 
 ## How it works
 
-Ceres extracted from `sp-sandbox` and `pallet-contracts` of substrate,
+Ceres extracted from `sp-sandbox` and `pallet-contracts` of substrate
+with both `wasmi` and `wasmtime` features, plus trap handlers for the
+two executor.
 
+It abstracts the chain environment which ink! contracts requires so
+that we can embed ceres almost any applications to run ink! contracts.
+
+
+---
+
+Run ink! contract anywhere!
 
 
 [ceres-runtime]: https://github.com/patractlabs/ceres/tree/master/crates/runtime
