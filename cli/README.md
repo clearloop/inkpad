@@ -20,7 +20,7 @@ $ cargo install --git https://github.com/patractlabs/ceres --bin ceres
 ## Usage
 
 ```text
-ceres 0.1.0
+ceres 0.2.0
 Ceres command tool
 
 USAGE:
