@@ -1,8 +1,16 @@
 [package]
-name = "ceres-support"
-version = "0.1.0"
-authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
+name = "ceres-support"
+version = "0.2.0"
+authors = [
+  "Patract <hi@patract.io>",
+  "clearloop <udtrokia@gmail.com>"
+]
+description = "ceres supports"
+repository = "https://github.com/patractlabs/ceres"
+license = "MIT"
+readme = './README.md'
+keywords = ["wasm", "substrate", "runtime"]
 
 [dependencies]
 hex = "0.4.3"
