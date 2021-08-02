@@ -14,11 +14,7 @@ Ceres
 [e1]: https://img.shields.io/crates/l/ceres-runtime.svg
 [e2]: https://choosealicense.com/licenses/apache-2.0/
 
- <h3>
-    <a href="https://patractlabs.github.io/ceres/">Guide</a>
-    <span> | </span>
-    <a href="./README_ZH.md">Chinese</a>
-</h3>
+[Run ink! contract anywhere!](https://patractlabs.github.io/ceres/)
 
 </div>
 
