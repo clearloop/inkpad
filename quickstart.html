@@ -171,20 +171,17 @@
                     <main>
                         <h1 id="quickstart"><a class="header" href="#quickstart">Quickstart</a></h1>
 <h2 id="0-install-cargo-contract"><a class="header" href="#0-install-cargo-contract">0. Install <code>cargo-contract</code></a></h2>
-<pre><code>cargo install --git https://github.com/patractlabs/cargo-contract.git --branch tag-v0.12.1 --force
+<pre><code>cargo install cargo-contract
 </code></pre>
-<p>Recommend to use <code>patractlabs/cargo-contract</code> which could compile ink! contracts with debug info.</p>
 <h2 id="1-install-ceres"><a class="header" href="#1-install-ceres">1. Install <code>ceres</code></a></h2>
 <pre><code>cargo install ceres
 </code></pre>
 <h2 id="2-run-cargo-contract-new"><a class="header" href="#2-run-cargo-contract-new">2. Run <code>cargo contract new</code></a></h2>
 <pre><code>cargo contract new flipper
 </code></pre>
-<p>Create a template flipper contract</p>
 <h3 id="3-compile-with-debug-info"><a class="header" href="#3-compile-with-debug-info">3. Compile with debug info</a></h3>
-<pre><code>cargo contract build --debug
+<pre><code>cargo contract build
 </code></pre>
-<p>Assume we are using <code>patractlabs/ceres</code>, compile <code>flipper</code> with debug info</p>
 <h3 id="4-test-flipper"><a class="header" href="#4-test-flipper">4. Test flipper</a></h3>
 <pre><code>ceres target/ink/flipper.contract info
 </code></pre>

@@ -174,26 +174,24 @@
                         <h1 id="ceres"><a class="header" href="#ceres">Ceres</a></h1>
 <p>Ceres provides an enviroment for running ink! contract outside of substrate.</p>
 <ul>
-<li><a href="/tutorials/debug">debug ink! contract</a></li>
-<li><a href="/tutorials/tests">write tests for ink! contract</a></li>
-<li><a href="/tutorials/browser">run ink! contract in browser</a></li>
+<li><a href="tutorials/debug">debug ink! contract</a></li>
+<li><a href="tutorials/tests">write tests for ink! contract</a></li>
+<li><a href="tutorials/browser">run ink! contract in browser</a></li>
+<li><a href="tutorials/impl">write your implementation of ceres</a></li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="quickstart"><a class="header" href="#quickstart">Quickstart</a></h1>
 <h2 id="0-install-cargo-contract"><a class="header" href="#0-install-cargo-contract">0. Install <code>cargo-contract</code></a></h2>
-<pre><code>cargo install --git https://github.com/patractlabs/cargo-contract.git --branch tag-v0.12.1 --force
+<pre><code>cargo install cargo-contract
 </code></pre>
-<p>Recommend to use <code>patractlabs/cargo-contract</code> which could compile ink! contracts with debug info.</p>
 <h2 id="1-install-ceres"><a class="header" href="#1-install-ceres">1. Install <code>ceres</code></a></h2>
 <pre><code>cargo install ceres
 </code></pre>
 <h2 id="2-run-cargo-contract-new"><a class="header" href="#2-run-cargo-contract-new">2. Run <code>cargo contract new</code></a></h2>
 <pre><code>cargo contract new flipper
 </code></pre>
-<p>Create a template flipper contract</p>
 <h3 id="3-compile-with-debug-info"><a class="header" href="#3-compile-with-debug-info">3. Compile with debug info</a></h3>
-<pre><code>cargo contract build --debug
+<pre><code>cargo contract build
 </code></pre>
-<p>Assume we are using <code>patractlabs/ceres</code>, compile <code>flipper</code> with debug info</p>
 <h3 id="4-test-flipper"><a class="header" href="#4-test-flipper">4. Test flipper</a></h3>
 <pre><code>ceres target/ink/flipper.contract info
 </code></pre>
@@ -209,11 +207,7 @@ to start your journey.</p>
 first of all.</p>
 <h3 id="0-download-cargo-contract"><a class="header" href="#0-download-cargo-contract">0. Download <code>cargo-contract</code></a></h3>
 <p>For generating an ink! contract, we need to download <code>cargo-contract</code></p>
-<pre><code># Download the official `cargo-contract`
-cargo install cargo-contract --force
-
-# Donwload patract version `cargo-contract` witch supports debug info
-cargo install https://github.com/patractlabs/cargo-contract
+<pre><code>cargo install cargo-contract --force
 </code></pre>
 <h3 id="1-new-ink-contract"><a class="header" href="#1-new-ink-contract">1. New ink! contract</a></h3>
 <p>Once we have <code>cargo-contract</code> installed in our machine, we can run </p>
@@ -402,16 +396,16 @@ FLAGS:
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="tutorials"><a class="header" href="#tutorials">Tutorials</a></h1>
 <p>We have three tutorials that help you get started with <code>ceres</code>:</p>
 <ul>
-<li><a href="tutorials/./debug">If you want to debug ink! contract</a></li>
-<li><a href="tutorials/./tests">If you want to write tests for ink! contract</a></li>
-<li><a href="tutorials/./browser">If you want to run ink! contract in browser</a></li>
-<li><a href="tutorials/./impl">If you want to write a implementation for ceres</a></li>
+<li><a href="tutorials/debug">If you want to debug ink! contract</a></li>
+<li><a href="tutorials/tests">If you want to write tests for ink! contract</a></li>
+<li><a href="tutorials/browser">If you want to run ink! contract in browser</a></li>
+<li><a href="tutorials/impl">If you want to write a implementation for ceres</a></li>
 </ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="debug-ink-contract"><a class="header" href="#debug-ink-contract">debug ink! contract</a></h1>
 <p>The goal of this tutorial is to introduce you to use ceres 
 for debuging ink! contract.</p>
 <p>Be sure to have read and followed the 
-<a href="tutorials/debug/../../prerequisites/cargo-contract.html">Prerequisites</a>.</p>
+<a href="tutorials/debug/../../prerequisites">Prerequisites</a>.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
 <h3 id="0-compile-ink-contract-with-debug-info"><a class="header" href="#0-compile-ink-contract-with-debug-info">0. Compile ink! contract with debug info</a></h3>
 <p>For <code>cargo-contract</code>, see <a href="tutorials/debug/../../prerequisites/cargo-contract.html">3.2</a>.</p>
