@@ -17,7 +17,7 @@ hex = "0.4.3"
 log = "0.4.14"
 cfg-if = "1"
 serde_json = "1.0.64"
-parity-wasm = "0.41.0"
+parity-wasm = "0.42.2"
 serde = { version = "1.0.125", features = ["derive"] }
 derivative = { version = "2.2.0", features = ["use_core"] }
 parity-scale-codec = { version = "2", features = ["derive"] }
