@@ -16,7 +16,7 @@ keywords = ["wasm", "substrate", "runtime"]
 hex = "0.4.3"
 serde = { version = "1.0.125", features = ["derive"] }
 derivative = { version = "2.2.0", features = ["use_core"] }
-parity-wasm = "0.41.0"
+parity-wasm = "0.42.2"
 parity-scale-codec = { version = "2", features = ["derive"] }
 ceres-std = { path = "../std", version = "^0" }
 
