@@ -9,12 +9,12 @@ pub fn parse(attr: TokenStream, item: TokenStream) -> TokenStream {
     let ts = item;
     let input: HostFunction = parse_macro_input!(ts);
 
-    // construct struct
-    let struct_ident = input.struct_ident();
-
     // construct host trait
     let module = attr.to_string();
     let name_str = input.name.to_string();
+
+    // construct struct
+    let struct_ident = input.struct_ident(&module);
 
     // construct function
     let content = input.content;
