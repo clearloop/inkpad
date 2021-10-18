@@ -42,10 +42,12 @@ impl Parse for HostFunction {
 
 impl HostFunction {
     /// Generate struct ident from function name
-    pub fn struct_ident(&self) -> Ident {
-        let name: String = self
-            .name
-            .to_string()
+    pub fn struct_ident(&self, module: &str) -> Ident {
+        let mut ident = module.to_string();
+        ident.push('_');
+        ident.push_str(&self.name.to_string());
+
+        let name: String = ident
             .split('_')
             .into_iter()
             .map(|s| {
