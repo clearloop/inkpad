@@ -3,6 +3,7 @@ use crate::derive::Host;
 use ceres_derive::host;
 use ceres_executor::{derive::Value, Error, Result};
 use ceres_sandbox::Sandbox;
+use parity_scale_codec::Encode;
 
 /// Stores the tombstone deposit into the supplied buffer.
 ///
@@ -56,5 +57,25 @@ pub fn seal_set_rent_allowance(_value_ptr: u32) -> Result<Option<Value>> {
 #[host(seal0)]
 pub fn seal_rent_allowance(out_ptr: u32, out_len_ptr: u32) -> Result<Option<Value>> {
     sandbox.write_sandbox_output(out_ptr, out_len_ptr, &sandbox.rent_allowance())?;
+    Ok(None)
+}
+
+// Stores the contract deposit into the supplied buffer.
+//
+// The value is stored to linear memory at the address pointed to by `out_ptr`.
+// `out_len_ptr` must point to a u32 value that describes the available space at
+// `out_ptr`. This call overwrites it with the size of the value. If the available
+// space at `out_ptr` is less than the size of the value a trap is triggered.
+//
+// The data is encoded as T::Balance.
+//
+// # Note
+//
+// The contract deposit is on top of the existential deposit. The sum
+// is commonly referred as subsistence threshold in code. No contract initiated
+// balance transfer can go below this threshold.
+#[host(seal0)]
+pub fn seal_contract_deposit(out_ptr: u32, out_len_ptr: u32) -> Result<Option<Value>> {
+    sandbox.write_sandbox_output(out_ptr, out_len_ptr, &sandbox.ext.contract_deposit.encode())?;
     Ok(None)
 }
