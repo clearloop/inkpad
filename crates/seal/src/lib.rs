@@ -43,6 +43,7 @@ pub fn pallet_contracts(ri: Option<impl RuntimeInterfaces>) -> Vec<SealCall> {
         transfer::Seal0SealCaller::pack(),
         transfer::Seal0SealValueTransferred::pack(),
         instantiate::Seal0SealCall::pack(),
+        instantiate::UnstableSealCall::pack(),
         instantiate::Seal0SealInstantiate::pack(),
     ];
 

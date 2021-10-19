@@ -146,3 +146,30 @@ pub fn seal_call(
 
     Ok(Some(Value::I32(0)))
 }
+
+#[host(__unstable__)]
+pub fn seal_call(
+    callee_ptr: u32,
+    callee_len: u32,
+    _gas: u64,
+    _value_ptr: u32,
+    _value_len: u32,
+    input_data_ptr: u32,
+    input_data_len: u32,
+    output_ptr: u32,
+    output_len_ptr: u32,
+) -> Result<Option<Value>> {
+    let callee: [u8; 32] = sandbox.read_sandbox_memory_as(callee_ptr, callee_len)?;
+
+    // # Safty
+    //
+    // placeholder: endowment
+    //
+    // let value: u64 = sandbox.read_sandbox_memory_as(value_ptr, value_len)?;
+
+    let input_data = sandbox.read_sandbox_memory(input_data_ptr, input_data_len)?;
+    let output = sandbox.call(callee, input_data)?;
+    sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
+
+    Ok(Some(Value::I32(0)))
+}
