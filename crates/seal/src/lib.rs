@@ -4,12 +4,12 @@ use ceres_std::{vec, Vec};
 
 mod chain;
 mod contract;
+mod crypto;
 mod derive;
 mod event;
 mod fun;
 mod instantiate;
 mod restore;
-// mod ri;
 mod storage;
 mod transfer;
 
@@ -34,7 +34,6 @@ pub fn pallet_contracts(ri: Option<impl RuntimeInterfaces>) -> Vec<SealCall> {
         fun::Seal0SealReturn::pack(),
         fun::Seal0SealTerminate::pack(),
         restore::Seal0SealRestoreTo::pack(),
-        restore::Seal1SealRestoreTo::pack(),
         storage::Seal0SealGetStorage::pack(),
         storage::Seal0SealClearStorage::pack(),
         storage::Seal0SealSetStorage::pack(),
@@ -43,8 +42,13 @@ pub fn pallet_contracts(ri: Option<impl RuntimeInterfaces>) -> Vec<SealCall> {
         transfer::Seal0SealCaller::pack(),
         transfer::Seal0SealValueTransferred::pack(),
         instantiate::Seal0SealCall::pack(),
-        instantiate::UnstableSealCall::pack(),
         instantiate::Seal0SealInstantiate::pack(),
+        // #[seal1]
+        restore::Seal1SealRestoreTo::pack(),
+        instantiate::Seal1SealInstantiate::pack(),
+        // #[__unstable__]
+        instantiate::UnstableSealCall::pack(),
+        crypto::UnstableSealEcdsaRecover::pack(),
     ];
 
     if let Some(interfaces) = ri {

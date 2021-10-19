@@ -16,6 +16,7 @@ pub type StorageKey = [u8; 32];
 
 mod chain;
 mod contract;
+mod crypto;
 mod ext;
 mod instantiate;
 mod memory;
