@@ -17,4 +17,5 @@ pub struct Ext {
     pub schedule: Schedule,
     pub rent_params: RentParams,
     pub gas_meter: GasMeter,
+    pub contract_deposit: u64,
 }

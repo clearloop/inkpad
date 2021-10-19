@@ -54,8 +54,12 @@ pub enum ReturnCode {
     /// The call to `seal_debug_message` had no effect because debug message
     /// recording was disabled.
     LoggingDisabled = 9,
+    /// The call dispatched by `seal_call_runtime` was executed but returned an error.
+    CallRuntimeReturnedError = 10,
+    /// ECDSA pubkey recovery failed. Most probably wrong recovery id or signature.
+    EcdsaRecoverFailed = 11,
     /// Unexpected return code
-    UnExpectedReturnCode = 10,
+    UnExpectedReturnCode = 12,
 }
 
 impl From<i32> for ReturnCode {
