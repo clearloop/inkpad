@@ -47,7 +47,7 @@ impl<T> derive::Instance<T> for Instance<T> {
             state,
             defined_host_functions: &self.defined_host_functions,
         };
-        let result = self.instance.invoke_export(&name, &args, &mut externals);
+        let result = self.instance.invoke_export(name, &args, &mut externals);
 
         match result {
             Ok(value) => Ok(match value {

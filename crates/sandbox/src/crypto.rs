@@ -8,6 +8,7 @@ impl Sandbox {
     /// - `msg` is the blake2-256 hash of the message.
     ///
     /// Returns `Err` if the signature is bad, otherwise the 33-byte compressed pubkey.
+    #[allow(clippy::result_unit_err)]
     pub fn ecdsa_recover(&self, sig: &[u8; 65], msg: &[u8; 32]) -> Result<[u8; 33], ()> {
         let rs = libsecp256k1::Signature::parse_overflowing_slice(&sig[0..64]).map_err(|_| ())?;
         let v = libsecp256k1::RecoveryId::parse(
