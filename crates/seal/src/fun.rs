@@ -50,8 +50,6 @@ pub fn seal_terminate(beneficiary_ptr: u32, _beneficiary_len: u32) -> Result<Opt
     Err(Error::Trap(TrapCode::Termination.into()))
 }
 
-// TODO: read from ptr
-//
 /// Remove the calling account and transfer remaining balance.
 ///
 /// This function never returns. Either the termination was successful and the

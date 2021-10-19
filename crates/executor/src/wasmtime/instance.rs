@@ -57,8 +57,8 @@ impl<T> derive::Instance<T> for Instance<T> {
             .ok_or(Error::GetFunctionNameFailed)?;
         match func.call(&args) {
             Ok(result) => {
-                if result.len() != 1 {
-                    Err(Error::UnExpectedReturnValue)
+                if result.len() < 1 {
+                    Ok(Default::default())
                 } else {
                     Ok(util::from_val(result[0].clone()))
                 }
