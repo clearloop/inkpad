@@ -45,9 +45,8 @@ pub fn seal_return(flags: u32, data_ptr: u32, data_len: u32) -> Result<Option<Va
 /// execution of the destroyed contract is halted. Or it failed during the termination
 /// which is considered fatal and results in a trap + rollback.
 #[host(seal0)]
-pub fn seal_terminate(beneficiary_ptr: u32, beneficiary_len: u32) -> Result<Option<Value>> {
-    let beneficiary = sandbox.read_sandbox_memory_as(beneficiary_ptr, beneficiary_len)?;
-    sandbox.terminate(beneficiary)?;
+pub fn seal_terminate(beneficiary_ptr: u32, _beneficiary_len: u32) -> Result<Option<Value>> {
+    sandbox.terminate(beneficiary_ptr)?;
     Err(Error::Trap(TrapCode::Termination.into()))
 }
 
@@ -59,7 +58,7 @@ pub fn seal_terminate(beneficiary_ptr: u32, beneficiary_len: u32) -> Result<Opti
 /// execution of the destroyed contract is halted. Or it failed during the termination
 /// which is considered fatal and results in a trap + rollback.
 #[host(seal1)]
-pub fn seal_terminate(_beneficiary_ptr: u32) -> Result<Option<Value>> {
-    sandbox.terminate(Default::default())?;
+pub fn seal_terminate(beneficiary_ptr: u32) -> Result<Option<Value>> {
+    sandbox.terminate(beneficiary_ptr)?;
     Err(Error::Trap(TrapCode::Termination.into()))
 }
