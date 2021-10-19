@@ -31,8 +31,9 @@ pub trait RuntimeInterfaces: Sized {
     ) -> Vec<ceres_executor::derive::HostParcel<&'static str, &'static str, ceres_sandbox::Sandbox>>
     {
         vec![
-            ("seal0", "seal_println", Self::seal_println),
+            ("seal0", "seal_debug_message", Self::seal_println),
             ("seal0", "seal_random", Self::seal_random),
+            ("seal1", "seal_random", Self::seal_random),
             ("seal0", "seal_hash_blake2_128", Self::seal_hash_blake2_128),
             ("seal0", "seal_hash_blake2_256", Self::seal_hash_blake2_256),
             ("seal0", "seal_hash_keccak_256", Self::seal_hash_keccak_256),

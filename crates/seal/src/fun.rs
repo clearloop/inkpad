@@ -50,3 +50,16 @@ pub fn seal_terminate(beneficiary_ptr: u32, beneficiary_len: u32) -> Result<Opti
     sandbox.terminate(beneficiary)?;
     Err(Error::Trap(TrapCode::Termination.into()))
 }
+
+// TODO: read from ptr
+//
+/// Remove the calling account and transfer remaining balance.
+///
+/// This function never returns. Either the termination was successful and the
+/// execution of the destroyed contract is halted. Or it failed during the termination
+/// which is considered fatal and results in a trap + rollback.
+#[host(seal1)]
+pub fn seal_terminate(_beneficiary_ptr: u32) -> Result<Option<Value>> {
+    sandbox.terminate(Default::default())?;
+    Err(Error::Trap(TrapCode::Termination.into()))
+}
