@@ -27,6 +27,7 @@ pub fn pallet_contracts(ri: Option<impl RuntimeInterfaces>) -> Vec<SealCall> {
         chain::Seal0SealGasLeft::pack(),
         chain::Seal0BlockNumber::pack(),
         chain::Seal0SealWeightToFee::pack(),
+        chain::Seal0SealCallChainExtension::pack(),
         contract::Seal0SealTombstoneDeposit::pack(),
         contract::Seal0SealRentAllowance::pack(),
         contract::Seal0SealSetRentAllowance::pack(),
@@ -52,8 +53,9 @@ pub fn pallet_contracts(ri: Option<impl RuntimeInterfaces>) -> Vec<SealCall> {
         instantiate::Seal1SealInstantiate::pack(),
         restore::Seal1SealRestoreTo::pack(),
         // #[__unstable__]
-        instantiate::UnstableSealCall::pack(),
+        chain::UnstableSealCallRuntime::pack(),
         crypto::UnstableSealEcdsaRecover::pack(),
+        instantiate::UnstableSealCall::pack(),
     ];
 
     if let Some(interfaces) = ri {

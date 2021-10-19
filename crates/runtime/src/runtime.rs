@@ -31,7 +31,7 @@ impl Runtime {
         cache: impl traits::Frame<Memory> + 'static,
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
-        let meta = serde_json::from_slice::<Metadata>(&contract)
+        let meta = serde_json::from_slice::<Metadata>(contract)
             .map_err(|_| Error::DecodeContractFailed)?;
 
         Self::new(meta, cache, ri)
