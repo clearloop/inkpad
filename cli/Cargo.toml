@@ -6,7 +6,7 @@ authors = [
   "clearloop <udtrokia@gmail.com>"
 ]
 description = "Run ink! contract in command line!"
-repository = "https://github.com/patractlabs/inkpad"
+repository = "https://github.com/clearloop/inkpad"
 license = "MIT"
 readme = './README.md'
 keywords = ["wasm", "substrate", "runtime"]
@@ -27,12 +27,12 @@ env_logger = "0.8.4"
 parity-scale-codec = { version = "2", features = ["derive"] }
 
 # inkpad deps
-inkpad-ri = { path = "../crates/ri" }
-inkpad-std = { path = "../crates/std" }
-inkpad-runtime = { path = "../crates/runtime" }
-inkpad-sandbox = { path = "../crates/sandbox" }
-inkpad-support = { path = "../crates/support" }
-inkpad-executor = { path = "../crates/executor" }
+inkpad-ri = { path = "../crates/ri", version = "^0" }
+inkpad-std = { path = "../crates/std", version = "^0" }
+inkpad-runtime = { path = "../crates/runtime", version = "^0" }
+inkpad-sandbox = { path = "../crates/sandbox", version = "^0" }
+inkpad-support = { path = "../crates/support", version = "^0" }
+inkpad-executor = { path = "../crates/executor", version = "^0" }
 
 [features]
 default = [ ]

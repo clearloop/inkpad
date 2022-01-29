@@ -22,12 +22,12 @@ derivative = { version = "2.2.0", features = ["use_core"] }
 parity-scale-codec = { version = "2", features = ["derive"] }
 
 # inkpad dependencies
-inkpad-ri = {path = "../ri", optional = true }
-inkpad-std = { path = "../std" }
-inkpad-seal = { path = "../seal" }
-inkpad-sandbox = { path = "../sandbox" }
-inkpad-support = { path = "../support" }
-inkpad-executor = { path = "../executor" }
+inkpad-ri = {path = "../ri", optional = true, version = "^0" }
+inkpad-std = { path = "../std", version = "^0" }
+inkpad-seal = { path = "../seal", version = "^0" }
+inkpad-sandbox = { path = "../sandbox", version = "^0" }
+inkpad-support = { path = "../support", version = "^0" }
+inkpad-executor = { path = "../executor", version = "^0" }
 
 [features]
 default = []

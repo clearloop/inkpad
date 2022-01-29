@@ -22,8 +22,8 @@ wasmtime = { version = "0.26.1", optional = true }
 anyhow = { version = "1", default-features = false }
 
 # inkpad dependencies
-inkpad-std = { path = "../std" }
-inkpad-support = { path = "../support" }
+inkpad-std = { path = "../std", version = "^0" }
+inkpad-support = { path = "../support", version = "^0" }
 
 [features]
 default = [ "wasmi" ]

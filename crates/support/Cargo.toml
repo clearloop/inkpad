@@ -17,7 +17,7 @@ serde = { version = "1.0.125", features = ["derive"] }
 derivative = { version = "2.2.0", features = ["use_core"] }
 parity-wasm = "0.42.2"
 parity-scale-codec = { version = "2", features = ["derive"] }
-inkpad-std = { path = "../std" }
+inkpad-std = { path = "../std", version = "^0" }
 
 [features]
 default = [ "std" ]

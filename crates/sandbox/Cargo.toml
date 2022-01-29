@@ -1,12 +1,12 @@
 [package]
 name = "inkpad-sandbox"
-version = "0.2.0"
+version = "0.1.0"
 edition = "2021"
 authors = [
   "clearloop <udtrokia@gmail.com>"
 ]
 description = "sandbox of inkpad"
-repository = "https://github.com/patractlabs/inkpad"
+repository = "https://github.com/clearloop/inkpad"
 license = "MIT"
 readme = './README.md'
 keywords = ["wasm", "substrate", "runtime"]
@@ -19,10 +19,9 @@ parity-wasm = "0.42.2"
 libsecp256k1 = "0.7.0"
 
 # inkpad deps
-inkpad-std = { path = "../std" }
-inkpad-support = { path = "../support" }
-inkpad-executor = { path = "../executor" }
-
+inkpad-std = { path = "../std", version = "^0" }
+inkpad-support = { path = "../support", version = "^0" }
+inkpad-executor = { path = "../executor", version = "^0" }
 
 [features]
 default = []
