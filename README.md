@@ -15,7 +15,7 @@ Inkpad
 [e2]: https://choosealicense.com/licenses/apache-2.0/
 
  <h3>
-    <a href="https://patractlabs.github.io/inkpad/">Guide</a>
+    <a href="https://clearloop.github.io/inkpad/">Guide</a>
     <span> | </span>
     <a href="./README_ZH.md">Chinese</a>
 </h3>
@@ -33,7 +33,7 @@ cargo install inkpad-cli
 We can use the `inkpad` binary to explore the usages of inkpad library.
 
 ```
-inkpad 0.2.0
+inkpad 0.1.0
 Inkpad command tool
 
 USAGE:
