@@ -1,4 +1,4 @@
-use ceres_support::types::Metadata;
+use inkpad_support::types::Metadata;
 
 #[test]
 fn test_decoding_flipper() {

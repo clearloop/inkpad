@@ -1,6 +1,6 @@
 //! frame trait
 use crate::{traits::Cache, types::State};
-use ceres_std::Rc;
+use inkpad_std::Rc;
 use core::cell::RefCell;
 
 /// WASM execution frame

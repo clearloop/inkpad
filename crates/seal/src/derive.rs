@@ -1,9 +1,9 @@
 //! Derive types && traits
-use ceres_executor::{
+use inkpad_executor::{
     derive::{HostCall, Value},
     Result,
 };
-use ceres_sandbox::Sandbox;
+use inkpad_sandbox::Sandbox;
 
 /// Host function trait
 pub trait Host: Sized {

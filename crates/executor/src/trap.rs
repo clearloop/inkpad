@@ -1,6 +1,6 @@
 //! wasm traps
 use crate::Error;
-use ceres_std::{Box, String, Vec};
+use inkpad_std::{Box, String, Vec};
 
 /// A trap code describing the reason for a trap.
 ///

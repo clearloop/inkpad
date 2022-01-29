@@ -1,4 +1,4 @@
-//! Ceres executor instance
+//! Inkpad executor instance
 #[cfg(not(feature = "std"))]
 use crate::wasmi as e;
 #[cfg(feature = "std")]

@@ -7,10 +7,10 @@ cargo install cargo-contract
 ```
 
 
-## 1. Install `ceres`
+## 1. Install `inkpad`
 
 ```
-cargo install ceres
+cargo install inkpad
 ```
 
 
@@ -30,5 +30,5 @@ cargo contract build
 ### 4. Test flipper
 
 ```
-ceres target/ink/flipper.contract info
+inkpad target/ink/flipper.contract info
 ```

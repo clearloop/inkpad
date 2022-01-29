@@ -1,9 +1,9 @@
-//! Ceres executor result
+//! Inkpad executor result
 use crate::{
     trap::{Trap, TrapCode},
     Value,
 };
-use ceres_std::{fmt, format, String, Vec};
+use inkpad_std::{fmt, format, String, Vec};
 use parity_scale_codec::{Decode, Encode};
 
 bitflags::bitflags! {
@@ -80,7 +80,7 @@ impl From<i32> for ReturnCode {
     }
 }
 
-/// Ceres executor errors
+/// Inkpad executor errors
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub enum Error {
     InitMemoryFailed,
@@ -144,7 +144,7 @@ impl fmt::Display for Error {
     }
 }
 
-/// Ceres executor result
+/// Inkpad executor result
 pub type Result<T> = core::result::Result<T, Error>;
 
 /// Wasm function execution result

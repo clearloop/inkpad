@@ -1,13 +1,13 @@
-//! Ceres Runtime interfaces
+//! Inkpad Runtime interfaces
 use crate::{result::err_check, ri::Interface, ti::Transaction, Tree};
-use ceres_runtime::Runtime as RuntimeInner;
+use inkpad_runtime::Runtime as RuntimeInner;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 const CERES_BROWSER_CACHE: &str = "CERES_BROWSER_CACHE";
 
-/// Ceres browser runtime
+/// Inkpad browser runtime
 #[wasm_bindgen]
-pub struct Runtime(ceres_runtime::Runtime);
+pub struct Runtime(inkpad_runtime::Runtime);
 
 #[wasm_bindgen]
 impl Runtime {

@@ -1,6 +1,6 @@
 //! List all contracts
 use crate::{util, Result, Storage};
-use ceres_support::types::Metadata;
+use inkpad_support::types::Metadata;
 use parity_scale_codec::Decode;
 
 /// List all contracts

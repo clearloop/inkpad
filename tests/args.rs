@@ -1,6 +1,6 @@
-use ceres_ri::Instance;
-use ceres_runtime::Runtime;
-use ceres_support::types::Cache;
+use inkpad_ri::Instance;
+use inkpad_runtime::Runtime;
+use inkpad_support::types::Cache;
 use parity_scale_codec::Encode;
 
 fn t(f: fn(rt: &mut Runtime)) {

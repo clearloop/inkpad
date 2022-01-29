@@ -1,8 +1,8 @@
 //! Restore interface
 use crate::derive::Host;
-use ceres_derive::host;
-use ceres_executor::{derive::Value, Error, Result};
-use ceres_sandbox::Sandbox;
+use inkpad_derive::host;
+use inkpad_executor::{derive::Value, Error, Result};
+use inkpad_sandbox::Sandbox;
 
 // Was used to restore the given destination contract sacrificing the caller.
 //

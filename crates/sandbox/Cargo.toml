@@ -1,13 +1,13 @@
 [package]
-name = "ceres-sandbox"
+name = "inkpad-sandbox"
 version = "0.2.0"
 edition = "2018"
 authors = [
   "Patract <hi@patract.io>",
   "clearloop <udtrokia@gmail.com>"
 ]
-description = "sandbox of ceres"
-repository = "https://github.com/patractlabs/ceres"
+description = "sandbox of inkpad"
+repository = "https://github.com/patractlabs/inkpad"
 license = "MIT"
 readme = './README.md'
 keywords = ["wasm", "substrate", "runtime"]
@@ -19,16 +19,16 @@ parity-scale-codec = { version = "2", features = ["derive"]}
 parity-wasm = "0.42.2"
 libsecp256k1 = "0.7.0"
 
-# ceres deps
-ceres-std = { path = "../std", version = "^0" }
-ceres-support = { path = "../support", version = "^0" }
-ceres-executor = { path = "../executor", version = "^0" }
+# inkpad deps
+inkpad-std = { path = "../std", version = "^0" }
+inkpad-support = { path = "../support", version = "^0" }
+inkpad-executor = { path = "../executor", version = "^0" }
 
 
 [features]
 default = []
 std = [
-    "ceres-std/std",
-    "ceres-executor/std",
-    "ceres-support/std",
+    "inkpad-std/std",
+    "inkpad-executor/std",
+    "inkpad-support/std",
 ]

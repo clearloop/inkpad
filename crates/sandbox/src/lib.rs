@@ -1,8 +1,8 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 use self::ext::Ext;
-use ceres_executor::{derive::SealCall, Error, Memory, Result};
-use ceres_std::{vec, Rc, Vec};
-use ceres_support::{
+use inkpad_executor::{derive::SealCall, Error, Memory, Result};
+use inkpad_std::{vec, Rc, Vec};
+use inkpad_support::{
     convert,
     traits::{self, Frame},
     types::Metadata,
@@ -64,7 +64,7 @@ impl Sandbox {
         let mut cache_mut = self.cache.borrow_mut();
         if cache_mut.switch(code_hash).is_none() {
             let contract = cache_mut.get(&code_hash).ok_or(Error::CodeNotFound)?;
-            let limit = ceres_executor::scan_imports(&Module::from_bytes(&contract)?)?;
+            let limit = inkpad_executor::scan_imports(&Module::from_bytes(&contract)?)?;
             let memory = Memory::new(limit.0, limit.1)?;
             cache_mut.push(code_hash, memory);
         }

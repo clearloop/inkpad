@@ -1,6 +1,6 @@
 # ink! contract
 
-Since `ceres` is an execution of ink! contract, we need to have an ink! contract
+Since `inkpad` is an execution of ink! contract, we need to have an ink! contract
 first of all.
 
 

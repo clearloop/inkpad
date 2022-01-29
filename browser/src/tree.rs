@@ -1,7 +1,7 @@
 //! Browser storage
-use ceres_executor::Memory;
-use ceres_std::{Rc, Vec};
-use ceres_support::{
+use inkpad_executor::Memory;
+use inkpad_std::{Rc, Vec};
+use inkpad_support::{
     traits::{Cache, Frame, Storage},
     types::State,
 };

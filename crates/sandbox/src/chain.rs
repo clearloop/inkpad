@@ -1,6 +1,6 @@
 //! Chain state
 use crate::{util::al, Sandbox};
-use ceres_std::Vec;
+use inkpad_std::Vec;
 use parity_scale_codec::Encode;
 
 impl Sandbox {

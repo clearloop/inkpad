@@ -1,6 +1,6 @@
 //! Cache trait
 use crate::{traits::Storage, types::State};
-use ceres_std::Rc;
+use inkpad_std::Rc;
 use core::cell::RefCell;
 
 /// Cache traits

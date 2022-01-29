@@ -1,7 +1,7 @@
 //! Custom result
-use ceres_std::{String, Vec};
+use inkpad_std::{String, Vec};
 
-/// Ceres Error
+/// Inkpad Error
 #[derive(Debug)]
 pub enum Error {
     /// Memory out of bounds
@@ -29,14 +29,14 @@ pub enum Error {
     },
     /// Init ModuleInstance failed
     InitModuleFailed {
-        error: ceres_executor::Error,
+        error: inkpad_executor::Error,
     },
     /// Deploy contract failed
     DeployContractFailed {
-        error: ceres_executor::Error,
+        error: inkpad_executor::Error,
     },
     CallContractFailed {
-        error: ceres_executor::Error,
+        error: inkpad_executor::Error,
     },
     /// Decode selector failed
     DecodeSelectorFailed,
@@ -70,13 +70,13 @@ pub enum Error {
     ExecutorNotInited,
     InitExecutorFailed,
     /// Executor Error
-    ExecuteWasmFailed(ceres_executor::Error),
+    ExecuteWasmFailed(inkpad_executor::Error),
     LoadDataFailed,
     FlushDataFailed,
 }
 
-impl From<ceres_executor::Error> for Error {
-    fn from(e: ceres_executor::Error) -> Error {
+impl From<inkpad_executor::Error> for Error {
+    fn from(e: inkpad_executor::Error) -> Error {
         Error::ExecuteWasmFailed(e)
     }
 }

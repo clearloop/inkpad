@@ -4,7 +4,7 @@ use crate::{
     Error, ReturnData,
 };
 use ::wasmtime::{Trap, TrapCode};
-use ceres_std::fmt;
+use inkpad_std::fmt;
 use parity_scale_codec::Decode;
 
 impl From<Trap> for Error {

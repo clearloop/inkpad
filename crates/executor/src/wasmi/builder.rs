@@ -8,7 +8,7 @@ use ::wasmi::{
     Error, FuncInstance, FuncRef, GlobalDescriptor, GlobalRef, ImportResolver, MemoryDescriptor,
     MemoryRef, Signature, TableDescriptor, TableRef,
 };
-use ceres_std::{format, BTreeMap, String, ToOwned, Vec};
+use inkpad_std::{format, BTreeMap, String, ToOwned, Vec};
 
 enum ExternVal {
     HostFunc(HostFuncIndex),

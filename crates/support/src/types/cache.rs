@@ -3,7 +3,7 @@ use crate::{
     traits::{self, Frame, Storage},
     types::State,
 };
-use ceres_std::{BTreeMap, Rc, Vec};
+use inkpad_std::{BTreeMap, Rc, Vec};
 use core::cell::RefCell;
 
 /// Memory cache implementation

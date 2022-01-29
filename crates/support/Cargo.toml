@@ -1,13 +1,13 @@
 [package]
 edition = "2018"
-name = "ceres-support"
+name = "inkpad-support"
 version = "0.2.0"
 authors = [
   "Patract <hi@patract.io>",
   "clearloop <udtrokia@gmail.com>"
 ]
-description = "ceres supports"
-repository = "https://github.com/patractlabs/ceres"
+description = "inkpad supports"
+repository = "https://github.com/patractlabs/inkpad"
 license = "MIT"
 readme = './README.md'
 keywords = ["wasm", "substrate", "runtime"]
@@ -18,10 +18,10 @@ serde = { version = "1.0.125", features = ["derive"] }
 derivative = { version = "2.2.0", features = ["use_core"] }
 parity-wasm = "0.42.2"
 parity-scale-codec = { version = "2", features = ["derive"] }
-ceres-std = { path = "../std", version = "^0" }
+inkpad-std = { path = "../std", version = "^0" }
 
 [features]
 default = [ "std" ]
 std = [
-  "ceres-std/std",
+  "inkpad-std/std",
 ]

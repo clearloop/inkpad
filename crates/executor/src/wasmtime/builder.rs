@@ -4,7 +4,7 @@ use crate::{
     derive::{self, HostFuncType},
     Error,
 };
-use ceres_std::BTreeMap;
+use inkpad_std::BTreeMap;
 use wasmtime::{Extern, ExternType, ImportType, Store};
 
 /// wasmtime external

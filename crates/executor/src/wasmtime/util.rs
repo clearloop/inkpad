@@ -3,7 +3,7 @@ use crate::{
     derive::{HostFuncType, Value},
     Error,
 };
-use ceres_std::vec;
+use inkpad_std::vec;
 use core::mem;
 use parity_scale_codec::Encode;
 use wasmtime::{Caller, Config, Engine, Func, FuncType, Store, Trap, Val, WasmBacktraceDetails};

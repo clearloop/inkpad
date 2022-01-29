@@ -1,6 +1,6 @@
-//! Ceres supported host functions
+//! Inkpad supported host functions
 #![cfg_attr(not(feature = "std"), no_std)]
-use ceres_std::{vec, Vec};
+use inkpad_std::{vec, Vec};
 
 mod chain;
 mod contract;
@@ -14,11 +14,11 @@ mod storage;
 mod transfer;
 
 pub use self::derive::Host;
-use ceres_sandbox::RuntimeInterfaces;
+use inkpad_sandbox::RuntimeInterfaces;
 
 /// Seal calls
 pub type SealCall =
-    ceres_executor::derive::HostCall<&'static str, &'static str, ceres_sandbox::Sandbox>;
+    inkpad_executor::derive::HostCall<&'static str, &'static str, inkpad_sandbox::Sandbox>;
 
 /// Pallet contract host functions
 pub fn pallet_contracts(ri: Option<impl RuntimeInterfaces>) -> Vec<SealCall> {

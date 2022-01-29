@@ -1,5 +1,5 @@
 [package]
-name = "ceres-runtime"
+name = "inkpad-runtime"
 version = "0.2.0"
 edition = "2018"
 authors = [
@@ -7,7 +7,7 @@ authors = [
   "clearloop <udtrokia@gmail.com>"
 ]
 description = "Runtime ink! contract anywhere!"
-repository = "https://github.com/patractlabs/ceres"
+repository = "https://github.com/patractlabs/inkpad"
 license = "MIT"
 readme = './README.md'
 keywords = ["wasm", "substrate", "runtime"]
@@ -22,21 +22,21 @@ serde = { version = "1.0.125", features = ["derive"] }
 derivative = { version = "2.2.0", features = ["use_core"] }
 parity-scale-codec = { version = "2", features = ["derive"] }
 
-# ceres dependencies
-ceres-ri = {path = "../ri", version = "^0", optional = true }
-ceres-std = { path = "../std", version = "^0" }
-ceres-seal = { path = "../seal", version = "^0" }
-ceres-sandbox = { path = "../sandbox", version = "^0" }
-ceres-support = { path = "../support", version = "^0" }
-ceres-executor = { path = "../executor", version = "^0" }
+# inkpad dependencies
+inkpad-ri = {path = "../ri", version = "^0", optional = true }
+inkpad-std = { path = "../std", version = "^0" }
+inkpad-seal = { path = "../seal", version = "^0" }
+inkpad-sandbox = { path = "../sandbox", version = "^0" }
+inkpad-support = { path = "../support", version = "^0" }
+inkpad-executor = { path = "../executor", version = "^0" }
 
 [features]
 default = []
 std = [
-    "ceres-ri/std",
-    "ceres-std/std",
-    "ceres-seal/std",
-    "ceres-sandbox/std",
-    "ceres-support/std",
-    "ceres-executor/std",
+    "inkpad-ri/std",
+    "inkpad-std/std",
+    "inkpad-seal/std",
+    "inkpad-sandbox/std",
+    "inkpad-support/std",
+    "inkpad-executor/std",
 ]

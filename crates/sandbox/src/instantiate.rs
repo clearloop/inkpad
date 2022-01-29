@@ -1,7 +1,7 @@
 //! Instantiate Entry
 use crate::{contract::GasMeter, transfer::TransferEntry, Sandbox};
-use ceres_executor::{Error, Executor, Result, ReturnData};
-use ceres_std::Vec;
+use inkpad_executor::{Error, Executor, Result, ReturnData};
+use inkpad_std::Vec;
 
 /// Instantiate Entry
 #[derive(Default)]

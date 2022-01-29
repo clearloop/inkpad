@@ -1,9 +1,9 @@
 //! POC
 //!
 //! Test invoking ink! functions in wasmtime
-use ceres_executor::{Trap, TrapCode};
-use ceres_ri::Instance;
-use ceres_runtime::Runtime;
+use inkpad_executor::{Trap, TrapCode};
+use inkpad_ri::Instance;
+use inkpad_runtime::Runtime;
 use parity_scale_codec::Encode;
 
 #[test]
@@ -36,8 +36,8 @@ fn test_flipper_trap() {
     rt.deploy("default", vec![], None).expect("Deploy failed");
     assert_eq!(rt.call("get", vec![], None), Ok(Some(vec![0])));
 
-    if let Some(ceres_runtime::Error::CallContractFailed {
-        error: ceres_executor::Error::Trap(Trap { code, .. }),
+    if let Some(inkpad_runtime::Error::CallContractFailed {
+        error: inkpad_executor::Error::Trap(Trap { code, .. }),
     }) = rt.call("flip", vec![], None).err()
     {
         assert_eq!(code, TrapCode::UnreachableCodeReached);

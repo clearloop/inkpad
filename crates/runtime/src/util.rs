@@ -1,7 +1,7 @@
 //! Memory generator
 use crate::{Error, Result};
-use ceres_std::Vec;
-use ceres_support::convert::step_hex;
+use inkpad_std::Vec;
+use inkpad_support::convert::step_hex;
 use parity_wasm::elements::{External, Module};
 
 const IMPORT_MODULE_MEMORY: &str = "env";

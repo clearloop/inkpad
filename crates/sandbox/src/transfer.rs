@@ -1,7 +1,7 @@
 //! Transfer Entry
 use crate::Sandbox;
-use ceres_executor::Result;
-use ceres_std::Vec;
+use inkpad_executor::Result;
+use inkpad_std::Vec;
 
 /// Transfer Entry
 #[derive(Default)]

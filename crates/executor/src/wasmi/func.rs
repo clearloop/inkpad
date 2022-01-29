@@ -1,6 +1,6 @@
 //! wasmi functions
 use crate::derive;
-use ceres_std::Vec;
+use inkpad_std::Vec;
 
 /// function id struct
 pub struct HostFuncIndex(pub usize);

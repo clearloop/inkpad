@@ -1,7 +1,7 @@
 use crate::derive::Host;
-use ceres_derive::host;
-use ceres_executor::{derive::Value, Error, Result};
-use ceres_sandbox::Sandbox;
+use inkpad_derive::host;
+use inkpad_executor::{derive::Value, Error, Result};
+use inkpad_sandbox::Sandbox;
 
 /// *TODO*: replace `1337` with a dynamic value
 ///

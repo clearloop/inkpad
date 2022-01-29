@@ -1,13 +1,13 @@
 [package]
 edition = "2018"
-name = "ceres-std"
+name = "inkpad-std"
 version = "0.2.0"
 authors = [
   "Patract <hi@patract.io>",
   "clearloop <udtrokia@gmail.com>"
 ]
-description = "std bound for ceres"
-repository = "https://github.com/patractlabs/ceres"
+description = "std bound for inkpad"
+repository = "https://github.com/patractlabs/inkpad"
 license = "MIT"
 readme = './README.md'
 keywords = ["wasm", "substrate", "runtime"]

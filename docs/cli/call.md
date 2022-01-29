@@ -1,14 +1,14 @@
-# ceres call
+# inkpad call
 
-The `ceres call` command call a method of the supplied contract.
+The `inkpad call` command call a method of the supplied contract.
 
 ```
- 𝝺 ceres call -h
-ceres-call
+ 𝝺 inkpad call -h
+inkpad-call
 Calls a call method
 
 USAGE:
-    ceres call [OPTIONS] <method>
+    inkpad call [OPTIONS] <method>
 
 FLAGS:
     -h, --help       Prints help information

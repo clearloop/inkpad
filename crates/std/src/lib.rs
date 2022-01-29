@@ -1,4 +1,4 @@
-//! Ceres `std` adaptor
+//! Inkpad `std` adaptor
 #![cfg_attr(not(feature = "std"), no_std)]
 mod no_std;
 mod std;

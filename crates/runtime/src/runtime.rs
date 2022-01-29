@@ -1,15 +1,15 @@
-//! Ceres Runtime
+//! Inkpad Runtime
 use crate::{method::InkMethod, Error, Result};
-use ceres_executor::{Executor, Memory};
-use ceres_sandbox::{RuntimeInterfaces, Sandbox, Transaction};
-use ceres_std::{Rc, String, ToString, Vec};
-use ceres_support::{
+use inkpad_executor::{Executor, Memory};
+use inkpad_sandbox::{RuntimeInterfaces, Sandbox, Transaction};
+use inkpad_std::{Rc, String, ToString, Vec};
+use inkpad_support::{
     convert, traits,
     types::{self, Metadata},
 };
 use core::cell::RefCell;
 
-/// Ceres Runtime
+/// Inkpad Runtime
 pub struct Runtime {
     pub sandbox: Sandbox,
     pub metadata: Metadata,
@@ -65,7 +65,7 @@ impl Runtime {
         ri: Option<impl RuntimeInterfaces>,
     ) -> Result<Runtime> {
         // generate seal calls
-        let seal_calls = ceres_seal::pallet_contracts(ri);
+        let seal_calls = inkpad_seal::pallet_contracts(ri);
 
         // wrap cache
         let cache = Rc::new(RefCell::new(cache));
@@ -124,9 +124,9 @@ impl Runtime {
             .cache
             .borrow()
             .active()
-            .ok_or(ceres_executor::Error::CodeNotFound)?;
+            .ok_or(inkpad_executor::Error::CodeNotFound)?;
         Executor::new(
-            convert::to_storage_key(&hash[..]).ok_or(ceres_executor::Error::CodeNotFound)?,
+            convert::to_storage_key(&hash[..]).ok_or(inkpad_executor::Error::CodeNotFound)?,
             &mut self.sandbox,
         )?
         .invoke(&method.to_string(), &[], &mut self.sandbox)

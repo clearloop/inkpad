@@ -1,4 +1,4 @@
-//! Ceres CLI Library
+//! Inkpad CLI Library
 use structopt::StructOpt;
 
 mod cmd;

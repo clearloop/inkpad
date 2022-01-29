@@ -1,6 +1,6 @@
 //! Transaction arguments
 use crate::{util::decode_addr, Result};
-use ceres_sandbox::Transaction;
+use inkpad_sandbox::Transaction;
 use structopt::StructOpt;
 
 /// Transaction arguments
@@ -32,7 +32,7 @@ pub struct Tx {
 }
 
 impl Tx {
-    /// convert to `ceres_sandbox::Transaction`
+    /// convert to `inkpad_sandbox::Transaction`
     pub fn tx(&self) -> Result<Transaction> {
         Ok(Transaction {
             caller: if let Some(caller) = self.caller.clone() {
