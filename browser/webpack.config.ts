@@ -15,7 +15,7 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new HtmlPlugin({
-            title: "Ceres Template",
+            title: "Inkpad Template",
             templateContent: "<div id='app'></div>",
         }),
     ],

@@ -1,6 +1,6 @@
 //! Contract entry
 use crate::Sandbox;
-use ceres_std::Vec;
+use inkpad_std::Vec;
 use parity_scale_codec::{Decode, Encode};
 
 /// Gas Meter

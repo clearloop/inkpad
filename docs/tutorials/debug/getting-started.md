@@ -5,7 +5,7 @@
 For `cargo-contract`, see [3.2](../../prerequisites/cargo-contract.md).
 
 
-### 1. Introduce `Trap` in ceres
+### 1. Introduce `Trap` in inkpad
 
 
 ```rust
@@ -63,7 +63,7 @@ pub enum TrapCode {
 
 ```
 
-`ceres` supports `Trap` both from `wasmi` and `wasmtime`
+`inkpad` supports `Trap` both from `wasmi` and `wasmtime`
 
 * [wasmi trap][wasmi]
 * [wasmtime trap][wasmtime]
@@ -129,8 +129,8 @@ fn test_flipper_trap() {
     rt.deploy("default", vec![], None).expect("Deploy failed");
     assert_eq!(rt.call("get", vec![], None), Ok(Some(vec![0])));
 
-    if let Some(ceres_runtime::Error::CallContractFailed {
-        error: ceres_executor::Error::Trap(Trap { code, .. }),
+    if let Some(inkpad_runtime::Error::CallContractFailed {
+        error: inkpad_executor::Error::Trap(Trap { code, .. }),
     }) = rt.call("flip", vec![], None).err()
     {
         assert_eq!(code, TrapCode::UnreachableCodeReached);

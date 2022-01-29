@@ -1,14 +1,14 @@
-# ceres deploy
+# inkpad deploy
 
-The `ceres deploy` command deploy the supplied contract with constructor, like `ceres call`
+The `inkpad deploy` command deploy the supplied contract with constructor, like `inkpad call`
 
 ```
- 𝝺 ceres deploy -h
-ceres-deploy
+ 𝝺 inkpad deploy -h
+inkpad-deploy
 Calls a deploy method
 
 USAGE:
-    ceres deploy [OPTIONS] <method>
+    inkpad deploy [OPTIONS] <method>
 
 FLAGS:
     -h, --help       Prints help information

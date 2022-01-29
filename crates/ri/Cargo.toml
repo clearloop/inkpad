@@ -1,13 +1,13 @@
 [package]
-name = "ceres-ri"
+name = "inkpad-ri"
 version = "0.2.0"
 edition = "2018"
 authors = [
   "Patract <hi@patract.io>",
   "clearloop <udtrokia@gmail.com>"
 ]
-description = "ceres runtime interfaces"
-repository = "https://github.com/patractlabs/ceres"
+description = "inkpad runtime interfaces"
+repository = "https://github.com/patractlabs/inkpad"
 license = "MIT"
 readme = './README.md'
 keywords = ["wasm", "substrate", "runtime"]
@@ -18,16 +18,16 @@ rand = "0.8.0"
 sha2 = "0.9.3"
 tiny-keccak = { version = "2.0.2", features = ["keccak"] }
 
-# ceres dependencies
-ceres-std = { path = "../std", version = "^0" }
-ceres-seal = { path = "../seal", version = "^0" }
-ceres-executor = { path = "../executor", version = "^0" }
-ceres-sandbox = { path = "../sandbox", version = "^0" }
+# inkpad dependencies
+inkpad-std = { path = "../std", version = "^0" }
+inkpad-seal = { path = "../seal", version = "^0" }
+inkpad-executor = { path = "../executor", version = "^0" }
+inkpad-sandbox = { path = "../sandbox", version = "^0" }
 
 [features]
 default = []
 std = [
-  "ceres-seal/std",
-  "ceres-sandbox/std",
-  "ceres-executor/std"
+  "inkpad-seal/std",
+  "inkpad-sandbox/std",
+  "inkpad-executor/std"
 ]

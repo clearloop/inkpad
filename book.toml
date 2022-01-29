@@ -3,13 +3,13 @@ authors = ["clearloop"]
 language = "en"
 multilingual = false
 src = "docs"
-title = "The Ceres Book"
+title = "The Inkpad Book"
 
 [build]
 build-dir = "gh-pages"
 
 [output.html]
 default-theme = "dark"
-git-repository-url = "https://github.com/patractlabs/ceres"
+git-repository-url = "https://github.com/patractlabs/inkpad"
 preferred-dark-theme = "ayu"
-site-url = "/ceres/"
+site-url = "/inkpad/"

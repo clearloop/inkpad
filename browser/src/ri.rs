@@ -1,8 +1,8 @@
 //! runtime interfaces
 use crate::result::err_check;
 use blake2_rfc::blake2b;
-use ceres_executor::{derive::Value, Error, Result};
-use ceres_sandbox::{RuntimeInterfaces, Sandbox};
+use inkpad_executor::{derive::Value, Error, Result};
+use inkpad_sandbox::{RuntimeInterfaces, Sandbox};
 use getrandom::getrandom;
 use sha2::{Digest, Sha256};
 use tiny_keccak::{Hasher, Keccak};

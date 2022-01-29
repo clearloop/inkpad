@@ -1,8 +1,8 @@
-# Ceres
+# Inkpad
 
 > Run ink! contract anywhere
 
-A browser implementation of ceres
+A browser implementation of inkpad
 
 
 ## Example
@@ -11,11 +11,11 @@ A browser implementation of ceres
 import Flipper from "./flipper.json";
 
 (async () => {
-    const wasm = await import("@patract/ceres-browser").catch(console.error);
+    const wasm = await import("@patract/inkpad-browser").catch(console.error);
     const { Runtime } = wasm && (await wasm.default);
 
     // create monitor
-    console.log("hello, this is a template of ceres");
+    console.log("hello, this is a template of inkpad");
 
     // load contract
     const contract = new Runtime(JSON.stringify(Flipper));

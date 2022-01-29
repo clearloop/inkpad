@@ -1,7 +1,7 @@
 # `patractlabs/cargo-contract`
 
 For compiling ink! contract with debug info, we can use `patractlabs/cargo-contract`
-along with `ceres`.
+along with `inkpad`.
 
 ## 0. Installation
 

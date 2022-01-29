@@ -4,7 +4,7 @@ use crate::{
     schedule::Schedule,
     termination, transfer,
 };
-use ceres_std::Vec;
+use inkpad_std::Vec;
 
 /// Extend data
 #[derive(Default)]

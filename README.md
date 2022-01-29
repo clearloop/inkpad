@@ -1,21 +1,21 @@
 <div align="center">
 <h1 align="center">
-Ceres
+Inkpad
 </h1>
 
 [![crate][a1]][a2] [![docs][c1]][c2] [![downloads][d1]][d2] [![LICENSE][e1]][e2] 
 
-[a1]: https://img.shields.io/crates/v/ceres-runtime.svg
-[a2]: https://crates.io/crates/ceres-runtime
+[a1]: https://img.shields.io/crates/v/inkpad-runtime.svg
+[a2]: https://crates.io/crates/inkpad-runtime
 [c1]: https://img.shields.io/badge/current-docs-brightgreen.svg
-[c2]: https://docs.rs/ceres-runtime
-[d1]: https://img.shields.io/crates/d/ceres-runtime.svg
-[d2]: https://crates.io/crates/ceres-runtime
-[e1]: https://img.shields.io/crates/l/ceres-runtime.svg
+[c2]: https://docs.rs/inkpad-runtime
+[d1]: https://img.shields.io/crates/d/inkpad-runtime.svg
+[d2]: https://crates.io/crates/inkpad-runtime
+[e1]: https://img.shields.io/crates/l/inkpad-runtime.svg
 [e2]: https://choosealicense.com/licenses/apache-2.0/
 
  <h3>
-    <a href="https://patractlabs.github.io/ceres/">Guide</a>
+    <a href="https://patractlabs.github.io/inkpad/">Guide</a>
     <span> | </span>
     <a href="./README_ZH.md">Chinese</a>
 </h3>
@@ -24,27 +24,27 @@ Ceres
 
 ## Play with it
 
-The Ceres CLI can be installed with:
+The Inkpad CLI can be installed with:
 
 ```
-cargo install ceres-cli
+cargo install inkpad-cli
 ```
 
-We can use the `ceres` binary to explore the usages of ceres library.
+We can use the `inkpad` binary to explore the usages of inkpad library.
 
 ```
-ceres 0.2.0
-Ceres command tool
+inkpad 0.2.0
+Inkpad command tool
 
 USAGE:
-    ceres [*.contract | name | code-hash] <SUBCOMMAND>
+    inkpad [*.contract | name | code-hash] <SUBCOMMAND>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
 
 ARGS:
-    <*.contract | name | code-hash>    If empty, ceres will load the last contract which has been executed
+    <*.contract | name | code-hash>    If empty, inkpad will load the last contract which has been executed
 
 SUBCOMMANDS:
     call      Calls a call method
@@ -56,29 +56,29 @@ SUBCOMMANDS:
 
 ## Features
 
-* **lightweight**. Ceres is a standalone ink! contract environment that scales with your needs, 
-Ceres can be embedded into almost any application.
-* **debugging**. Ceres built with the traps handlers of both `wasmi` and `wasmtime`, it supports
+* **lightweight**. Inkpad is a standalone ink! contract environment that scales with your needs, 
+Inkpad can be embedded into almost any application.
+* **debugging**. Inkpad built with the traps handlers of both `wasmi` and `wasmtime`, it supports
 catching the traps of the wasm binary of ink! contracts
-* **tests**. With Ceres, you can write tests of ink! contract with full-features of the chain api
-* **customized**. The runtime of ceres works with various of rust `trait` that we can configure it 
+* **tests**. With Inkpad, you can write tests of ink! contract with full-features of the chain api
+* **customized**. The runtime of inkpad works with various of rust `trait` that we can configure it 
 blazing flexible.
 
 
 ## Platform Support
 
-You can use Ceres from a variety of different platforms:
+You can use Inkpad from a variety of different platforms:
 
-* Rust - the [ceres-runtime][ceres-runtime] crate
-* Browser - the [ceres-browser][ceres-browser] crate
-* Command Line - the [ceres-cli][ceres-cli] crate
+* Rust - the [inkpad-runtime][inkpad-runtime] crate
+* Browser - the [inkpad-browser][inkpad-browser] crate
+* Command Line - the [inkpad-cli][inkpad-cli] crate
 
 ## Example
 
 ```rust
 // test flipper.contract
-use ceres_ri::Instance;
-use ceres_runtime::Runtime;
+use inkpad_ri::Instance;
+use inkpad_runtime::Runtime;
 use parity_scale_codec::Encode;
 
 #[test]
@@ -103,12 +103,12 @@ fn test_flipper() {
 
 ## How it works
 
-Ceres extracted from `sp-sandbox` and `pallet-contracts` of substrate
+Inkpad extracted from `sp-sandbox` and `pallet-contracts` of substrate
 with both `wasmi` and `wasmtime` features, plus trap handlers for the
 two executors.
 
 It abstracts the chain environment which ink! contracts requires so
-that we can embed ceres almost any applications to run ink! contracts.
+that we can embed inkpad almost any applications to run ink! contracts.
 
 
 ---
@@ -116,6 +116,6 @@ that we can embed ceres almost any applications to run ink! contracts.
 Run ink! contract anywhere!
 
 
-[ceres-runtime]: https://github.com/patractlabs/ceres/tree/master/crates/runtime
-[ceres-browser]: https://github.com/patractlabs/ceres/tree/master/browser
-[ceres-cli]: https://github.com/patractlabs/ceres/tree/master/cli
+[inkpad-runtime]: https://github.com/patractlabs/inkpad/tree/master/crates/runtime
+[inkpad-browser]: https://github.com/patractlabs/inkpad/tree/master/browser
+[inkpad-cli]: https://github.com/patractlabs/inkpad/tree/master/cli

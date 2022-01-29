@@ -5,7 +5,7 @@ use crate::{Error, Result};
 ///
 /// ```
 /// assert!(
-///   ceres_cli::util::decode_addr(
+///   inkpad_cli::util::decode_addr(
 ///     "0x46da65a1be5b49d639a934e27b8a773c3fc2540f488df4c2afb9880ee34a6346"
 ///   ).is_ok()
 /// );

@@ -5,7 +5,7 @@ use crate::{
     Error, Result,
 };
 use ::wasmi::{Module, ModuleInstance, ModuleRef};
-use ceres_std::Vec;
+use inkpad_std::Vec;
 
 /// WASMi instance
 pub struct Instance<T> {

@@ -8,19 +8,19 @@ pub mod info;
 pub mod list;
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "ceres")]
+#[structopt(name = "inkpad")]
 pub struct Opt {
     /// Target contract
     #[structopt(
         name = "*.contract | name | code-hash",
-        help = "If empty, ceres will load the last contract which has been executed"
+        help = "If empty, inkpad will load the last contract which has been executed"
     )]
     pub contract: Option<String>,
     #[structopt(subcommand)]
     pub command: Command,
 }
 
-/// Ceres command tool
+/// Inkpad command tool
 #[derive(Debug, StructOpt)]
 pub enum Command {
     /// Lists all contracts

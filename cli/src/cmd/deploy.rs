@@ -1,7 +1,7 @@
 //! Call a deploy method
 use crate::{Result, Tx};
-use ceres_runtime::Runtime;
-use ceres_support::convert::step_hex;
+use inkpad_runtime::Runtime;
+use inkpad_support::convert::step_hex;
 
 /// Call a deploy method
 pub fn exec(rt: &mut Runtime, tx: Tx) -> Result<()> {

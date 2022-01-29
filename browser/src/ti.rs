@@ -1,6 +1,6 @@
 //! Type interfaces
 use crate::result::err_check;
-use ceres_sandbox::Transaction as Inner;
+use inkpad_sandbox::Transaction as Inner;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::wasm_bindgen;
 

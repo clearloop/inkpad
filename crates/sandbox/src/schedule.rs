@@ -1,6 +1,6 @@
 //! Schedule
 use crate::Sandbox;
-use ceres_std::Vec;
+use inkpad_std::Vec;
 use parity_scale_codec::{Decode, Encode};
 
 /// Describes the upper limits on various metrics.

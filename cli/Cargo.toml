@@ -1,5 +1,5 @@
 [package]
-name = "ceres-cli"
+name = "inkpad-cli"
 version = "0.2.0"
 edition = "2018"
 authors = [
@@ -7,14 +7,14 @@ authors = [
   "clearloop <udtrokia@gmail.com>"
 ]
 description = "Run ink! contract in command line!"
-repository = "https://github.com/patractlabs/ceres"
+repository = "https://github.com/patractlabs/inkpad"
 license = "MIT"
 readme = './README.md'
 keywords = ["wasm", "substrate", "runtime"]
 
 [[bin]]
-name = "ceres"
-path = "bin/ceres.rs"
+name = "inkpad"
+path = "bin/inkpad.rs"
 
 [dependencies]
 log = "0.4.14"
@@ -27,21 +27,21 @@ thiserror = "1.0.24"
 env_logger = "0.8.4"
 parity-scale-codec = { version = "2", features = ["derive"] }
 
-# ceres deps
-ceres-ri = { path = "../crates/ri", version = "^0" }
-ceres-std = { path = "../crates/std", version = "^0" }
-ceres-runtime = { path = "../crates/runtime", version = "^0" }
-ceres-sandbox = { path = "../crates/sandbox", version = "^0" }
-ceres-support = { path = "../crates/support", version = "^0" }
-ceres-executor = { path = "../crates/executor", version = "^0" }
+# inkpad deps
+inkpad-ri = { path = "../crates/ri", version = "^0" }
+inkpad-std = { path = "../crates/std", version = "^0" }
+inkpad-runtime = { path = "../crates/runtime", version = "^0" }
+inkpad-sandbox = { path = "../crates/sandbox", version = "^0" }
+inkpad-support = { path = "../crates/support", version = "^0" }
+inkpad-executor = { path = "../crates/executor", version = "^0" }
 
 [features]
 default = [ ]
 wasmtime = [
-    "ceres-std/std",
-    "ceres-runtime/std",
-    "ceres-sandbox/std",
-    "ceres-support/std",
-    "ceres-executor/std",
-    "ceres-ri/std",
+    "inkpad-std/std",
+    "inkpad-runtime/std",
+    "inkpad-sandbox/std",
+    "inkpad-support/std",
+    "inkpad-executor/std",
+    "inkpad-ri/std",
 ]

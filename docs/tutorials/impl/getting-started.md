@@ -2,15 +2,15 @@
 
 ### 0. implement your `storage`
 
-The `Storage` trait in `ceres/crate/support` is the entry of ceres storage, 
+The `Storage` trait in `inkpad/crate/support` is the entry of inkpad storage, 
 first of all, we need to construct a storage for our implementation.
 
-For example, the storage implementation of `ceres-cli` is like:
+For example, the storage implementation of `inkpad-cli` is like:
 
 ```rust
-use ceres_support::traits::{self, Cache, Frame};
+use inkpad_support::traits::{self, Cache, Frame};
 
-/// A ceres storage implementation using sled
+/// A inkpad storage implementation using sled
 #[derive(Clone)]
 pub struct Storage {
     pub db: Db,
@@ -72,13 +72,13 @@ impl Frame<Memory> for Storage {}
 
 ### 1. construct your seal calls
 
-we need to construct seal calls for different platforms, for example, `ceres-cli` use 
-system interfaces, `ceres-browser` use browser interfaces.
+we need to construct seal calls for different platforms, for example, `inkpad-cli` use 
+system interfaces, `inkpad-browser` use browser interfaces.
 
-For example, the seal calls of `ceres-browser` is like
+For example, the seal calls of `inkpad-browser` is like
 
 ```rust
-use ceres_sandbox::{RuntimeInterfaces, Sandbox};
+use inkpad_sandbox::{RuntimeInterfaces, Sandbox};
 
 /// Browser interface
 pub struct Interface;
@@ -217,4 +217,4 @@ fn main() {
 }
 ```
 
-Here we go, a new implementation of ceres.
+Here we go, a new implementation of inkpad.

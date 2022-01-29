@@ -1,12 +1,12 @@
 //! Browser Result
 use crate::ri::log;
-use ceres_std::fmt::Debug;
+use inkpad_std::fmt::Debug;
 
 /// Browser Error
 #[derive(Debug)]
 pub enum Error {
     /// RuntimeError
-    Runtime { error: ceres_runtime::Error },
+    Runtime { error: inkpad_runtime::Error },
     /// Window not exists
     WindowNotExists,
     /// Could not find local storage

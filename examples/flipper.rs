@@ -1,8 +1,8 @@
 //! POC
 //!
 //! Test invoking ink! functions in wasmtime
-use ceres_ri::Instance;
-use ceres_runtime::Runtime;
+use inkpad_ri::Instance;
+use inkpad_runtime::Runtime;
 use parity_scale_codec::Encode;
 
 fn main() {

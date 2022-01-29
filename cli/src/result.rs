@@ -1,7 +1,7 @@
-//! Ceres CLI Error
-use ceres_executor::Error as Executor;
-use ceres_runtime::Error as Runtime;
-use ceres_support::errors;
+//! Inkpad CLI Error
+use inkpad_executor::Error as Executor;
+use inkpad_runtime::Error as Runtime;
+use inkpad_support::errors;
 use etc::Error as Etc;
 use parity_scale_codec::Error as Codec;
 use sled::Error as Sled;
@@ -39,5 +39,5 @@ impl From<&'static str> for Error {
     }
 }
 
-/// Ceres result
+/// Inkpad result
 pub type Result<T> = core::result::Result<T, Error>;

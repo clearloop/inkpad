@@ -183,172 +183,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ceres-browser"
-version = "0.2.0"
-dependencies = [
- "blake2-rfc",
- "ceres-executor",
- "ceres-runtime",
- "ceres-sandbox",
- "ceres-std",
- "ceres-support",
- "getrandom",
- "hex",
- "parity-scale-codec",
- "serde",
- "serde_json",
- "sha2",
- "snafu",
- "tiny-keccak",
- "wasm-bindgen",
- "wasm-bindgen-test",
- "web-sys",
- "wee_alloc",
-]
-
-[[package]]
-name = "ceres-cli"
-version = "0.2.0"
-dependencies = [
- "ceres-executor",
- "ceres-ri",
- "ceres-runtime",
- "ceres-sandbox",
- "ceres-std",
- "ceres-support",
- "dirs",
- "env_logger 0.8.4",
- "etc",
- "hex",
- "log",
- "parity-scale-codec",
- "sled",
- "structopt",
- "thiserror",
-]
-
-[[package]]
-name = "ceres-derive"
-version = "0.2.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "ceres-executor"
-version = "0.2.0"
-dependencies = [
- "anyhow",
- "bitflags",
- "ceres-std",
- "ceres-support",
- "hex",
- "log",
- "parity-scale-codec",
- "parity-wasm 0.42.2",
- "patract-wasmi",
- "wasmtime",
-]
-
-[[package]]
-name = "ceres-ri"
-version = "0.2.0"
-dependencies = [
- "blake2-rfc",
- "ceres-executor",
- "ceres-sandbox",
- "ceres-seal",
- "ceres-std",
- "rand",
- "sha2",
- "tiny-keccak",
-]
-
-[[package]]
-name = "ceres-runtime"
-version = "0.2.0"
-dependencies = [
- "ceres-executor",
- "ceres-ri",
- "ceres-sandbox",
- "ceres-seal",
- "ceres-std",
- "ceres-support",
- "cfg-if 1.0.0",
- "derivative",
- "hex",
- "log",
- "parity-scale-codec",
- "parity-wasm 0.42.2",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "ceres-sandbox"
-version = "0.2.0"
-dependencies = [
- "ceres-executor",
- "ceres-std",
- "ceres-support",
- "hex",
- "libsecp256k1",
- "log",
- "parity-scale-codec",
- "parity-wasm 0.42.2",
-]
-
-[[package]]
-name = "ceres-seal"
-version = "0.2.0"
-dependencies = [
- "ceres-derive",
- "ceres-executor",
- "ceres-sandbox",
- "ceres-std",
- "log",
- "parity-scale-codec",
-]
-
-[[package]]
-name = "ceres-std"
-version = "0.2.0"
-
-[[package]]
-name = "ceres-support"
-version = "0.2.0"
-dependencies = [
- "ceres-std",
- "derivative",
- "hex",
- "parity-scale-codec",
- "parity-wasm 0.42.2",
- "serde",
-]
-
-[[package]]
-name = "ceres-tests"
-version = "0.1.0"
-dependencies = [
- "ceres-executor",
- "ceres-ri",
- "ceres-runtime",
- "ceres-sandbox",
- "ceres-seal",
- "ceres-std",
- "ceres-support",
- "env_logger 0.8.4",
- "hex",
- "log",
- "parity-scale-codec",
- "parity-wasm 0.41.0",
- "serde_json",
- "wat",
-]
-
-[[package]]
 name = "cfg-if"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -873,6 +707,172 @@ dependencies = [
  "autocfg",
  "hashbrown",
  "serde",
+]
+
+[[package]]
+name = "inkpad-browser"
+version = "0.2.0"
+dependencies = [
+ "blake2-rfc",
+ "getrandom",
+ "hex",
+ "inkpad-executor",
+ "inkpad-runtime",
+ "inkpad-sandbox",
+ "inkpad-std",
+ "inkpad-support",
+ "parity-scale-codec",
+ "serde",
+ "serde_json",
+ "sha2",
+ "snafu",
+ "tiny-keccak",
+ "wasm-bindgen",
+ "wasm-bindgen-test",
+ "web-sys",
+ "wee_alloc",
+]
+
+[[package]]
+name = "inkpad-cli"
+version = "0.2.0"
+dependencies = [
+ "dirs",
+ "env_logger 0.8.4",
+ "etc",
+ "hex",
+ "inkpad-executor",
+ "inkpad-ri",
+ "inkpad-runtime",
+ "inkpad-sandbox",
+ "inkpad-std",
+ "inkpad-support",
+ "log",
+ "parity-scale-codec",
+ "sled",
+ "structopt",
+ "thiserror",
+]
+
+[[package]]
+name = "inkpad-derive"
+version = "0.2.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "inkpad-executor"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "bitflags",
+ "hex",
+ "inkpad-std",
+ "inkpad-support",
+ "log",
+ "parity-scale-codec",
+ "parity-wasm 0.42.2",
+ "patract-wasmi",
+ "wasmtime",
+]
+
+[[package]]
+name = "inkpad-ri"
+version = "0.2.0"
+dependencies = [
+ "blake2-rfc",
+ "inkpad-executor",
+ "inkpad-sandbox",
+ "inkpad-seal",
+ "inkpad-std",
+ "rand",
+ "sha2",
+ "tiny-keccak",
+]
+
+[[package]]
+name = "inkpad-runtime"
+version = "0.2.0"
+dependencies = [
+ "cfg-if 1.0.0",
+ "derivative",
+ "hex",
+ "inkpad-executor",
+ "inkpad-ri",
+ "inkpad-sandbox",
+ "inkpad-seal",
+ "inkpad-std",
+ "inkpad-support",
+ "log",
+ "parity-scale-codec",
+ "parity-wasm 0.42.2",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "inkpad-sandbox"
+version = "0.2.0"
+dependencies = [
+ "hex",
+ "inkpad-executor",
+ "inkpad-std",
+ "inkpad-support",
+ "libsecp256k1",
+ "log",
+ "parity-scale-codec",
+ "parity-wasm 0.42.2",
+]
+
+[[package]]
+name = "inkpad-seal"
+version = "0.2.0"
+dependencies = [
+ "inkpad-derive",
+ "inkpad-executor",
+ "inkpad-sandbox",
+ "inkpad-std",
+ "log",
+ "parity-scale-codec",
+]
+
+[[package]]
+name = "inkpad-std"
+version = "0.2.0"
+
+[[package]]
+name = "inkpad-support"
+version = "0.2.0"
+dependencies = [
+ "derivative",
+ "hex",
+ "inkpad-std",
+ "parity-scale-codec",
+ "parity-wasm 0.42.2",
+ "serde",
+]
+
+[[package]]
+name = "inkpad-tests"
+version = "0.1.0"
+dependencies = [
+ "env_logger 0.8.4",
+ "hex",
+ "inkpad-executor",
+ "inkpad-ri",
+ "inkpad-runtime",
+ "inkpad-sandbox",
+ "inkpad-seal",
+ "inkpad-std",
+ "inkpad-support",
+ "log",
+ "parity-scale-codec",
+ "parity-wasm 0.41.0",
+ "serde_json",
+ "wat",
 ]
 
 [[package]]

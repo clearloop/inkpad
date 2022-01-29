@@ -23,21 +23,21 @@ fn main() {
 ```
 
 
-### 2. add ceres as `dev-dependencies`
+### 2. add inkpad as `dev-dependencies`
 
 ```toml
 [dev-dependencies]
-ceres = "^0"
+inkpad = "^0"
 ```
 
 
-### 3. write tests with ceres
+### 3. write tests with inkpad
 
 ```rust
 // /tests/flipper.rs
-use ceres_executor::{Trap, TrapCode};
-use ceres_ri::Instance;
-use ceres_runtime::Runtime;
+use inkpad_executor::{Trap, TrapCode};
+use inkpad_ri::Instance;
+use inkpad_runtime::Runtime;
 use parity_scale_codec::Encode;
 
 #[test]

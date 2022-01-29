@@ -1,6 +1,6 @@
 ## Removed Tests
 
-Tests below are removed from `pallet-contracts`, because `ceres` doesn't care about these.
+Tests below are removed from `pallet-contracts`, because `inkpad` doesn't care about these.
 
 
 ### Account

@@ -1,22 +1,22 @@
 # CLI
 
-`ceres` has an CLI implementation to help you debug contracts in command line.
+`inkpad` has an CLI implementation to help you debug contracts in command line.
 
 
 ```
- 𝝺 ceres
-ceres 0.2.0
-Ceres command tool
+ 𝝺 inkpad
+inkpad 0.2.0
+Inkpad command tool
 
 USAGE:
-    ceres [*.contract | name | code-hash] <SUBCOMMAND>
+    inkpad [*.contract | name | code-hash] <SUBCOMMAND>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
 
 ARGS:
-    <*.contract | name | code-hash>    If empty, ceres will load the last contract which has been executed
+    <*.contract | name | code-hash>    If empty, inkpad will load the last contract which has been executed
 
 SUBCOMMANDS:
     call      Calls a call method
@@ -28,5 +28,5 @@ SUBCOMMANDS:
 
 ## Arguments
 
-Once we use `*.contract` as the argument of `ceres`, ceres will load and record
-the target contract in database(~/.ceres) by default.
+Once we use `*.contract` as the argument of `inkpad`, inkpad will load and record
+the target contract in database(~/.inkpad) by default.

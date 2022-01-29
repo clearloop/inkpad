@@ -2,10 +2,10 @@
 use crate::{
     derive::SealCall, result::ExecResult, Builder, Error, Instance, Memory, Result, Value,
 };
-use ceres_std::Vec;
-use ceres_support::traits::Ext;
+use inkpad_std::Vec;
+use inkpad_support::traits::Ext;
 
-/// Ceres WASM executor
+/// Inkpad WASM executor
 pub struct Executor<T> {
     pub memory: Memory,
     instance: Instance<T>,

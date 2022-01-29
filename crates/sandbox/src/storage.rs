@@ -1,6 +1,6 @@
 use crate::{Sandbox, StorageKey};
-use ceres_executor::Result;
-use ceres_std::Vec;
+use inkpad_executor::Result;
+use inkpad_std::Vec;
 
 impl Sandbox {
     /// Get storage

@@ -1,9 +1,9 @@
-# Ceres Runtime
+# Inkpad Runtime
 
-[![crate](https://img.shields.io/crates/v/ceres-runtime.svg)](https://crates.io/crates/ceres-runtime)
-[![doc](https://img.shields.io/badge/current-docs-brightgreen.svg)](https://docs.rs/ceres-runtime/)
-[![downloads](https://img.shields.io/crates/d/ceres-runtime.svg)](https://crates.io/crates/ceres-runtime)
-[![LICENSE](https://img.shields.io/crates/l/ceres-runtime.svg)](https://choosealicense.com/licenses/apache-2.0/)
+[![crate](https://img.shields.io/crates/v/inkpad-runtime.svg)](https://crates.io/crates/inkpad-runtime)
+[![doc](https://img.shields.io/badge/current-docs-brightgreen.svg)](https://docs.rs/inkpad-runtime/)
+[![downloads](https://img.shields.io/crates/d/inkpad-runtime.svg)](https://crates.io/crates/inkpad-runtime)
+[![LICENSE](https://img.shields.io/crates/l/inkpad-runtime.svg)](https://choosealicense.com/licenses/apache-2.0/)
 
 The wasm executor of ink! contract
 
@@ -18,7 +18,7 @@ This repo provides:
 ``` text
 
 - - - - - - - - -      - - - - -      - - - - - - -
-| ink! contract | ---> | ceres | ---> |  anywhere |
+| ink! contract | ---> | inkpad | ---> |  anywhere |
 - - - - - - - - -      - - - - -      - - - - - - -
 
 ```
@@ -26,7 +26,7 @@ This repo provides:
 ## Example
 
 ```rust
-use ceres_runtime::Runtime;
+use inkpad_runtime::Runtime;
 
 #[test]
 fn test_flipper() {

@@ -1,5 +1,5 @@
 //! Storage trait
-use ceres_std::Vec;
+use inkpad_std::Vec;
 
 /// Storage trait
 pub trait Storage {

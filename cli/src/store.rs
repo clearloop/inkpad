@@ -1,9 +1,9 @@
 //! Storage implementation
 use crate::Result;
-use ceres_executor::Memory;
-use ceres_runtime::Runtime;
-use ceres_std::BTreeMap;
-use ceres_support::{
+use inkpad_executor::Memory;
+use inkpad_runtime::Runtime;
+use inkpad_std::BTreeMap;
+use inkpad_support::{
     traits::{self, Cache, Frame},
     types::{Metadata, State},
 };
@@ -16,7 +16,7 @@ const RUNTIME_CACHE: &str = "RUNTIME_CACHE";
 const PREVIOUS_STATE: &str = "PREVIOUS_STATE";
 type HostState = BTreeMap<[u8; 32], BTreeMap<Vec<u8>, Vec<u8>>>;
 
-/// A ceres storage implementation using sled
+/// A inkpad storage implementation using sled
 #[derive(Clone)]
 pub struct Storage {
     pub db: Db,
@@ -86,7 +86,7 @@ impl Storage {
     /// New storage
     pub fn new() -> crate::Result<Self> {
         let etc = Etc::new(&dirs::home_dir().ok_or("Could not find home dir")?)?;
-        let db = sled::open(etc.open(".ceres/contracts")?.real_path()?)?;
+        let db = sled::open(etc.open(".inkpad/contracts")?.real_path()?)?;
         let cache = db.open_tree(RUNTIME_CACHE)?;
 
         Ok(Self {
@@ -140,12 +140,12 @@ impl Storage {
         let mut runtime = if if_path.exists() {
             // init from source
             let source = fs::read(contract)?;
-            let r = Runtime::from_contract(&source, cache, Some(ceres_ri::Instance))?;
+            let r = Runtime::from_contract(&source, cache, Some(inkpad_ri::Instance))?;
             self.db.insert(
                 r.cache
                     .borrow()
                     .active()
-                    .ok_or(ceres_executor::Error::CodeNotFound)?,
+                    .ok_or(inkpad_executor::Error::CodeNotFound)?,
                 r.metadata.encode(),
             )?;
             r
@@ -173,7 +173,7 @@ impl Storage {
             Runtime::from_metadata(
                 Metadata::decode(&mut contract.as_ref())?,
                 cache,
-                Some(ceres_ri::Instance),
+                Some(inkpad_ri::Instance),
             )?
         } else {
             Self::quit();

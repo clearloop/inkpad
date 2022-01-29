@@ -1,6 +1,6 @@
 //! Decoder of *.contract
 use crate::convert::step_hex;
-use ceres_std::{BTreeMap, String, Vec};
+use inkpad_std::{BTreeMap, String, Vec};
 use derivative::Derivative;
 use parity_scale_codec::{Decode, Encode};
 use parity_wasm::elements::Module;

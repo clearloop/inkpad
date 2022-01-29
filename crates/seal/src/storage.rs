@@ -1,9 +1,9 @@
 //! Storage functions
 use crate::derive::Host;
-use ceres_derive::host;
-use ceres_executor::{derive::Value, Error, Result, ReturnCode};
-use ceres_sandbox::{Sandbox, StorageKey};
-use ceres_std::vec;
+use inkpad_derive::host;
+use inkpad_executor::{derive::Value, Error, Result, ReturnCode};
+use inkpad_sandbox::{Sandbox, StorageKey};
+use inkpad_std::vec;
 
 /// Retrieve the value under the given key from storage.
 #[host(seal0)]

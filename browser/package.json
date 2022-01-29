@@ -1,10 +1,10 @@
 {
   "private": true,
-  "name": "@patract/ceres-template",
+  "name": "@patract/inkpad-template",
   "version": "0.1.0",
   "description": "Run ink! contract anywhere",
   "main": "lib/index.js",
-  "repository": "https://github.com/patractlabs/ceres",
+  "repository": "https://github.com/patractlabs/inkpad",
   "author": "Patract",
   "license": "MIT",
   "files": [
@@ -15,7 +15,7 @@
     "LICENSE_APACHE"
   ],
   "dependencies": {
-    "@patract/ceres-browser": "^0.1.4"
+    "@patract/inkpad-browser": "^0.1.4"
   },
   "devDependencies": {
     "@types/node": "^15.12.4",

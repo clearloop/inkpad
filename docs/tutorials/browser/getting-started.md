@@ -7,21 +7,21 @@ Please follow the instructions of [prerequisites/ink! contract](/prerequisites/i
 to generate an ink! contract.
 
 
-### 1. use `@patract/ceres-browser` in your package
+### 1. use `@patract/inkpad-browser` in your package
 
 ```json
 {
   dependencies: {
-    "@patract/ceres-browser": "^0.1.4"
+    "@patract/inkpad-browser": "^0.1.4"
   }
 }
 ```
 
-### 2. run ink! contract with ceres
+### 2. run ink! contract with inkpad
 
 
 ```typescript
-import { Runtime } from "@ceres/browser";
+import { Runtime } from "@inkpad/browser";
 
 // this flipper.contract is the output after `0.`
 // under /target/ink/flipper.contract
@@ -36,8 +36,8 @@ import CONTRACT from "flipper.contract";
 });
 ```
 
-The usage of `@patract/ceres-browser` is as same as the rust exports, 
-more functions please check [docs.rs/ceres][docs.rs/ceres].
+The usage of `@patract/inkpad-browser` is as same as the rust exports, 
+more functions please check [docs.rs/inkpad][docs.rs/inkpad].
 
 
-[docs.rs/ceres]: https://docs.rs/ceres-runtime/0.1.0/ceres_runtime/struct.Runtime.html
+[docs.rs/inkpad]: https://docs.rs/inkpad-runtime/0.1.0/inkpad_runtime/struct.Runtime.html

@@ -4,7 +4,7 @@ pub use crate::{
     value::{Type, Value},
     Result,
 };
-use ceres_std::Vec;
+use inkpad_std::Vec;
 
 /// Host function parcel
 pub type HostCall<M, F, T> = (M, F, HostFuncType<T>);
@@ -12,7 +12,7 @@ pub type HostCall<M, F, T> = (M, F, HostFuncType<T>);
 /// Custom SealCall
 pub type SealCall<T> = HostCall<&'static str, &'static str, T>;
 
-/// Ceres wasm executor memory
+/// Inkpad wasm executor memory
 pub trait Memory: Sized + Clone {
     /// Construct a new linear memory instance
     fn new(initial: u32, maximum: Option<u32>) -> Result<Self>;
@@ -24,7 +24,7 @@ pub trait Memory: Sized + Clone {
     fn set(&self, ptr: u32, value: &[u8]) -> Result<()>;
 }
 
-/// Ceres executor instance
+/// Inkpad executor instance
 pub trait Instance<T>: Sized {
     type Builder: Builder<T>;
 
@@ -38,7 +38,7 @@ pub trait Instance<T>: Sized {
     fn get_global_val(&self, name: &str) -> Option<Value>;
 }
 
-/// Ceres environment builder
+/// Inkpad environment builder
 pub trait Builder<T>: Sized {
     type Memory: Memory;
 

@@ -7,10 +7,10 @@ use crate::{
     derive::{self, HostCall, HostFuncType},
     memory::Memory,
 };
-use ceres_std::Vec;
+use inkpad_std::Vec;
 use core::ops;
 
-/// Ceres environment builder
+/// Inkpad environment builder
 pub struct Builder<T>(e::Builder<T>);
 
 impl<T> Default for Builder<T> {

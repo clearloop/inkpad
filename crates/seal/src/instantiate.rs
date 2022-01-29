@@ -1,8 +1,8 @@
 //! Instantiate interface
 use crate::derive::Host;
-use ceres_derive::host;
-use ceres_executor::{derive::Value, Error, Result};
-use ceres_sandbox::Sandbox;
+use inkpad_derive::host;
+use inkpad_executor::{derive::Value, Error, Result};
+use inkpad_sandbox::Sandbox;
 use parity_scale_codec::Encode;
 
 // Instantiate a contract with the specified code hash.
@@ -48,7 +48,7 @@ pub fn seal_instantiate(
     let (address, output) =
         sandbox.instantiate(code_hash, &mut Default::default(), input_data, &salt)?;
 
-    if !output.flags.contains(ceres_executor::ReturnFlags::REVERT) {
+    if !output.flags.contains(inkpad_executor::ReturnFlags::REVERT) {
         sandbox.write_sandbox_output(address_ptr, address_len_ptr, &address.encode())?;
     }
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;
@@ -128,7 +128,7 @@ pub fn seal_instantiate(
     let (address, output) =
         sandbox.instantiate(code_hash, &mut Default::default(), input_data, &salt)?;
 
-    if !output.flags.contains(ceres_executor::ReturnFlags::REVERT) {
+    if !output.flags.contains(inkpad_executor::ReturnFlags::REVERT) {
         sandbox.write_sandbox_output(address_ptr, address_len_ptr, &address.encode())?;
     }
     sandbox.write_sandbox_output(output_ptr, output_len_ptr, &output.data)?;

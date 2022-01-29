@@ -1,6 +1,6 @@
 //! Chain state
 use crate::util::al;
-use ceres_std::Vec;
+use inkpad_std::Vec;
 use parity_scale_codec::{Decode, Encode};
 
 /// Chain State

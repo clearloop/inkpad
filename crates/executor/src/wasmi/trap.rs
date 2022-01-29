@@ -3,7 +3,7 @@ use crate::{
     trap::{self, TrapCode},
     Error,
 };
-use ceres_std::{fmt, Box};
+use inkpad_std::{fmt, Box};
 use wasmi::{Trap, TrapKind};
 
 impl From<Trap> for trap::Trap {

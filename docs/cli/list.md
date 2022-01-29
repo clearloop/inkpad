@@ -1,14 +1,14 @@
-# ceres list
+# inkpad list
 
 Lists loaded contracts
 
 ```
- 𝝺 ceres list -h
-ceres-list 0.2.0
+ 𝝺 inkpad list -h
+inkpad-list 0.2.0
 Lists all contracts
 
 USAGE:
-    ceres list
+    inkpad list
 
 FLAGS:
     -h, --help       Prints help information
@@ -18,7 +18,7 @@ FLAGS:
 for example
 
 ```
- 𝝺 ceres list
+ 𝝺 inkpad list
 
 	contract             code-hash
 	---------------------------------------------------------------------------------------

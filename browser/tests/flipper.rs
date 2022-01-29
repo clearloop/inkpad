@@ -8,8 +8,8 @@ use wasm_bindgen_test::*;
 wasm_bindgen_test_configure!(run_in_browser);
 
 // tests
-use ceres_browser::Runtime;
-use ceres_support::types::Metadata;
+use inkpad_browser::Runtime;
+use inkpad_support::types::Metadata;
 
 #[wasm_bindgen_test]
 fn test_flipper() {

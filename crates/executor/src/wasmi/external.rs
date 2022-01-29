@@ -2,7 +2,7 @@
 use super::func::DefinedHostFunctions;
 use crate::Error;
 use ::wasmi::{Externals, HostError, RuntimeArgs, RuntimeValue, Trap};
-use ceres_std::Vec;
+use inkpad_std::Vec;
 
 impl HostError for Error {}
 

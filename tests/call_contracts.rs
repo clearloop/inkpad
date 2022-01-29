@@ -11,9 +11,9 @@
 //!   - call `get`
 //!   - call `change`
 //!   - call `switch`
-use ceres_ri::Instance;
-use ceres_runtime::Runtime;
-use ceres_support::types::Cache;
+use inkpad_ri::Instance;
+use inkpad_runtime::Runtime;
+use inkpad_support::types::Cache;
 use parity_scale_codec::Encode;
 
 #[test]

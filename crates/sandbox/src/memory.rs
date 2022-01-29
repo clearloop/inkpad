@@ -1,7 +1,7 @@
 use crate::Sandbox;
-use ceres_executor::{Error, Result};
-use ceres_std::{vec, Vec};
-use ceres_support::traits::Ext;
+use inkpad_executor::{Error, Result};
+use inkpad_std::{vec, Vec};
+use inkpad_support::traits::Ext;
 use parity_scale_codec::{Decode, DecodeAll, Encode};
 
 impl Sandbox {

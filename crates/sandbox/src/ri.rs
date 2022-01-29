@@ -1,7 +1,7 @@
 //! std runtime interfaces
 use crate::Sandbox;
-use ceres_executor::{derive::Value, Result};
-use ceres_std::{vec, Vec};
+use inkpad_executor::{derive::Value, Result};
+use inkpad_std::{vec, Vec};
 
 type ParcelResult = Result<Option<Value>>;
 
@@ -26,7 +26,7 @@ pub trait RuntimeInterfaces: Sized {
     fn seal_hash_blake2_128(sandbox: &mut Sandbox, args: &[Value]) -> ParcelResult;
 
     /// pack functions
-    fn pack(&self) -> Vec<ceres_executor::derive::HostCall<&'static str, &'static str, Sandbox>> {
+    fn pack(&self) -> Vec<inkpad_executor::derive::HostCall<&'static str, &'static str, Sandbox>> {
         vec![
             ("seal0", "seal_debug_message", Self::seal_println),
             ("seal0", "seal_random", Self::seal_random),

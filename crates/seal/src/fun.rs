@@ -1,7 +1,7 @@
 use crate::derive::Host;
-use ceres_derive::host;
-use ceres_executor::{derive::Value, Error, Result, ReturnData, ReturnFlags, TrapCode};
-use ceres_sandbox::Sandbox;
+use inkpad_derive::host;
+use inkpad_executor::{derive::Value, Error, Result, ReturnData, ReturnFlags, TrapCode};
+use inkpad_sandbox::Sandbox;
 
 /// Stores the input passed by the caller into the supplied buffer.
 #[host(seal0)]

@@ -1,9 +1,9 @@
 //! Event interface
 use crate::derive::Host;
-use ceres_derive::host;
-use ceres_executor::{derive::Value, Error, Result};
-use ceres_sandbox::Sandbox;
-use ceres_std::Vec;
+use inkpad_derive::host;
+use inkpad_executor::{derive::Value, Error, Result};
+use inkpad_sandbox::Sandbox;
+use inkpad_std::Vec;
 
 /// Deposit a contract event with the data buffer and optional list of topics. There is a limit
 /// on the maximum number of topics specified by `event_topics`.

@@ -1,5 +1,5 @@
 //! Memory frame implementation
-use ceres_std::{BTreeMap, Vec};
+use inkpad_std::{BTreeMap, Vec};
 
 /// Memory frame implementation
 #[derive(Clone, Debug)]
