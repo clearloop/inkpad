@@ -1,9 +1,8 @@
 [package]
 name = "inkpad-seal"
-version = "0.2.0"
-edition = "2018"
+version = "0.1.0"
+edition = "2021"
 authors = [
-  "Patract <hi@patract.io>",
   "clearloop <udtrokia@gmail.com>"
 ]
 description = "inkpad runtime interfaces"
@@ -14,10 +13,10 @@ keywords = ["wasm", "substrate", "runtime"]
 
 [dependencies]
 log = "0.4.14"
-inkpad-std = { path = "../std", version = "^0" }
-inkpad-derive = { path = "../derive", version = "^0" }
-inkpad-sandbox = { path = "../sandbox", version = "^0" }
-inkpad-executor = { path = "../executor", version = "^0" }
+inkpad-std = { path = "../std" }
+inkpad-derive = { path = "../derive" }
+inkpad-sandbox = { path = "../sandbox" }
+inkpad-executor = { path = "../executor" }
 
 parity-scale-codec = { version = "2", features = ["derive"]}
 

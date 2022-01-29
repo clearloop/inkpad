@@ -1,9 +1,8 @@
 [package]
 name = "inkpad-executor"
-version = "0.2.0"
-edition = "2018"
+version = "0.1.0"
+edition = "2021"
 authors = [
-  "Patract <hi@patract.io>",
   "clearloop <udtrokia@gmail.com>"
 ]
 description = "wasm executor of inkpad"
@@ -23,8 +22,8 @@ wasmtime = { version = "0.26.1", optional = true }
 anyhow = { version = "1", default-features = false }
 
 # inkpad dependencies
-inkpad-std = { path = "../std", version = "^0" }
-inkpad-support = { path = "../support", version = "^0" }
+inkpad-std = { path = "../std" }
+inkpad-support = { path = "../support" }
 
 [features]
 default = [ "wasmi" ]

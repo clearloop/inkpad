@@ -711,7 +711,7 @@ dependencies = [
 
 [[package]]
 name = "inkpad-browser"
-version = "0.2.0"
+version = "0.1.0"
 dependencies = [
  "blake2-rfc",
  "getrandom",
@@ -735,7 +735,7 @@ dependencies = [
 
 [[package]]
 name = "inkpad-cli"
-version = "0.2.0"
+version = "0.1.0"
 dependencies = [
  "dirs",
  "env_logger 0.8.4",
@@ -756,7 +756,7 @@ dependencies = [
 
 [[package]]
 name = "inkpad-derive"
-version = "0.2.0"
+version = "0.1.0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -765,7 +765,7 @@ dependencies = [
 
 [[package]]
 name = "inkpad-executor"
-version = "0.2.0"
+version = "0.1.0"
 dependencies = [
  "anyhow",
  "bitflags",
@@ -795,7 +795,7 @@ dependencies = [
 
 [[package]]
 name = "inkpad-runtime"
-version = "0.2.0"
+version = "0.1.0"
 dependencies = [
  "cfg-if 1.0.0",
  "derivative",
@@ -829,7 +829,7 @@ dependencies = [
 
 [[package]]
 name = "inkpad-seal"
-version = "0.2.0"
+version = "0.1.0"
 dependencies = [
  "inkpad-derive",
  "inkpad-executor",
@@ -841,11 +841,11 @@ dependencies = [
 
 [[package]]
 name = "inkpad-std"
-version = "0.2.0"
+version = "0.1.0"
 
 [[package]]
 name = "inkpad-support"
-version = "0.2.0"
+version = "0.1.0"
 dependencies = [
  "derivative",
  "hex",

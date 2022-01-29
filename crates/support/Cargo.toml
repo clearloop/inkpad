@@ -1,9 +1,8 @@
 [package]
-edition = "2018"
+edition = "2021"
 name = "inkpad-support"
-version = "0.2.0"
+version = "0.1.0"
 authors = [
-  "Patract <hi@patract.io>",
   "clearloop <udtrokia@gmail.com>"
 ]
 description = "inkpad supports"
@@ -18,7 +17,7 @@ serde = { version = "1.0.125", features = ["derive"] }
 derivative = { version = "2.2.0", features = ["use_core"] }
 parity-wasm = "0.42.2"
 parity-scale-codec = { version = "2", features = ["derive"] }
-inkpad-std = { path = "../std", version = "^0" }
+inkpad-std = { path = "../std" }
 
 [features]
 default = [ "std" ]

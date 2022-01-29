@@ -1,9 +1,8 @@
 [package]
 name = "inkpad-ri"
 version = "0.2.0"
-edition = "2018"
+edition = "2021"
 authors = [
-  "Patract <hi@patract.io>",
   "clearloop <udtrokia@gmail.com>"
 ]
 description = "inkpad runtime interfaces"
@@ -19,10 +18,10 @@ sha2 = "0.9.3"
 tiny-keccak = { version = "2.0.2", features = ["keccak"] }
 
 # inkpad dependencies
-inkpad-std = { path = "../std", version = "^0" }
-inkpad-seal = { path = "../seal", version = "^0" }
-inkpad-executor = { path = "../executor", version = "^0" }
-inkpad-sandbox = { path = "../sandbox", version = "^0" }
+inkpad-std = { path = "../std" }
+inkpad-seal = { path = "../seal" }
+inkpad-executor = { path = "../executor" }
+inkpad-sandbox = { path = "../sandbox" }
 
 [features]
 default = []

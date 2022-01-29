@@ -1,9 +1,8 @@
 [package]
 name = "inkpad-browser"
-version = "0.2.0"
-edition = "2018"
+version = "0.1.0"
+edition = "2021"
 authors = [
-  "Patract <hi@patract.io>",
   "clearloop <udtrokia@gmail.com>"
 ]
 description = "Run ink! contract in browser!"
@@ -38,11 +37,11 @@ hex = { version = "0.4", features = ["alloc"] }
 parity-scale-codec = { version = "2.1.3", features = [] }
 
 # inkpad deps
-inkpad-std = { path = "../crates/std", version = "^0" }
-inkpad-runtime = { path = "../crates/runtime", version = "^0" }
-inkpad-support = { path = "../crates/support", version = "^0" }
-inkpad-sandbox = { path = "../crates/sandbox", version = "^0" }
-inkpad-executor = { path = "../crates/executor", version = "^0" }
+inkpad-std = { path = "../crates/std" }
+inkpad-runtime = { path = "../crates/runtime" }
+inkpad-support = { path = "../crates/support" }
+inkpad-sandbox = { path = "../crates/sandbox" }
+inkpad-executor = { path = "../crates/executor" }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.13"
